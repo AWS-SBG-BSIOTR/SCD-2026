@@ -485,9 +485,13 @@ body {
    02. HERO BANNER
    ========================================================================== */
 .hero-section {
-  padding: 32px 24px 64px 24px;
+  min-height: calc(100vh - 64px);
+  padding: 44px 32px 52px 32px;
   border-bottom: 2px solid var(--color-black);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .scd-event-badge-banner {
@@ -559,12 +563,14 @@ body {
 }
 
 .hero-wordmark-container {
-  padding: 48px 0 44px 0;
+  padding: 44px 0 40px 0;
   text-align: center;
   user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  flex: 1;
   width: 100%;
   max-width: 100%;
   overflow: visible;
@@ -4057,6 +4063,11 @@ body {
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    min-height: auto;
+    padding: 36px 20px 48px 20px;
+  }
+
   .header-nav {
     display: none;
   }
