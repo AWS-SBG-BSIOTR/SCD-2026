@@ -129,6 +129,52 @@ class SoundManager {
       }, idx * 60);
     });
   }
+
+  public playPaperTear() {
+    if (!this.enabled) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      // Synthesize realistic physical paper rip using filtered noise bursts
+      const duration = 0.28;
+      const bufferSize = Math.floor(this.ctx.sampleRate * duration);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      // White noise with micro-crackle modulation simulating tearing paper fibers
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        const crackle = Math.random() > 0.88 ? (Math.random() * 2 - 1) * 1.6 : 0;
+        data[i] = white * 0.65 + crackle;
+      }
+
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      // Bandpass filter to isolate paper friction frequencies (~900Hz to 2800Hz)
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1400, this.ctx.currentTime);
+      filter.frequency.exponentialRampToValueAtTime(750, this.ctx.currentTime + duration);
+      filter.Q.setValueAtTime(2.0, this.ctx.currentTime);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.001, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.12, this.ctx.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      noise.start();
+      noise.stop(this.ctx.currentTime + duration);
+    } catch {
+      // fallback
+      this.playClick(920, 0.05);
+    }
+  }
 }
 
 export const sound = new SoundManager();

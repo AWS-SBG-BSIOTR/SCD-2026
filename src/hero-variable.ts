@@ -84,22 +84,6 @@ export class HeroVariableController {
       this.resetToRest();
     }, { passive: true });
 
-    // Scroll response fallback (especially on mobile/tablets)
-    window.addEventListener('scroll', () => {
-      if (!this.isPointerInside) {
-        const scrollY = window.scrollY;
-        const progress = Math.min(1, Math.max(0, scrollY / 600));
-        // Wave-like undulating breathing on scroll
-        this.letters.forEach((letter, idx) => {
-          if (letter.classList.contains('char-space')) return;
-          const wave = Math.sin(progress * Math.PI * 3 + idx * 0.45);
-          const wght = Math.round(300 + (wave * 0.5 + 0.5) * 600);
-          const wdth = Math.round(75 + (wave * 0.5 + 0.5) * 65);
-          letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
-        });
-      }
-    }, { passive: true });
-
     // Hero Excitement & Hype range scrubber
     const scrubSlider = this.heroElement.querySelector<HTMLInputElement>('#hero-scrub-slider');
     const scrubVal = this.heroElement.querySelector('#hero-scrub-val');
@@ -159,8 +143,8 @@ export class HeroVariableController {
   private applyManualScrub() {
     this.letters.forEach((letter) => {
       if (letter.classList.contains('char-space')) return;
-      const wght = Math.round(200 + this.manualScrub * 750);
-      const wdth = Math.round(35 + this.manualScrub * 116);
+      const wght = Math.round(550 + this.manualScrub * 350); // 550 to 900 bold weight
+      const wdth = Math.round(90 + this.manualScrub * 30);   // 90 to 120 width
       letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
       letter.style.transform = 'none';
     });
@@ -184,13 +168,15 @@ export class HeroVariableController {
 
           if (dist < maxDist) {
             const factor = Math.pow(1 - dist / maxDist, 1.4); // Smooth falloff curve
-            const wght = Math.round(250 + factor * 700);
-            const wdth = Math.round(70 + factor * 75);
+            const wght = Math.round(500 + factor * 400);
+            const wdth = Math.round(85 + factor * 45);
             letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
             letter.style.transform = 'none';
           } else {
-            // Gradual return to default
-            letter.style.fontVariationSettings = `'wght' 380, 'wdth' 85`;
+            // Gradual return to rest state based on current hype scrubber
+            const restWght = Math.round(550 + this.manualScrub * 350);
+            const restWdth = Math.round(90 + this.manualScrub * 30);
+            letter.style.fontVariationSettings = `'wght' ${restWght}, 'wdth' ${restWdth}`;
             letter.style.transform = 'none';
           }
         });
@@ -203,11 +189,7 @@ export class HeroVariableController {
   }
 
   private resetToRest() {
-    this.letters.forEach((letter) => {
-      if (letter.classList.contains('char-space')) return;
-      letter.style.fontVariationSettings = `'wght' 380, 'wdth' 85`;
-      letter.style.transform = 'none';
-    });
+    this.applyManualScrub();
   }
 
   public destroy() {

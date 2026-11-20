@@ -4410,7 +4410,16 @@ body {
   border: 2px solid var(--color-black);
   box-shadow: 8px 8px 0px var(--color-black);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+  transition: box-shadow 0.3s ease;
+}
+
+.ticket-stub-card.is-tearing {
+  box-shadow: 10px 10px 0px var(--color-black);
+}
+
+.ticket-stub-card.is-torn {
+  box-shadow: 6px 6px 0px var(--color-black);
 }
 
 /* Main Ticket Body (Left) */
@@ -4419,6 +4428,28 @@ body {
   padding: 36px 40px;
   display: flex;
   flex-direction: column;
+  position: relative;
+  background-color: #FFFFFF;
+}
+
+/* Torn Deckle Teeth Edge on Right of Main Body */
+.ticket-ragged-edge-left {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -5px;
+  width: 5px;
+  background-image: radial-gradient(circle at 0px 4px, transparent 2.5px, #FFFFFF 3px);
+  background-size: 5px 8px;
+  background-repeat: repeat-y;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 4;
+}
+
+.ticket-stub-card.is-torn .ticket-ragged-edge-left {
+  opacity: 1;
 }
 
 .ticket-top-meta {
@@ -4575,7 +4606,7 @@ body {
   text-decoration: none;
 }
 
-/* Perforation Divider with Physical Semi-Circle Punches */
+/* Perforation Divider with Physical Semi-Circle Punches & Interactive Tear */
 .ticket-perforation-divider {
   position: relative;
   width: 36px;
@@ -4584,6 +4615,24 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #FFFFFF;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: background-color 0.2s ease;
+  z-index: 5;
+}
+
+.ticket-perforation-divider:hover {
+  background-color: rgba(253, 11, 3, 0.05);
+}
+
+.ticket-perforation-divider:focus-visible {
+  outline: 2px solid var(--color-vermilion);
+  outline-offset: -2px;
+}
+
+.ticket-stub-card.is-tearing .ticket-perforation-divider {
+  cursor: grabbing;
 }
 
 .perforation-dashed-line {
@@ -4594,6 +4643,23 @@ body {
   transform: translateX(-50%);
   width: 0px;
   border-left: 2px dashed var(--color-black);
+  transition: border-color 0.2s ease;
+}
+
+.ticket-perforation-divider:hover .perforation-dashed-line {
+  border-left-color: var(--color-vermilion);
+}
+
+.perforation-rip-fill {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  width: 4px;
+  height: 0%;
+  background-color: var(--color-vermilion);
+  box-shadow: 0 0 8px rgba(253, 11, 3, 0.75);
+  transition: height 0.03s linear;
+  z-index: 3;
 }
 
 .punch-notch {
@@ -4603,17 +4669,19 @@ body {
   background-color: var(--color-cream);
   border: 2px solid var(--color-black);
   border-radius: 50%;
-  z-index: 2;
+  z-index: 6;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .punch-top {
   top: -14px;
+  clip-path: inset(50% 0 0 0);
 }
 
 .punch-bottom {
   bottom: -14px;
+  clip-path: inset(0 0 50% 0);
 }
 
 .perforation-label {
@@ -4623,9 +4691,49 @@ body {
   font-weight: 700;
   letter-spacing: 0.25em;
   color: var(--color-muted-grey);
-  z-index: 1;
+  z-index: 3;
   background-color: #FFFFFF;
-  padding: 8px 0;
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.perforation-label .label-drag-hint {
+  font-size: 0.54rem;
+  color: var(--color-vermilion);
+  letter-spacing: 0.08em;
+}
+
+.ticket-perforation-divider:hover .perforation-label {
+  color: var(--color-vermilion);
+}
+
+.tear-hint-pill {
+  position: absolute;
+  top: -38px;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background-color: var(--color-black);
+  color: var(--color-cream);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 1px solid var(--color-vermilion);
+  box-shadow: 3px 3px 0px var(--color-vermilion);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 25;
+}
+
+.ticket-perforation-divider:hover .tear-hint-pill {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Tear-Off Stub (Right) */
@@ -4638,6 +4746,153 @@ body {
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
+  transform-origin: top left;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+.stub-ragged-edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -5px;
+  width: 5px;
+  background-image: radial-gradient(circle at 5px 4px, transparent 2.5px, var(--color-cream-light) 3px);
+  background-size: 5px 8px;
+  background-repeat: repeat-y;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 0.2s ease;
+}
+
+.ticket-stub-card.is-tearing .stub-ragged-edge,
+.ticket-stub-card.is-torn .stub-ragged-edge {
+  opacity: 1;
+}
+
+.ticket-stub-card.is-torn .ticket-stub-aside {
+  animation: ticketStubTearOff 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  pointer-events: none;
+}
+
+@keyframes ticketStubTearOff {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  20% {
+    transform: translate3d(14px, 10px, 0) rotate(2.5deg);
+    opacity: 1;
+    box-shadow: 14px 14px 0px rgba(1, 1, 1, 0.35);
+  }
+  55% {
+    transform: translate3d(44px, 32px, 0) rotate(6.8deg);
+    opacity: 0.8;
+    box-shadow: 22px 22px 0px rgba(1, 1, 1, 0.2);
+  }
+  100% {
+    transform: translate3d(95px, 70px, 0) rotate(14deg);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Claimed Souvenir Stub Receipt Placeholder (revealed after tear) */
+.ticket-stub-claimed {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 320px;
+  background-color: var(--color-cream);
+  border-left: 2px dashed var(--color-black);
+  padding: 36px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease 0.2s;
+  z-index: 1;
+}
+
+.ticket-stub-claimed.show-claimed {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.claimed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 10px;
+}
+
+.claimed-tag {
+  background-color: var(--color-vermilion);
+  color: #FFFFFF;
+  padding: 2px 6px;
+}
+
+.claimed-serial {
+  color: var(--color-muted-grey);
+}
+
+.claimed-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.claimed-barcode-icon {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: var(--color-black);
+  opacity: 0.45;
+}
+
+.claimed-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-black);
+  letter-spacing: -0.02em;
+}
+
+.claimed-desc {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--color-muted-grey);
+  margin: 0;
+}
+
+.claimed-action-btn {
+  text-decoration: none;
+  font-size: 0.78rem;
+  padding: 12px 14px;
+}
+
+.btn-reset-ticket {
+  background: transparent;
+  border: none;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-muted-grey);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 6px 0;
+  transition: color 0.15s ease;
+}
+
+.btn-reset-ticket:hover {
+  color: var(--color-black);
 }
 
 .stub-header {
@@ -4717,6 +4972,7 @@ body {
   text-decoration: none;
   font-size: 0.8rem;
   padding: 12px 16px;
+  cursor: pointer;
 }
 
 /* Responsive Ticket Layout */
@@ -4743,6 +4999,15 @@ body {
     border-top: 2px dashed var(--color-black);
   }
 
+  .perforation-rip-fill {
+    top: -2px;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    box-shadow: 0 0 8px rgba(253, 11, 3, 0.75);
+    transition: width 0.03s linear;
+  }
+
   .punch-notch {
     top: 50%;
     transform: translateY(-50%);
@@ -4751,24 +5016,89 @@ body {
   .punch-top {
     left: -14px;
     right: auto;
+    clip-path: inset(0 0 0 50%);
   }
 
   .punch-bottom {
     right: -14px;
     left: auto;
     bottom: auto;
+    clip-path: inset(0 50% 0 0);
   }
 
   .perforation-label {
     writing-mode: horizontal-tb;
     transform: none;
     padding: 0 12px;
+    flex-direction: row;
+  }
+
+  .tear-hint-pill {
+    top: auto;
+    bottom: -32px;
   }
 
   .ticket-stub-aside {
     width: 100%;
     border-left: none;
     border-top: 2px solid var(--color-black);
+    transform-origin: top center;
+  }
+
+  .ticket-stub-claimed {
+    width: 100%;
+    top: auto;
+    bottom: 0;
+    border-left: none;
+    border-top: 2px dashed var(--color-black);
+  }
+
+  .stub-ragged-edge {
+    top: -5px;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 5px;
+    background-image: radial-gradient(circle at 4px 5px, transparent 2.5px, var(--color-cream-light) 3px);
+    background-size: 8px 5px;
+    background-repeat: repeat-x;
+  }
+
+  .ticket-ragged-edge-left {
+    top: auto;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 5px;
+    background-image: radial-gradient(circle at 4px 0px, transparent 2.5px, #FFFFFF 3px);
+    background-size: 8px 5px;
+    background-repeat: repeat-x;
+  }
+
+  .ticket-stub-card.is-torn .ticket-stub-aside {
+    animation: ticketStubTearOffMobile 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+
+  @keyframes ticketStubTearOffMobile {
+    0% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+      opacity: 1;
+    }
+    20% {
+      transform: translate3d(0, 14px, 0) rotate(1.2deg);
+      opacity: 1;
+    }
+    55% {
+      transform: translate3d(0, 44px, 0) rotate(3deg);
+      opacity: 0.8;
+    }
+    100% {
+      transform: translate3d(0, 95px, 0) rotate(6deg);
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   .ticket-parameters-matrix {
@@ -4777,6 +5107,18 @@ body {
 
   .inclusions-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Reduced Motion Override */
+@media (prefers-reduced-motion: reduce) {
+  .ticket-stub-card.is-torn .ticket-stub-aside {
+    animation: none !important;
+    display: none !important;
+  }
+
+  .ticket-stub-claimed {
+    transition: none !important;
   }
 }
 
