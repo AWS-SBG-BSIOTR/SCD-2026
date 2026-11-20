@@ -1176,10 +1176,25 @@ body {
   z-index: 2;
 }
 
-.terminal-corner-tick.tick-tl { top: 6px; left: 8px; }
-.terminal-corner-tick.tick-tr { top: 6px; right: 8px; }
-.terminal-corner-tick.tick-bl { bottom: 6px; left: 8px; }
-.terminal-corner-tick.tick-br { bottom: 6px; right: 8px; }
+.terminal-corner-tick.tick-tl {
+  top: 6px;
+  left: 8px;
+}
+
+.terminal-corner-tick.tick-tr {
+  top: 6px;
+  right: 8px;
+}
+
+.terminal-corner-tick.tick-bl {
+  bottom: 6px;
+  left: 8px;
+}
+
+.terminal-corner-tick.tick-br {
+  bottom: 6px;
+  right: 8px;
+}
 
 /* Hardware Terminal Header Bar */
 .terminal-header-bar {
@@ -4799,16 +4814,19 @@ body {
     transform: translate3d(0, 0, 0) rotate(0deg);
     opacity: 1;
   }
+
   20% {
     transform: translate3d(14px, 10px, 0) rotate(2.5deg);
     opacity: 1;
     box-shadow: 14px 14px 0px rgba(1, 1, 1, 0.35);
   }
+
   55% {
     transform: translate3d(44px, 32px, 0) rotate(6.8deg);
     opacity: 0.8;
     box-shadow: 22px 22px 0px rgba(1, 1, 1, 0.2);
   }
+
   100% {
     transform: translate3d(95px, 70px, 0) rotate(14deg);
     opacity: 0;
@@ -5103,14 +5121,17 @@ body {
       transform: translate3d(0, 0, 0) rotate(0deg);
       opacity: 1;
     }
+
     20% {
       transform: translate3d(0, 14px, 0) rotate(1.2deg);
       opacity: 1;
     }
+
     55% {
       transform: translate3d(0, 44px, 0) rotate(3deg);
       opacity: 0.8;
     }
+
     100% {
       transform: translate3d(0, 95px, 0) rotate(6deg);
       opacity: 0;
