@@ -39,6 +39,10 @@ export class HeroVariableController {
     this.applyManualScrub();
   }
 
+  private onResize = () => {
+    this.adjustFit();
+  };
+
   private init() {
     this.wordmarkElement = this.heroElement.querySelector('.hero-wordmark-title');
     if (!this.wordmarkElement) return;
@@ -46,6 +50,9 @@ export class HeroVariableController {
     this.setWordmark('AWS SCD 2026');
     this.attachEvents();
     this.startLoop();
+    this.adjustFit();
+
+    window.addEventListener('resize', this.onResize, { passive: true });
   }
 
   private attachEvents() {
@@ -149,6 +156,30 @@ export class HeroVariableController {
       letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
       letter.style.transform = 'none';
     });
+
+    // Auto-fit to prevent any horizontal overflow on any viewport
+    this.adjustFit();
+  }
+
+  public adjustFit() {
+    if (!this.wordmarkElement) return;
+    const container = this.heroElement.querySelector<HTMLElement>('.hero-wordmark-container');
+    if (!container) return;
+
+    // Temporarily reset wordmark transform to read natural unscaled scrollWidth
+    this.wordmarkElement.style.transform = 'none';
+
+    const containerWidth = container.clientWidth;
+    const textWidth = this.wordmarkElement.scrollWidth;
+    const availableWidth = Math.max(100, containerWidth - 24);
+
+    if (textWidth > availableWidth && textWidth > 0) {
+      const scale = availableWidth / textWidth;
+      this.wordmarkElement.style.transform = `scale(${scale.toFixed(4)})`;
+      this.wordmarkElement.style.transformOrigin = 'center center';
+    } else {
+      this.wordmarkElement.style.transform = 'none';
+    }
   }
 
   private startLoop() {
@@ -194,6 +225,7 @@ export class HeroVariableController {
   }
 
   public destroy() {
+    window.removeEventListener('resize', this.onResize);
     if (this.rafId) {
       cancelAnimationFrame(this.rafId);
     }
