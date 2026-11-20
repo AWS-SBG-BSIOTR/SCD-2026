@@ -1,0 +1,199 @@
+import './style.css';
+import { sound } from './audio';
+import { HeroVariableController } from './hero-variable';
+import { TickerController } from './ticker';
+import { CheckpointsController } from './checkpoints';
+import { SpeakersController } from './speakers';
+import { ScheduleController } from './schedule';
+import { PassGeneratorController } from './passGenerator';
+import { PassTiersController } from './passTiers';
+import { VenueController } from './venue';
+import { EcosystemController } from './ecosystem';
+
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Audio sound toggle
+  const soundBtn = document.getElementById('sound-toggle-btn');
+  const soundLabel = document.getElementById('sound-status-label');
+
+  const updateSoundUI = () => {
+    const isEnabled = sound.isEnabled();
+    if (soundLabel) {
+      soundLabel.textContent = isEnabled ? 'ON [AUDIO]' : 'OFF [MUTED]';
+    }
+    if (soundBtn) {
+      soundBtn.classList.toggle('is-active', isEnabled);
+    }
+  };
+
+  if (soundBtn) {
+    updateSoundUI();
+    soundBtn.addEventListener('click', () => {
+      sound.toggle();
+      updateSoundUI();
+    });
+  }
+
+  // 2. Live UTC & Local IST Clocks
+  const updateClocks = () => {
+    const now = new Date();
+    const utcString = now.toUTCString().split(' ')[4] + ' UTC';
+    const headerClock = document.getElementById('header-utc-clock');
+    const footerClock = document.getElementById('footer-live-clock');
+
+    const istTimeStr = now.toLocaleTimeString('en-US', {
+      timeZone: 'Asia/Kolkata',
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    if (headerClock) headerClock.textContent = utcString;
+    if (footerClock) footerClock.textContent = `PUNE LOCAL TIME: ${istTimeStr} IST`;
+  };
+  updateClocks();
+  setInterval(updateClocks, 1000);
+
+  // 3. Navigation Drawer Toggle
+  const menuToggle = document.getElementById('menu-drawer-toggle');
+  const menuDrawer = document.getElementById('menu-drawer');
+  const drawerCloseBtn = document.getElementById('drawer-close-btn');
+  const drawerBackdrop = document.getElementById('drawer-backdrop');
+  const drawerLinks = document.querySelectorAll('.drawer-nav-item');
+
+  const openDrawer = () => {
+    if (menuDrawer) {
+      menuDrawer.classList.add('is-open');
+      menuDrawer.setAttribute('aria-hidden', 'false');
+      menuToggle?.setAttribute('aria-expanded', 'true');
+      sound.playClick(600, 0.04);
+    }
+  };
+
+  const closeDrawer = () => {
+    if (menuDrawer) {
+      menuDrawer.classList.remove('is-open');
+      menuDrawer.setAttribute('aria-hidden', 'true');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+      sound.playClick(500, 0.03);
+    }
+  };
+
+  if (menuToggle) menuToggle.addEventListener('click', openDrawer);
+  if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+  if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
+  drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+
+  // 4. Initialize Hero Proximity Variable Typography
+  const heroEl = document.getElementById('hero');
+  if (heroEl) {
+    new HeroVariableController(heroEl);
+  }
+
+  // 5. Initialize Identity Ticker
+  const tickerEl = document.getElementById('ticker');
+  if (tickerEl) {
+    new TickerController(tickerEl);
+  }
+
+  // 6. Initialize AWS SCD Cloud Checkpoint Zones
+  const checkpointsEl = document.getElementById('checkpoints');
+  if (checkpointsEl) {
+    new CheckpointsController(checkpointsEl);
+  }
+
+  // 7. Initialize AWS SCD Speakers & Keynotes
+  const speakersEl = document.getElementById('speakers');
+  if (speakersEl) {
+    new SpeakersController(speakersEl);
+  }
+
+  // 8. Initialize 09:00 AM – 04:00 PM Master Schedule
+  const scheduleEl = document.getElementById('schedule');
+  if (scheduleEl) {
+    new ScheduleController(scheduleEl);
+  }
+
+  // 9. Initialize AWS SCD Attendee Pass Generator
+  const passEl = document.getElementById('pass-generator');
+  if (passEl) {
+    new PassGeneratorController(passEl);
+  }
+
+  // 10. Initialize KonfHub Pass & Registration Tiers
+  const passesEl = document.getElementById('passes');
+  if (passesEl) {
+    new PassTiersController(passesEl);
+  }
+
+  // 11. Initialize Venue & Wayfinding (Seasons 24 Wagholi)
+  const venueEl = document.getElementById('venue');
+  if (venueEl) {
+    new VenueController(venueEl);
+  }
+
+  // 12. Initialize AWS SCD Ecosystem & FAQ Terminal
+  const ecoEl = document.getElementById('ecosystem');
+  if (ecoEl) {
+    new EcosystemController(ecoEl);
+  }
+
+  // Header Get Pass Button triggers Passes Section
+  const headerTrialBtn = document.getElementById('header-trial-trigger');
+  const drawerTrialBtn = document.getElementById('drawer-trial-btn');
+
+  const triggerPassSection = () => {
+    closeDrawer();
+    const passSection = document.getElementById('passes');
+    if (passSection) {
+      passSection.scrollIntoView({ behavior: 'smooth' });
+      sound.playClick(720, 0.04);
+    }
+  };
+
+  if (headerTrialBtn) headerTrialBtn.addEventListener('click', triggerPassSection);
+  if (drawerTrialBtn) drawerTrialBtn.addEventListener('click', triggerPassSection);
+
+  // 12. Newsletter Form Submission
+  const newsForm = document.getElementById('newsletter-form') as HTMLFormElement;
+  const newsStatus = document.getElementById('newsletter-status');
+  if (newsForm && newsStatus) {
+    newsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const emailInput = document.getElementById('newsletter-email') as HTMLInputElement;
+      const email = emailInput ? emailInput.value : '';
+
+      sound.playSuccess();
+      newsStatus.innerHTML = `
+        <div class="status-success-box">
+          [SUCCESS] SUBSCRIBED: [${email.toUpperCase()}] HAS BEEN ADDED TO OUR FOUR-ISSUE ANNUAL DISPATCH. NO SPAM EVER.
+        </div>
+      `;
+      newsForm.reset();
+    });
+  }
+
+  // 13. Back to Top Button
+  const backToTopBtn = document.getElementById('btn-back-to-top');
+  if (backToTopBtn) {
+    backToTopBtn.addEventListener('click', () => {
+      sound.playClick(800, 0.04);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Smooth keyboard anchor scrolling
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href && href.startsWith('#') && href.length > 1) {
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          sound.playClick(700, 0.02);
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  });
+});
