@@ -607,12 +607,10 @@ body {
 }
 
 .hero-bottom-grid {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 48px;
+  display: block;
+  max-width: 860px;
   padding-top: 32px;
   border-top: 1px solid var(--color-border);
-  align-items: start;
 }
 
 .hero-tagline {
