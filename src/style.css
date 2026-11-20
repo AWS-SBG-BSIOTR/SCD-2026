@@ -572,11 +572,13 @@ body {
   font-family: var(--font-display);
   font-size: clamp(48px, 13.5vw, 210px);
   line-height: 0.88;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.04em;
   color: var(--color-black);
   display: inline-flex;
   flex-wrap: nowrap;
   white-space: nowrap;
+  font-weight: 200;
+  font-variation-settings: 'wght' 180, 'wdth' 85;
 }
 
 .hero-char {
@@ -584,6 +586,8 @@ body {
   will-change: font-variation-settings, transform;
   transition: font-variation-settings 0.12s ease-out, transform 0.12s ease-out;
   cursor: pointer;
+  font-weight: 200;
+  font-variation-settings: 'wght' 180, 'wdth' 85;
 }
 
 .hero-char:hover {

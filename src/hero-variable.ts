@@ -10,8 +10,8 @@ export class HeroVariableController {
   private mouseY: number = 0;
   private rafId: number | null = null;
 
-  // Manual scrub factor (0 to 1)
-  private manualScrub: number = 0.5;
+  // Manual scrub factor (0 to 1) - default 0 for thin, architectural editorial headline
+  private manualScrub: number = 0;
 
   constructor(heroElement: HTMLElement) {
     this.heroElement = heroElement;
@@ -143,8 +143,8 @@ export class HeroVariableController {
   private applyManualScrub() {
     this.letters.forEach((letter) => {
       if (letter.classList.contains('char-space')) return;
-      const wght = Math.round(550 + this.manualScrub * 350); // 550 to 900 bold weight
-      const wdth = Math.round(90 + this.manualScrub * 30);   // 90 to 120 width
+      const wght = Math.round(180 + this.manualScrub * 720); // 180 (thin) to 900 (ultra-bold)
+      const wdth = Math.round(85 + this.manualScrub * 35);   // 85 (sleek) to 120 (wide)
       letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
       letter.style.transform = 'none';
     });
@@ -168,14 +168,16 @@ export class HeroVariableController {
 
           if (dist < maxDist) {
             const factor = Math.pow(1 - dist / maxDist, 1.4); // Smooth falloff curve
-            const wght = Math.round(500 + factor * 400);
-            const wdth = Math.round(85 + factor * 45);
+            const baseWght = Math.round(180 + this.manualScrub * 720);
+            const wght = Math.round(baseWght + factor * (900 - baseWght));
+            const baseWdth = Math.round(85 + this.manualScrub * 35);
+            const wdth = Math.round(baseWdth + factor * 25);
             letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
             letter.style.transform = 'none';
           } else {
             // Gradual return to rest state based on current hype scrubber
-            const restWght = Math.round(550 + this.manualScrub * 350);
-            const restWdth = Math.round(90 + this.manualScrub * 30);
+            const restWght = Math.round(180 + this.manualScrub * 720);
+            const restWdth = Math.round(85 + this.manualScrub * 35);
             letter.style.fontVariationSettings = `'wght' ${restWght}, 'wdth' ${restWdth}`;
             letter.style.transform = 'none';
           }
