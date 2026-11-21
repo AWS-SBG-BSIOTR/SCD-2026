@@ -200,8 +200,7 @@ export const SCHEDULE_DATA: ScheduleItem[] = [
 export class ScheduleController {
   private container: HTMLElement;
   private activeTrackFilter: string = 'ALL';
-  private bookmarkedIds: Set<string> = new Set();
-  private expandedId: string | null = 'slot-04';
+  private expandedIds: Set<string> = new Set();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -227,24 +226,15 @@ export class ScheduleController {
           </p>
         </div>
 
-        <!-- Venue & Time Overview Pill Bar -->
-        <div class="schedule-overview-banner mono">
-          <div class="overview-item">
-            <span class="label">DATE:</span>
-            <span class="val">27 DECEMBER 2026</span>
-          </div>
-          <div class="overview-item">
-            <span class="label">CONFERENCE HOURS:</span>
-            <span class="val text-vermilion">08:00 AM – 05:30 PM IST</span>
-          </div>
-          <div class="overview-item">
-            <span class="label">VENUE:</span>
-            <span class="val">SEASONS 24, WAGHOLI, PUNE</span>
-          </div>
-          <div class="overview-item">
-            <span class="label">PLATFORM:</span>
-            <span class="val">POWERED BY KONFHUB</span>
-          </div>
+        <!-- Sleek Horizontal Telemetry Strip -->
+        <div class="schedule-telemetry-strip mono">
+          <span class="st-item"><strong class="st-lbl">DATE:</strong> 27 DEC 2026</span>
+          <span class="st-sep">//</span>
+          <span class="st-item"><strong class="st-lbl">CONFERENCE HOURS:</strong> <span class="text-accent">08:00 AM – 05:30 PM IST</span></span>
+          <span class="st-sep">//</span>
+          <span class="st-item"><strong class="st-lbl">VENUE:</strong> SEASONS 24, WAGHOLI, PUNE</span>
+          <span class="st-sep">//</span>
+          <span class="st-item"><strong class="st-lbl">STAGE:</strong> 1 UNIFIED MAIN STAGE</span>
         </div>
 
         <!-- Filter Chips Bar -->
@@ -264,61 +254,71 @@ export class ScheduleController {
           }).join('')}
         </div>
 
-        <!-- Timeline Grid -->
-        <div class="schedule-timeline-grid mono">
-          ${sessions.map((item, idx) => {
-            const isExpanded = this.expandedId === item.id;
-            const isBookmarked = this.bookmarkedIds.has(item.id);
+        <!-- Flight-Board Compact Ledger Table (Option 1) -->
+        <div class="flightboard-container mono">
+          <!-- Flightboard Table Header (Desktop) -->
+          <div class="flightboard-table-header">
+            <div class="fb-col fb-col-idx">#</div>
+            <div class="fb-col fb-col-time">TIMING (IST)</div>
+            <div class="fb-col fb-col-track">TRACK</div>
+            <div class="fb-col fb-col-title">SESSION &amp; ARCHITECTURE</div>
+            <div class="fb-col fb-col-action">SYLLABUS</div>
+          </div>
 
-            return `
-              <article class="timeline-slot-card ${isExpanded ? 'is-expanded' : ''}" data-slot-id="${item.id}">
-                <div class="slot-time-col">
-                  <div class="time-block">
-                    <span class="t-start">${item.timeStart}</span>
-                    <span class="t-connector mono">TO</span>
-                    <span class="t-end">${item.timeEnd}</span>
-                  </div>
-                  <span class="slot-idx">#${String(idx + 1).padStart(2, '0')}</span>
-                </div>
-
-                <div class="slot-content-col">
-                  <div class="slot-meta-badges">
-                    <span class="badge-track track-${item.track.replace(/[^a-zA-Z]/g, '').toLowerCase()}">[${item.track}]</span>
-                    ${item.level ? `<span class="badge-level">[${item.level}]</span>` : ''}
-                    <span class="badge-stage">[LOC: ${item.stage}]</span>
-                  </div>
-
-                  <h3 class="slot-title">${item.title}</h3>
-
-                  ${item.speaker ? `
-                    <div class="slot-speaker-line">
-                      <span class="spk-name">SPEAKER: ${item.speaker}</span>
-                      <span class="spk-sep">//</span>
-                      <span class="spk-role">${item.speakerRole}</span>
+          <!-- Flightboard Rows -->
+          <div class="flightboard-body">
+            ${sessions.map((item, idx) => {
+              const isExpanded = this.expandedIds.has(item.id);
+              return `
+                <article class="flightboard-row ${isExpanded ? 'is-expanded' : ''}" id="${item.id}" data-slot-id="${item.id}">
+                  <div class="fb-row-main">
+                    <div class="fb-col fb-col-idx">#${String(idx + 1).padStart(2, '0')}</div>
+                    
+                    <div class="fb-col fb-col-time">
+                      <span class="fb-time-start">${item.timeStart}</span>
+                      <span class="fb-time-sep">-</span>
+                      <span class="fb-time-end">${item.timeEnd}</span>
                     </div>
-                  ` : ''}
 
-                  <!-- Collapsible Extended Details -->
-                  <div class="slot-expanded-drawer ${isExpanded ? 'is-open' : ''}">
-                    <p class="slot-abstract">${item.abstract}</p>
-                    <div class="slot-highlights">
+                    <div class="fb-col fb-col-track">
+                      <span class="badge-track track-${item.track.replace(/[^a-zA-Z]/g, '').toLowerCase()}">[${item.track}]</span>
+                      ${item.level ? `<span class="badge-level-tag">[${item.level.split(' - ')[0]}]</span>` : ''}
+                    </div>
+
+                    <div class="fb-col fb-col-title">
+                      <div class="fb-session-heading">${item.title}</div>
+                      ${item.speaker ? `
+                        <div class="fb-session-speaker">
+                          <span class="fb-spk-sep">//</span>
+                          <span class="fb-spk-name">SPEAKER: ${item.speaker}</span>
+                          <span class="fb-spk-role">(${item.speakerRole})</span>
+                        </div>
+                      ` : ''}
+                    </div>
+
+                    <div class="fb-col fb-col-action">
+                      <button 
+                        type="button" 
+                        class="btn-fb-abstract-toggle mono" 
+                        data-id="${item.id}" 
+                        aria-expanded="${isExpanded}">
+                        ${isExpanded ? '[-] HIDE' : '[+] ABSTRACT'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Collapsible Abstract Drawer -->
+                  <div class="flightboard-drawer ${isExpanded ? 'is-open' : ''}" id="drawer-${item.id}">
+                    <p class="drawer-abstract">${item.abstract}</p>
+                    <div class="drawer-highlights">
                       <span class="hl-tag">KEY TOPICS:</span>
                       ${item.highlights.map(h => `<span class="hl-item">* ${h}</span>`).join(' ')}
                     </div>
                   </div>
-
-                  <div class="slot-actions-bar">
-                    <button class="btn-toggle-slot-detail" data-slot-id="${item.id}">
-                      ${isExpanded ? '[-] HIDE ABSTRACT' : '[+] VIEW ABSTRACT & TOPICS'}
-                    </button>
-                    <button class="btn-bookmark-slot ${isBookmarked ? 'is-active' : ''}" data-slot-id="${item.id}">
-                      ${isBookmarked ? '[SAVED TO BOOKMARKS]' : '[+ BOOKMARK SESSION]'}
-                    </button>
-                  </div>
-                </div>
-              </article>
-            `;
-          }).join('')}
+                </article>
+              `;
+            }).join('')}
+          </div>
         </div>
       </div>
     `;
@@ -340,35 +340,32 @@ export class ScheduleController {
       });
     });
 
-    // Detail toggles
-    const detailBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-toggle-slot-detail');
-    detailBtns.forEach(btn => {
+    // Abstract toggle buttons
+    const toggleBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-fb-abstract-toggle');
+    toggleBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const slotId = btn.getAttribute('data-slot-id');
-        if (slotId) {
-          this.expandedId = this.expandedId === slotId ? null : slotId;
-          sound.playClick(750, 0.03);
-          this.render();
-        }
-      });
-    });
+        const id = btn.getAttribute('data-id');
+        if (!id) return;
+        const row = document.getElementById(id);
+        if (!row) return;
+        const drawer = row.querySelector('.flightboard-drawer');
+        const isOpen = this.expandedIds.has(id);
 
-    // Bookmark toggles
-    const bookmarkBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-bookmark-slot');
-    bookmarkBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const slotId = btn.getAttribute('data-slot-id');
-        if (slotId) {
-          if (this.bookmarkedIds.has(slotId)) {
-            this.bookmarkedIds.delete(slotId);
-            sound.playClick(400, 0.03);
-          } else {
-            this.bookmarkedIds.add(slotId);
-            sound.playClick(850, 0.04);
-          }
-          this.render();
+        if (isOpen) {
+          this.expandedIds.delete(id);
+          row.classList.remove('is-expanded');
+          if (drawer) drawer.classList.remove('is-open');
+          btn.textContent = '[+] ABSTRACT';
+          btn.setAttribute('aria-expanded', 'false');
+          sound.playClick(450, 0.03);
+        } else {
+          this.expandedIds.add(id);
+          row.classList.add('is-expanded');
+          if (drawer) drawer.classList.add('is-open');
+          btn.textContent = '[-] HIDE';
+          btn.setAttribute('aria-expanded', 'true');
+          sound.playClick(750, 0.04);
         }
       });
     });

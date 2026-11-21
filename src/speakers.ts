@@ -14,6 +14,7 @@ export interface SpeakerSession {
   location: string;
   description: string;
   tags: string[];
+  slotId: string;
 }
 
 export const SESSIONS_DATA: SpeakerSession[] = [
@@ -30,7 +31,8 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     track: 'Architecture',
     location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'A comprehensive opening roadmap into modern cloud computing architectures, cloud economics, and how student developers can build global resilience from Pune.',
-    tags: ['Cloud Architecture', 'AWS Well-Architected', 'Student Builders']
+    tags: ['Cloud Architecture', 'AWS Well-Architected', 'Student Builders'],
+    slotId: 'slot-04'
   },
   {
     id: 'spk-02',
@@ -41,11 +43,12 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     role: 'Senior Serverless Specialist',
     affiliation: 'Serverless Labs // Pune UG',
     topic: 'Event-Driven Microservices: Zero to 10M Requests with AWS Lambda & EventBridge',
-    time: '10:45 - 11:30 AM IST',
+    time: '12:30 - 01:15 PM IST',
     track: 'Serverless',
     location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Deep dive into event-driven design patterns, cold start mitigations, asynchronous decoupling with Amazon EventBridge, and cost-effective scaling.',
-    tags: ['AWS Lambda', 'EventBridge', 'DynamoDB', 'Microservices']
+    tags: ['AWS Lambda', 'EventBridge', 'DynamoDB', 'Microservices'],
+    slotId: 'slot-08'
   },
   {
     id: 'spk-03',
@@ -55,12 +58,13 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     badge: 'AI SPECIALIST',
     role: 'Head of Applied AI & LLM Systems',
     affiliation: 'Cognitive Cloud Systems',
-    topic: 'Serverless at Scale: Multi-Region Event Architecture',
-    time: '12:30 - 01:15 PM IST',
-    track: 'Serverless',
+    topic: 'Beyond Chatbots: Engineering Production AI Agents & LLM RAG',
+    time: '10:45 - 11:30 AM IST',
+    track: 'GenAI',
     location: 'MAIN AUDITORIUM (HALL 1)',
-    description: 'End-to-end hands-on demonstration constructing multi-region serverless applications using AWS Lambda, EventBridge, and Amazon Bedrock foundation models.',
-    tags: ['Serverless', 'EventBridge', 'Multi-Region', 'Bedrock']
+    description: 'End-to-end hands-on demonstration constructing multi-agent architectures, enterprise RAG, and foundation model tooling with Amazon Bedrock.',
+    tags: ['Amazon Bedrock', 'Generative AI', 'AI Agents', 'RAG'],
+    slotId: 'slot-05'
   },
   {
     id: 'spk-04',
@@ -75,7 +79,8 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     track: 'DevOps',
     location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Demystifying production Kubernetes workflows on Amazon EKS, progressive rollouts with ArgoCD, Karpenter node autoscaling, and container security scanners.',
-    tags: ['Amazon EKS', 'Kubernetes', 'Karpenter', 'GitOps']
+    tags: ['Amazon EKS', 'Kubernetes', 'Karpenter', 'GitOps'],
+    slotId: 'slot-10'
   },
   {
     id: 'spk-05',
@@ -90,7 +95,8 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     track: 'Security',
     location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Real-world defensive blueprints implementing Zero Trust architectures, IAM policy boundaries, runtime anomaly detection with GuardDuty, and automated remediation via Step Functions.',
-    tags: ['Zero Trust', 'IAM', 'GuardDuty', 'Security']
+    tags: ['Zero Trust', 'IAM', 'GuardDuty', 'Security'],
+    slotId: 'slot-11'
   },
   {
     id: 'spk-06',
@@ -105,14 +111,14 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     track: 'Community',
     location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'The end-to-end playbook for production reliability: continuous delivery pipelines, real-time observability with OpenTelemetry and Amazon CloudWatch, and resilience engineering.',
-    tags: ['CI/CD', 'OpenTelemetry', 'CloudWatch', 'SRE']
+    tags: ['CI/CD', 'OpenTelemetry', 'CloudWatch', 'SRE'],
+    slotId: 'slot-13'
   }
 ];
 
 export class SpeakersController {
   private container: HTMLElement;
   private currentTrackFilter: string = 'ALL';
-  private expandedSessionIds: Set<string> = new Set();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -140,19 +146,6 @@ export class SpeakersController {
           </p>
         </div>
 
-        <!-- Lineup Status Banner -->
-        <div class="speakers-status-banner mono">
-          <div class="csb-left">
-            <span class="status-pulse-dot"></span>
-            <span class="csb-title">LINEUP STATUS: KEYNOTES & TECHNICAL SPEAKERS CONFIRMED</span>
-            <span class="csb-sep">//</span>
-            <span class="csb-count">6 SESSIONS LOCKED</span>
-          </div>
-          <div class="csb-right">
-            <span class="csb-status-pill">[1 UNIFIED MAIN STAGE · SEASONS 24]</span>
-          </div>
-        </div>
-
         <!-- Track Filter Bar -->
         <div class="tracks-filter-bar mono" role="tablist">
           <span class="filter-label">FILTER TRACK:</span>
@@ -167,60 +160,41 @@ export class SpeakersController {
 
         <!-- Speaker Cards Grid (Pixel-faithful to Idea 3 Mockup) -->
         <div class="speakers-grid">
-          ${sessions.map(s => {
-            const isExpanded = this.expandedSessionIds.has(s.id);
-            return `
-              <div class="speaker-card ${isExpanded ? 'is-expanded' : ''}" id="card-${s.id}">
-                <!-- Framed Photo Box with Black Border & Corner Pill -->
-                <div class="speaker-photo-frame">
-                  <img src="${s.photoUrl}" alt="${s.name}" class="speaker-photo-img" loading="lazy" />
-                  <span class="speaker-track-tag mono">[${s.track.toUpperCase()}]</span>
+          ${sessions.map(s => `
+            <div class="speaker-card" id="card-${s.id}">
+              <!-- Framed Photo Box with Black Border & Corner Pill -->
+              <div class="speaker-photo-frame">
+                <img src="${s.photoUrl}" alt="${s.name}" class="speaker-photo-img" loading="lazy" />
+                <span class="speaker-track-tag mono">[${s.track.toUpperCase()}]</span>
+              </div>
+
+              <!-- Speaker Content -->
+              <div class="speaker-content">
+                <!-- Name & Rounded LinkedIn Pill Row -->
+                <div class="speaker-header-row">
+                  <h3 class="speaker-name">${s.name}</h3>
+                  <a href="${s.linkedinUrl}" class="speaker-linkedin-pill mono" target="_blank" rel="noopener noreferrer">
+                    [IN] LINKEDIN
+                  </a>
                 </div>
 
-                <!-- Speaker Content -->
-                <div class="speaker-content">
-                  <!-- Name & Rounded LinkedIn Pill Row -->
-                  <div class="speaker-header-row">
-                    <h3 class="speaker-name">${s.name}</h3>
-                    <a href="${s.linkedinUrl}" class="speaker-linkedin-pill mono" target="_blank" rel="noopener noreferrer">
-                      [IN] LINKEDIN
-                    </a>
-                  </div>
+                <!-- Role & Affiliation -->
+                <div class="speaker-role-line mono">
+                  ${s.role} // ${s.affiliation}
+                </div>
 
-                  <!-- Role & Affiliation -->
-                  <div class="speaker-role-line mono">
-                    ${s.role} // ${s.affiliation}
-                  </div>
+                <!-- Topic -->
+                <h4 class="speaker-topic">${s.topic}</h4>
 
-                  <!-- Topic -->
-                  <h4 class="speaker-topic">${s.topic}</h4>
-
-                  <!-- Expandable Abstract Drawer -->
-                  ${isExpanded ? `
-                    <div class="speaker-abstract-drawer mono">
-                      <p class="abstract-text">${s.description}</p>
-                      <div class="abstract-tags">
-                        ${s.tags.map(t => `<span class="abstract-tag-chip">#${t}</span>`).join('')}
-                      </div>
-                    </div>
-                  ` : ''}
-
-                  <!-- Bottom Row: Location & Details Button -->
-                  <div class="speaker-bottom-row mono">
-                    <div class="speaker-loc">[LOC] ${s.location}</div>
-                    <button class="btn-speaker-details btn-toggle-abstract" data-id="${s.id}">
-                      ${isExpanded ? '[-] CLOSE' : '[+] DETAILS'}
-                    </button>
-                  </div>
+                <!-- Bottom Row: Direct Link to Scheduled Session Time in Schedule -->
+                <div class="speaker-bottom-row mono">
+                  <a href="#${s.slotId}" class="btn-speaker-schedule mono" data-slot="${s.slotId}">
+                    [SCHEDULE: ${s.time.replace(' IST', '')} ->]
+                  </a>
                 </div>
               </div>
-            `;
-          }).join('')}
-        </div>
-
-        <div class="speakers-footer-status mono">
-          <span>LINEUP PROTOCOL: KEYNOTES & TECHNICAL SESSIONS // 1 UNIFIED MAIN STAGE // 27 DECEMBER 2026</span>
-          <a href="#passes" class="scd-claim-ticket-link">CLAIM YOUR KONFHUB PASS -></a>
+            </div>
+          `).join('')}
         </div>
       </div>
     `;
@@ -242,19 +216,34 @@ export class SpeakersController {
       });
     });
 
-    // Expand / collapse abstract
-    const toggleBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-toggle-abstract');
-    toggleBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        if (!id) return;
-        if (this.expandedSessionIds.has(id)) {
-          this.expandedSessionIds.delete(id);
-        } else {
-          this.expandedSessionIds.add(id);
+    // Jump to schedule slot
+    const scheduleLinks = this.container.querySelectorAll<HTMLAnchorElement>('.btn-speaker-schedule');
+    scheduleLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const slotId = link.getAttribute('data-slot');
+        if (slotId) {
+          const targetSlot = document.getElementById(slotId);
+          if (targetSlot) {
+            e.preventDefault();
+            sound.playClick(720, 0.04);
+            targetSlot.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Auto-expand drawer
+            targetSlot.classList.add('is-expanded');
+            const drawer = targetSlot.querySelector('.flightboard-drawer');
+            if (drawer) drawer.classList.add('is-open');
+            const toggleBtn = targetSlot.querySelector('.btn-fb-abstract-toggle');
+            if (toggleBtn) {
+              toggleBtn.textContent = '[-] HIDE';
+              toggleBtn.setAttribute('aria-expanded', 'true');
+            }
+
+            targetSlot.classList.remove('is-target-highlight');
+            // Force reflow to re-trigger CSS keyframe pulse animation
+            void targetSlot.offsetWidth;
+            targetSlot.classList.add('is-target-highlight');
+          }
         }
-        sound.playClick(750, 0.03);
-        this.render();
       });
     });
   }

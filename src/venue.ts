@@ -76,7 +76,7 @@ export class VenueController {
                 <span class="tr-badge">[PARK]</span>
                 <div class="tr-body">
                   <strong>On-Site Parking & Security:</strong>
-                  <p>Complimentary guarded parking for 200+ two-wheelers and 50+ four-wheelers. EV charging points available nearby.</p>
+                  <p>Dedicated on-site parking available for both two-wheelers and four-wheelers.</p>
                 </div>
               </div>
             </div>

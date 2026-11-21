@@ -84,7 +84,7 @@ export class FontTesterController {
       this.lineHeight = 1.6;
       this.letterSpacing = 4;
       this.alignment = 'left';
-      this.text = 'AWS SCD 2026 // PUNE EDITION // 300+ BUILDERS // 127.0.0.1 -> GLOBAL SCALE & AI // ALL RIGHTS RESERVED';
+      this.text = 'AWS STUDENT COMMUNITY DAY BSIOTR 2026 // AWS SBG BSIOTR // 300+ BUILDERS // 127.0.0.1 -> GLOBAL SCALE & AI // ALL RIGHTS RESERVED';
       if (this.axisValues['wght'] !== undefined) this.axisValues['wght'] = family.axes.find(a => a.tag === 'wght')?.min || 200;
       if (this.axisValues['wdth'] !== undefined) this.axisValues['wdth'] = 90;
       if (this.axisValues['opsz'] !== undefined) this.axisValues['opsz'] = 14;

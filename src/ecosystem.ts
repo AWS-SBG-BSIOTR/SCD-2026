@@ -154,17 +154,9 @@ export class EcosystemController {
 
           <!-- Academic and Club Partners Banner -->
           <div class="academic-partners-strip">
-            <span class="strip-label">UNIVERSITY COMMUNITY PARTNERS:</span>
+            <span class="strip-label">UNIVERSITY COMMUNITY PARTNER:</span>
             <div class="strip-names">
-              <span>COEP TECH UNIVERSITY</span>
-              <span class="sep">/</span>
-              <span>PICT CLOUD CLUB</span>
-              <span class="sep">/</span>
-              <span>VIT PUNE BUILDERS</span>
-              <span class="sep">/</span>
-              <span>MIT-WPU AWS CHAPTER</span>
-              <span class="sep">/</span>
-              <span>AWS USER GROUP PUNE</span>
+              <span>JSPM BSIOTR</span>
             </div>
           </div>
         </div>
@@ -216,7 +208,7 @@ export class EcosystemController {
           </div>
 
           <div class="faq-terminal-footer">
-            <span>NEED FURTHER CLARIFICATION? CONTACT ORGANIZERS: <strong>team@awsugpune.in</strong></span>
+            <span>NEED FURTHER CLARIFICATION? CONTACT ORGANIZERS: <a href="mailto:awssbgbsiotr@gmail.com" class="text-accent"><strong>awssbgbsiotr@gmail.com</strong></a></span>
             <a href="https://konfhub.com/aws-scd-pune-2026" target="_blank" rel="noopener noreferrer" class="btn-brutalist btn-accent scd-jump-pass-btn">
               GET PASS ON KONFHUB [EXT ->]
             </a>

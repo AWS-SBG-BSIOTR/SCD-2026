@@ -60,16 +60,12 @@ export class PassTiersController {
           </p>
         </div>
 
-        <!-- Registration Partner Banner -->
+        <!-- Compact Registration Partner Strip -->
         <div class="konfhub-banner mono">
-          <div class="partner-badge">[PARTNER] OFFICIAL REGISTRATION PLATFORM</div>
-          <div class="partner-info">
-            <span>KONFHUB SECURE TICKETING ENGINE</span>
-            <span class="sep">/</span>
-            <span>INSTANT QR ADMISSION CONFIRMATION</span>
-            <span class="sep">/</span>
-            <span>VENUE: SEASONS 24, WAGHOLI, PUNE</span>
-          </div>
+          <span class="partner-badge">[PARTNER]</span>
+          <span class="partner-txt">OFFICIAL KONFHUB TICKETING ENGINE</span>
+          <span class="partner-sep">//</span>
+          <span class="partner-txt">INSTANT QR PASS CONFIRMATION</span>
         </div>
 
         <!-- The Physical Perforated Ticket Stub Card -->
@@ -81,7 +77,6 @@ export class PassTiersController {
 
               <div class="ticket-top-meta">
                 <span class="ticket-badge-pill">[${pass.badge}]</span>
-                <span class="ticket-edition-tag">${pass.edition}</span>
               </div>
 
               <div class="ticket-title-row">
@@ -207,7 +202,7 @@ export class PassTiersController {
                 type="button" 
                 class="btn-brutalist btn-accent w-full text-center stub-cta-btn"
                 id="btn-stub-konfhub-link">
-                TEAR & CLAIM PASS ->
+                TEAR & REGISTER ->
               </button>
             </div>
 

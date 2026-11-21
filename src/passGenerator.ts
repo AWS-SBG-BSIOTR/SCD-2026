@@ -15,7 +15,7 @@ export class PassGeneratorController {
   private config: PassConfig = {
     name: '',
     college: '',
-    role: 'STUDENT CLOUD DEVELOPER',
+    role: 'STUDENT ATTENDEE',
     track: 'GENAI & BEDROCK',
     tier: 'STUDENT BUILDER',
     passNumber: 'SCD26-PUNE-4892'
@@ -70,48 +70,18 @@ export class PassGeneratorController {
                   id="inp-attendee-college" 
                   class="brutalist-input" 
                   value="${this.config.college}" 
-                  placeholder="COEP TECH UNIVERSITY, PUNE"
+                  placeholder="JSPM BSIOTR, WAGHOLI, PUNE"
                   maxlength="40" 
                   required>
               </div>
 
-              <div class="form-row-2">
-                <div class="form-field">
-                  <label for="sel-attendee-role">BUILDER ROLE:</label>
-                  <select id="sel-attendee-role" class="brutalist-select w-full">
-                    <option value="STUDENT CLOUD DEVELOPER" ${this.config.role === 'STUDENT CLOUD DEVELOPER' ? 'selected' : ''}>Student Developer</option>
-                    <option value="AI / ML RESEARCHER" ${this.config.role === 'AI / ML RESEARCHER' ? 'selected' : ''}>AI / ML Researcher</option>
-                    <option value="DEVOPS & SRE INTERN" ${this.config.role === 'DEVOPS & SRE INTERN' ? 'selected' : ''}>DevOps & SRE Intern</option>
-                    <option value="CLOUD ARCHITECT APPRENTICE" ${this.config.role === 'CLOUD ARCHITECT APPRENTICE' ? 'selected' : ''}>Architect Apprentice</option>
-                    <option value="OPEN SOURCE CONTRIBUTOR" ${this.config.role === 'OPEN SOURCE CONTRIBUTOR' ? 'selected' : ''}>Open Source Contributor</option>
-                  </select>
-                </div>
-
-                <div class="form-field">
-                  <label for="sel-attendee-track">PRIMARY TRACK:</label>
-                  <select id="sel-attendee-track" class="brutalist-select w-full">
-                    <option value="GENAI & BEDROCK" ${this.config.track === 'GENAI & BEDROCK' ? 'selected' : ''}>GenAI & Bedrock</option>
-                    <option value="SERVERLESS & LAMBDA" ${this.config.track === 'SERVERLESS & LAMBDA' ? 'selected' : ''}>Serverless & Lambda</option>
-                    <option value="CLOUD ARCHITECTURE" ${this.config.track === 'CLOUD ARCHITECTURE' ? 'selected' : ''}>Cloud Architecture</option>
-                    <option value="DEVOPS & CONTAINERS" ${this.config.track === 'DEVOPS & CONTAINERS' ? 'selected' : ''}>DevOps & Containers</option>
-                    <option value="SECURITY & ZERO TRUST" ${this.config.track === 'SECURITY & ZERO TRUST' ? 'selected' : ''}>Security & Zero Trust</option>
-                  </select>
-                </div>
-              </div>
-
               <div class="form-field">
-                <label>CREDENTIAL TIER:</label>
-                <div class="tier-select-row">
-                  <button type="button" class="btn-tier-opt ${this.config.tier === 'STUDENT BUILDER' ? 'is-active' : ''}" data-tier="STUDENT BUILDER">
-                    STUDENT BUILDER
-                  </button>
-                  <button type="button" class="btn-tier-opt ${this.config.tier === 'COMMUNITY' ? 'is-active' : ''}" data-tier="COMMUNITY">
-                    COMMUNITY
-                  </button>
-                  <button type="button" class="btn-tier-opt ${this.config.tier === 'SPEAKER' ? 'is-active' : ''}" data-tier="SPEAKER">
-                    SPEAKER
-                  </button>
-                </div>
+                <label for="sel-attendee-role">BUILDER ROLE:</label>
+                <select id="sel-attendee-role" class="brutalist-select w-full">
+                  <option value="STUDENT ATTENDEE" ${this.config.role === 'STUDENT ATTENDEE' ? 'selected' : ''}>STUDENT ATTENDEE</option>
+                  <option value="KEYNOTE SPEAKER" ${this.config.role === 'KEYNOTE SPEAKER' ? 'selected' : ''}>KEYNOTE SPEAKER</option>
+                  <option value="IT PROFESSIONAL" ${this.config.role === 'IT PROFESSIONAL' ? 'selected' : ''}>IT PROFESSIONAL</option>
+                </select>
               </div>
 
               <div class="form-actions-strip">
@@ -147,11 +117,10 @@ export class PassGeneratorController {
                 <!-- Header -->
                 <div class="pass-card-header">
                   <div class="header-brand">
-                    <span class="p-brand">AWS SCD 2026</span>
-                    <span class="p-edition">[PUNE EDITION]</span>
+                    <span class="p-brand">AWS SCD BSIOTR 2026</span>
                   </div>
                   <div class="header-tier-tag">
-                    <span id="pass-tier-display" class="pass-tier-badge">${this.config.tier}</span>
+                    <span id="pass-tier-display" class="pass-tier-badge">${this.config.role}</span>
                   </div>
                 </div>
 
@@ -173,23 +142,23 @@ export class PassGeneratorController {
                     <strong class="val" id="pass-role-display">${this.config.role}</strong>
                   </div>
                   <div class="meta-cell">
-                    <span class="lbl">FOCUS TRACK:</span>
-                    <strong class="val text-vermilion" id="pass-track-display">${this.config.track}</strong>
+                    <span class="lbl">ADMISSION STATUS:</span>
+                    <strong class="val text-vermilion">[VERIFIED] ALL-ACCESS</strong>
                   </div>
                   <div class="meta-cell">
-                    <span class="lbl">VENUE / LOCATION:</span>
-                    <strong class="val">[LOC] SEASONS 24, WAGHOLI</strong>
+                    <span class="lbl">VENUE:</span>
+                    <strong class="val">SEASONS 24, WAGHOLI, PUNE</strong>
                   </div>
                   <div class="meta-cell">
-                    <span class="lbl">DATES & HOURS:</span>
+                    <span class="lbl">EVENT HOURS:</span>
                     <strong class="val">27 DEC · 08:00–17:30 IST</strong>
                   </div>
                 </div>
 
-                <!-- Checkpoint Conduit Bar -->
+                <!-- Event Details Strip -->
                 <div class="pass-route-strip">
-                  <span class="route-lbl">ROUTE:</span>
-                  <span class="route-path">127.0.0.1 -> VPC -> SERVERLESS -> SECURITY -> GLOBAL AI</span>
+                  <span class="route-lbl">EVENT:</span>
+                  <span class="route-path">SEASONS 24, WAGHOLI, PUNE // 27 DEC 2026</span>
                 </div>
 
                 <!-- Footer with Barcode and Hash -->
@@ -222,15 +191,13 @@ export class PassGeneratorController {
     const nameDisp = this.container.querySelector('#pass-name-display');
     const collegeDisp = this.container.querySelector('#pass-college-display');
     const roleDisp = this.container.querySelector('#pass-role-display');
-    const trackDisp = this.container.querySelector('#pass-track-display');
     const tierDisp = this.container.querySelector('#pass-tier-display');
     const numDisp = this.container.querySelector('#pass-number-display');
 
     if (nameDisp) nameDisp.textContent = this.config.name || 'YOUR FULL NAME';
     if (collegeDisp) collegeDisp.textContent = this.config.college || 'YOUR INSTITUTION / UNIVERSITY';
     if (roleDisp) roleDisp.textContent = this.config.role;
-    if (trackDisp) trackDisp.textContent = this.config.track;
-    if (tierDisp) tierDisp.textContent = this.config.tier;
+    if (tierDisp) tierDisp.textContent = this.config.role;
     if (numDisp) numDisp.textContent = this.config.passNumber;
   }
 
@@ -264,31 +231,6 @@ export class PassGeneratorController {
         this.updatePassDisplay();
       });
     }
-
-    // Track select
-    const trackSel = this.container.querySelector<HTMLSelectElement>('#sel-attendee-track');
-    if (trackSel) {
-      trackSel.addEventListener('change', () => {
-        this.config.track = trackSel.value;
-        sound.playClick(700, 0.03);
-        this.updatePassDisplay();
-      });
-    }
-
-    // Tier buttons
-    const tierBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-tier-opt');
-    tierBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tier = btn.getAttribute('data-tier') as PassConfig['tier'];
-        if (tier) {
-          this.config.tier = tier;
-          tierBtns.forEach(b => b.classList.remove('is-active'));
-          btn.classList.add('is-active');
-          sound.playClick(800, 0.03);
-          this.updatePassDisplay();
-        }
-      });
-    });
 
     // Download Badge PNG button
     const dlBtn = this.container.querySelector<HTMLButtonElement>('#btn-download-pass-png');
@@ -407,11 +349,11 @@ export class PassGeneratorController {
     // Header brand
     ctx.fillStyle = '#010101';
     ctx.font = 'bold 28px monospace';
-    ctx.fillText('AWS SCD 2026 [PUNE EDITION]', 50, 85);
+    ctx.fillText('AWS SCD BSIOTR 2026', 50, 85);
 
     ctx.fillStyle = '#FD0B03';
     ctx.font = 'bold 20px monospace';
-    ctx.fillText(`[${this.config.tier}]`, 50, 120);
+    ctx.fillText(`[${this.config.role}]`, 50, 120);
 
     // Divider
     ctx.strokeStyle = '#010101';
@@ -448,10 +390,10 @@ export class PassGeneratorController {
 
     ctx.fillStyle = '#5A554A';
     ctx.font = '15px monospace';
-    ctx.fillText('FOCUS TRACK:', 75, 460);
+    ctx.fillText('ADMISSION STATUS:', 75, 460);
     ctx.fillStyle = '#FD0B03';
     ctx.font = 'bold 19px monospace';
-    ctx.fillText(this.config.track, 75, 490);
+    ctx.fillText('[VERIFIED] ALL-ACCESS', 75, 490);
 
     ctx.fillStyle = '#5A554A';
     ctx.font = '15px monospace';
@@ -467,12 +409,12 @@ export class PassGeneratorController {
     ctx.font = 'bold 17px monospace';
     ctx.fillText('27 DEC 2026 // 08:00–17:30 IST', 420, 490);
 
-    // Checkpoint route strip
+    // Event details strip
     ctx.fillStyle = '#010101';
     ctx.fillRect(50, 595, 700, 45);
     ctx.fillStyle = '#DCD4C2';
     ctx.font = 'bold 15px monospace';
-    ctx.fillText('[00:LOCAL] -> [01:VPC] -> [02:LAMBDA] -> [03:IAM] -> [04:AI NEXUS]', 75, 624);
+    ctx.fillText('EVENT: SEASONS 24, WAGHOLI, PUNE // 27 DEC 2026', 75, 624);
 
     // Barcode block
     ctx.fillStyle = '#010101';

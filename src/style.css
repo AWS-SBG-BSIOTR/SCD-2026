@@ -289,8 +289,25 @@ footer {
 }
 
 .brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
   color: var(--color-black);
+}
+
+.header-sbg-logo {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+  transition: transform var(--transition-snappy);
+}
+
+.brand-link:hover .header-sbg-logo {
+  transform: rotate(90deg) scale(1.1);
 }
 
 .brand-mark {
@@ -398,7 +415,8 @@ footer {
   inset: 0;
   z-index: 200;
   visibility: hidden;
-  overflow: hidden; /* Prevent off-screen translated drawer panel from expanding mobile scroll canvas */
+  overflow: hidden;
+  /* Prevent off-screen translated drawer panel from expanding mobile scroll canvas */
   pointer-events: none;
   transition: visibility 0.3s ease;
 }
@@ -1060,8 +1078,17 @@ footer {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.85);
+  }
 }
 
 .countdown-location {
@@ -1789,6 +1816,57 @@ footer {
   font-family: var(--font-mono);
 }
 
+.btn-speaker-schedule {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: var(--color-vermilion);
+  color: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  padding: 8px 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+  width: 100%;
+}
+
+.btn-speaker-schedule:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+@keyframes slotTargetPulse {
+  0% {
+    outline: 4px solid var(--color-vermilion);
+    background-color: #FFF2F0;
+    transform: scale(1.01);
+  }
+
+  50% {
+    outline: 4px solid var(--color-vermilion);
+    background-color: #FFE6E2;
+    transform: scale(1.015);
+  }
+
+  100% {
+    outline: 2px solid var(--color-black);
+    background-color: var(--color-card-bg, #FFFFFF);
+    transform: scale(1);
+  }
+}
+
+.timeline-slot-card.is-target-highlight {
+  animation: slotTargetPulse 2.4s ease-out forwards;
+  scroll-margin-top: 100px;
+}
+
 .btn-speaker-details {
   background-color: #FFFFFF;
   border: 2px solid #000000;
@@ -2045,7 +2123,8 @@ footer {
   box-shadow: 10px 10px 0px var(--color-black);
   position: relative;
   overflow: hidden;
-  transform-origin: 50% 0%; /* Pinned to top center lanyard clip */
+  transform-origin: 50% 0%;
+  /* Pinned to top center lanyard clip */
   transition: transform 0.08s cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 0.08s ease-out;
   cursor: grab;
   will-change: transform, box-shadow;
@@ -2065,22 +2144,27 @@ footer {
     transform: perspective(900px) rotateZ(5.5deg) rotateY(4deg);
     box-shadow: 6px 10px 0px var(--color-black);
   }
+
   22% {
     transform: perspective(900px) rotateZ(-4.2deg) rotateY(-3deg);
     box-shadow: 13px 10px 0px var(--color-black);
   }
+
   44% {
     transform: perspective(900px) rotateZ(2.8deg) rotateY(2deg);
     box-shadow: 8px 10px 0px var(--color-black);
   }
+
   66% {
     transform: perspective(900px) rotateZ(-1.4deg) rotateY(-1deg);
     box-shadow: 11px 10px 0px var(--color-black);
   }
+
   85% {
     transform: perspective(900px) rotateZ(0.6deg) rotateY(0.4deg);
     box-shadow: 9.5px 10px 0px var(--color-black);
   }
+
   100% {
     transform: perspective(900px) rotateZ(0deg) rotateY(0deg);
     box-shadow: 10px 10px 0px var(--color-black);
@@ -2109,16 +2193,10 @@ footer {
 
 .p-brand {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.42rem;
   font-weight: 900;
-  margin-right: 8px;
-  font-variation-settings: 'wght' 900, 'wdth' 110;
-}
-
-.p-edition {
-  font-size: 0.72rem;
-  color: var(--color-vermilion);
-  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variation-settings: 'wght' 900, 'wdth' 115;
 }
 
 .pass-tier-badge {
@@ -4142,6 +4220,55 @@ footer {
   border-bottom: 1px solid rgba(220, 212, 194, 0.2);
 }
 
+.footer-brand-lockup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.footer-logos-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-sbg-logo {
+  width: 38px;
+  height: 38px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.45));
+}
+
+.footer-jspm-logo {
+  height: 38px;
+  width: auto;
+  max-width: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: #ffffff;
+  padding: 3px 5px;
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.footer-brand-text .col-title {
+  margin-bottom: 6px;
+}
+
+.footer-org-badge {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--color-vermilion);
+  background: rgba(230, 57, 39, 0.12);
+  border: 1px solid var(--color-vermilion);
+  padding: 2px 8px;
+}
+
 .col-brand .col-title {
   font-family: var(--font-display);
   font-size: 1.8rem;
@@ -4151,7 +4278,8 @@ footer {
   font-variation-settings: 'wght' 900, 'wdth' 115;
 }
 
-.col-brand p {
+.col-brand p,
+.footer-brand-desc {
   font-size: 0.8rem;
   line-height: 1.6;
   opacity: 0.85;
@@ -4288,30 +4416,31 @@ footer {
   margin: 0 auto;
 }
 
-.schedule-overview-banner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 18px 24px;
-  background-color: #ede7d8;
-  border: 2px solid var(--color-black);
-  margin-bottom: 32px;
-  font-size: 0.85rem;
-}
-
-.schedule-overview-banner .overview-item {
+/* Sleek Horizontal Telemetry Bar (Replaces bulky parameter box) */
+.schedule-telemetry-strip {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  background-color: #EDE7D8;
+  border: 2px solid var(--color-black);
+  box-shadow: 4px 4px 0px var(--color-black);
+  padding: 12px 18px;
+  font-size: 0.78rem;
+  margin-bottom: 24px;
 }
 
-.schedule-overview-banner .label {
-  font-size: 0.72rem;
+.schedule-telemetry-strip .st-lbl {
   color: var(--color-grey);
+  margin-right: 4px;
 }
 
-.schedule-overview-banner .val {
-  font-weight: 700;
+.schedule-telemetry-strip .st-sep {
+  color: rgba(1, 1, 1, 0.3);
+}
+
+.schedule-overview-banner {
+  display: none;
 }
 
 .schedule-filter-bar {
@@ -4319,8 +4448,8 @@ footer {
   align-items: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
+  margin-bottom: 30px;
+  padding-bottom: 18px;
   border-bottom: 1px solid rgba(1, 1, 1, 0.15);
 }
 
@@ -4352,199 +4481,211 @@ footer {
   border-color: var(--color-black);
 }
 
-.schedule-timeline-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.timeline-slot-card {
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  gap: 28px;
-  padding: 24px;
-  background-color: var(--color-cream);
+/* ==========================================================================
+   OPTION 1: FLIGHT-BOARD COMPACT LEDGER TABLE (YAMAUCHI NO.10 BRUTALIST)
+   ========================================================================== */
+.flightboard-container {
+  background-color: #FFFFFF;
   border: 2px solid var(--color-black);
-  transition: all 0.2s ease;
+  box-shadow: 6px 6px 0px var(--color-black);
+  margin-bottom: 30px;
+  overflow: hidden;
 }
 
-.timeline-slot-card:hover {
-  border-color: var(--color-vermilion);
-  box-shadow: 4px 4px 0 var(--color-black);
-  transform: translateY(-2px);
+/* Flightboard Table Header */
+.flightboard-table-header {
+  display: grid;
+  grid-template-columns: 46px 160px 140px 1fr 120px;
+  align-items: center;
+  gap: 16px;
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  padding: 12px 18px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid var(--color-black);
 }
 
-.timeline-slot-card.is-expanded {
-  background-color: #ede7d8;
-  border-color: var(--color-black);
+/* Flightboard Rows */
+.flightboard-row {
+  border-bottom: 1px solid rgba(1, 1, 1, 0.15);
+  transition: background-color 0.15s ease;
 }
 
-.slot-time-col {
+.flightboard-row:last-child {
+  border-bottom: none;
+}
+
+.flightboard-row:hover {
+  background-color: #F8F5EE;
+}
+
+.flightboard-row.is-expanded {
+  background-color: #F4EFE6;
+}
+
+.fb-row-main {
+  display: grid;
+  grid-template-columns: 46px 160px 140px 1fr 120px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+}
+
+.fb-col-idx {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--color-muted-grey);
+}
+
+.fb-col-time {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-right: 1px solid rgba(1, 1, 1, 0.15);
-  padding-right: 16px;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-black);
+  white-space: nowrap;
 }
 
-.slot-time-col .time-block {
+.fb-time-start {
+  color: var(--color-vermilion);
+}
+
+.fb-time-sep {
+  color: var(--color-muted-grey);
+}
+
+.fb-time-end {
+  color: var(--color-black);
+}
+
+.fb-col-track {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-weight: 700;
 }
 
-.slot-time-col .t-start {
-  font-size: 1.15rem;
+.fb-col-track .badge-track {
+  font-size: 0.72rem;
+  font-weight: 800;
   color: var(--color-vermilion);
 }
 
-.slot-time-col .t-connector,
-.slot-time-col .t-arrow {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--color-muted-grey);
-  line-height: 1;
-  padding: 1px 0;
+.badge-level-tag {
+  font-size: 0.62rem;
+  background-color: var(--color-black);
+  color: #FFFFFF;
+  padding: 1px 5px;
+  display: inline-block;
+  width: fit-content;
 }
 
-.slot-time-col .t-end {
-  font-size: 0.95rem;
-}
-
-.slot-time-col .slot-idx {
-  font-size: 0.75rem;
-  color: var(--color-grey);
-}
-
-.slot-content-col {
+.fb-col-title {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 4px;
 }
 
-.slot-meta-badges {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
-}
-
-.badge-track {
-  font-weight: 700;
-  color: var(--color-vermilion);
-}
-
-.badge-level {
-  background-color: var(--color-black);
-  color: var(--color-cream);
-  padding: 2px 8px;
-  font-size: 0.7rem;
-}
-
-.badge-stage {
-  color: var(--color-grey);
-}
-
-.slot-title {
-  font-size: 1.25rem;
+.fb-session-heading {
+  font-size: 0.95rem;
   font-weight: 800;
-  line-height: 1.3;
-  margin: 0;
   color: var(--color-black);
+  line-height: 1.35;
 }
 
-.slot-speaker-line {
-  font-size: 0.85rem;
+.fb-session-speaker {
+  font-size: 0.75rem;
+  color: #555555;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
-.slot-speaker-line .spk-name {
+.fb-spk-sep {
+  color: var(--color-vermilion);
+  font-weight: 800;
+}
+
+.fb-spk-name {
   font-weight: 700;
   color: var(--color-black);
 }
 
-.slot-speaker-line .spk-sep {
-  color: var(--color-grey);
+.fb-spk-role {
+  color: #666666;
 }
 
-.slot-speaker-line .spk-role {
-  color: #4a453f;
+.fb-col-action {
+  text-align: right;
 }
 
-.slot-expanded-drawer {
+.btn-fb-abstract-toggle {
+  background-color: transparent;
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  transition: all 0.15s ease;
+}
+
+.btn-fb-abstract-toggle:hover,
+.flightboard-row.is-expanded .btn-fb-abstract-toggle {
+  background-color: var(--color-black);
+  color: #FFFFFF;
+}
+
+/* Collapsible Abstract Drawer */
+.flightboard-drawer {
   max-height: 0;
-  overflow: hidden;
   opacity: 0;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  padding: 0 18px 0 62px;
+  background-color: #EDE7D8;
+  border-top: 0px solid transparent;
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, padding 0.25s ease;
 }
 
-.slot-expanded-drawer.is-open {
+.flightboard-drawer.is-open {
   max-height: 250px;
   opacity: 1;
-  padding-top: 12px;
-  margin-top: 8px;
+  padding: 14px 18px 14px 62px;
   border-top: 1px dashed rgba(1, 1, 1, 0.2);
 }
 
-.slot-abstract {
-  font-size: 0.92rem;
-  line-height: 1.6;
-  margin: 0 0 12px 0;
+.drawer-abstract {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #222222;
+  margin: 0 0 10px 0;
 }
 
-.slot-highlights {
+.drawer-highlights {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  font-size: 0.78rem;
-  color: var(--color-grey);
+  gap: 10px;
+  font-size: 0.74rem;
 }
 
-.slot-highlights .hl-tag {
+.drawer-highlights .hl-tag {
   font-weight: 700;
   color: var(--color-black);
 }
 
-.slot-highlights .hl-item {
+.drawer-highlights .hl-item {
   color: var(--color-vermilion);
 }
 
-.slot-actions-bar {
-  display: flex;
-  gap: 16px;
-  margin-top: 6px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(1, 1, 1, 0.08);
-}
-
-.btn-toggle-slot-detail,
-.btn-bookmark-slot {
-  background: none;
-  border: none;
-  font-size: 0.78rem;
-  font-family: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 4px 0;
-  color: var(--color-black);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.btn-toggle-slot-detail:hover,
-.btn-bookmark-slot:hover {
-  color: var(--color-vermilion);
-}
-
-.btn-bookmark-slot.is-active {
-  color: var(--color-vermilion);
+/* Target pulse animation for rows clicked from speakers */
+.flightboard-row.is-target-highlight {
+  animation: slotTargetPulse 2.4s ease-out forwards;
+  scroll-margin-top: 120px;
 }
 
 /* ==========================================================================
@@ -4562,15 +4703,18 @@ footer {
 }
 
 .konfhub-banner {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
+  gap: 10px;
+  padding: 6px 14px;
   background-color: var(--color-black);
   color: var(--color-cream);
-  border: 2px solid var(--color-black);
-  margin-bottom: 36px;
-  font-size: 0.82rem;
+  border: 1px solid var(--color-black);
+  margin-bottom: 24px;
+  font-size: 0.74rem;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
 }
 
 .konfhub-banner .partner-badge {
@@ -4578,10 +4722,8 @@ footer {
   color: var(--color-vermilion);
 }
 
-.konfhub-banner .partner-info {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.konfhub-banner .partner-sep {
+  color: rgba(255, 255, 255, 0.4);
 }
 
 /* Perforated Physical Ticket Stub */
@@ -5331,14 +5473,20 @@ footer {
   display: grid;
   grid-template-columns: 1.1fr 1.3fr;
   gap: 36px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .venue-info-panel,
+.venue-blueprint-panel,
 .venue-blueprint-panel .blueprint-card {
   padding: 32px;
   background-color: var(--color-cream);
   border: 2px solid var(--color-black);
   box-shadow: 6px 6px 0 var(--color-black);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .venue-card-header,
@@ -5626,21 +5774,34 @@ footer {
 .map-actions-bar {
   display: flex;
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 16px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .btn-map-directions {
-  flex: 1;
+  flex: 1.3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   text-decoration: none;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   padding: 12px 18px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .btn-copy-gps {
-  font-size: 0.78rem;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.8rem;
   padding: 12px 18px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .amenities-matrix .matrix-title {
@@ -5670,30 +5831,77 @@ footer {
 }
 
 @media (max-width: 768px) {
-  .schedule-overview-banner {
-    grid-template-columns: 1fr;
-  }
-
-  .timeline-slot-card {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-
-  .slot-time-col {
-    border-right: none;
-    border-bottom: 1px solid rgba(1, 1, 1, 0.15);
-    padding-bottom: 12px;
-    padding-right: 0;
-  }
-
-  .konfhub-banner {
-    flex-direction: column;
-    align-items: flex-start;
+  .schedule-telemetry-strip {
+    font-size: 0.72rem;
+    padding: 10px 14px;
     gap: 8px;
   }
 
-  .amenity-tags-grid {
-    grid-template-columns: 1fr;
+  .flightboard-table-header {
+    display: none;
+  }
+
+  .fb-row-main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+
+  .fb-col-idx {
+    display: none;
+  }
+
+  .fb-col-time {
+    font-size: 0.8rem;
+  }
+
+  .fb-col-track {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .fb-col-title {
+    width: 100%;
+  }
+
+  .fb-session-heading {
+    font-size: 0.92rem;
+  }
+
+  .fb-col-action {
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .btn-fb-abstract-toggle {
+    width: 100%;
+    text-align: center;
+    padding: 6px 12px;
+  }
+
+  .flightboard-drawer {
+    padding: 0 14px;
+  }
+
+  .flightboard-drawer.is-open {
+    padding: 12px 14px;
+  }
+
+  .konfhub-banner {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.68rem;
+    padding: 6px 10px;
+    margin-bottom: 18px;
+  }
+
+  /* Hide amenities matrix on mobile to keep venue section clean & compact */
+  .amenities-matrix {
+    display: none !important;
   }
 }
 
@@ -5713,6 +5921,7 @@ footer {
    MOBILE & TOUCH VIEWPORT REFINEMENTS (Max Width: 600px & 380px)
    ========================================================================== */
 @media (max-width: 600px) {
+
   /* Site Header on Mobile */
   .site-header {
     padding: 0;
@@ -5731,15 +5940,32 @@ footer {
   }
 
   .header-actions .btn-trial-action {
-    display: none; /* Drawer & Hero provide direct passes triggers */
+    display: none;
+    /* Drawer & Hero provide direct passes triggers */
   }
 
   .brand-badge {
-    display: none; /* Keep brand mark crisp on single line */
+    display: none;
+    /* Keep brand mark crisp on single line */
+  }
+
+  .brand-link {
+    gap: 8px;
+  }
+
+  .header-sbg-logo {
+    width: 22px;
+    height: 22px;
   }
 
   .brand-mark {
-    font-size: 1.22rem;
+    font-size: 1.15rem;
+    white-space: nowrap;
+  }
+
+  .brand-collab-tag {
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 
   /* Global Section Spacing */
@@ -5936,7 +6162,8 @@ footer {
     font-size: 0.7rem;
   }
 
-  .btn-speaker-details {
+  .btn-speaker-details,
+  .btn-speaker-schedule {
     width: 100%;
     padding: 10px 16px;
     text-align: center;
@@ -5979,114 +6206,163 @@ footer {
     font-size: 0.7rem;
   }
 
-  .timeline-slot-card {
-    padding: 16px 14px;
-    gap: 12px;
+  .flightboard-container {
+    box-shadow: 4px 4px 0px var(--color-black);
   }
 
-  .slot-time-col {
-    flex-direction: row !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    border-right: none !important;
-    border-bottom: 1px dashed rgba(1, 1, 1, 0.2) !important;
-    padding-bottom: 10px !important;
-    padding-right: 0 !important;
-    margin-bottom: 4px;
+  .fb-session-heading {
+    font-size: 0.9rem;
   }
 
-  .slot-time-col .time-block {
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 8px !important;
+  /* Section 04: Official KonfHub Ticket & Stub Mobile Compression */
+  .passes-section {
+    padding: 40px 14px;
   }
 
-  .slot-time-col .t-start {
-    font-size: 1rem !important;
-  }
-
-  .slot-time-col .t-connector {
-    font-size: 0.65rem !important;
-  }
-
-  .slot-time-col .t-end {
-    font-size: 0.88rem !important;
-  }
-
-  .slot-time-col .slot-idx {
-    font-size: 0.82rem !important;
-    font-weight: 800;
-  }
-
-  .slot-title {
-    font-size: 1.05rem;
-  }
-
-  .slot-actions-row {
-    flex-direction: column;
-    width: 100%;
-    gap: 8px;
-  }
-
-  .slot-actions-row button {
-    width: 100%;
-    text-align: center;
-    padding: 8px 12px;
-  }
-
-  /* Section 04: Official KonfHub Ticket & Stub */
   .ticket-stub-card {
-    box-shadow: 6px 6px 0px var(--color-black);
+    box-shadow: 5px 5px 0px var(--color-black);
     max-width: 100%;
     overflow: hidden;
   }
 
   .ticket-main-body {
-    padding: 18px 14px;
+    padding: 14px 14px 12px 14px;
+  }
+
+  .ticket-top-meta {
+    margin-bottom: 8px;
+  }
+
+  .ticket-badge-pill {
+    font-size: 0.65rem;
+    padding: 2px 6px;
   }
 
   .ticket-giant-title {
-    font-size: clamp(28px, 7.5vw, 40px);
+    font-size: clamp(24px, 6.5vw, 32px);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .ticket-subheading {
+    font-size: 0.74rem;
+    margin-bottom: 8px;
+  }
+
+  .ticket-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .ticket-price-pill {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+    align-items: flex-start;
+    text-align: left;
   }
 
   .ticket-parameters-matrix {
-    grid-template-columns: 1fr !important;
-    gap: 8px;
-    padding: 12px;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
   }
 
-  .param-item {
-    padding: 6px 0;
-    border-bottom: 1px dashed rgba(1, 1, 1, 0.12);
+  .param-cell {
+    gap: 2px;
   }
 
-  .param-item:last-child {
-    border-bottom: none;
+  .param-cell .param-lbl {
+    font-size: 0.6rem;
   }
 
-  .inclusions-list {
-    font-size: 0.78rem;
+  .param-cell .param-val {
+    font-size: 0.72rem;
   }
 
-  .inclusion-item {
-    font-size: 0.78rem;
-    line-height: 1.45;
+  .ticket-inclusions-block {
+    display: none !important;
   }
 
-  .ticket-actions-bar {
-    flex-direction: column;
+  /* Hide the duplicate primary register button in the upper body on phone, leaving the tearing stub as the hero action */
+  .ticket-actions-row {
+    margin-top: 4px;
+    gap: 6px;
+  }
+
+  .btn-ticket-konfhub {
+    display: none !important;
+  }
+
+  .btn-ticket-badge {
     width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.72rem;
+  }
+
+  /* Perforation divider on mobile */
+  .ticket-perforation-divider {
+    height: 26px;
+  }
+
+  .perforation-label {
+    font-size: 0.62rem;
+    padding: 0 8px;
+  }
+
+  .punch-top,
+  .punch-bottom {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Tear-off Stub on mobile */
+  .ticket-stub-aside {
+    padding: 14px 14px 16px 14px;
     gap: 10px;
   }
 
-  .ticket-actions-bar .btn-brutalist {
-    width: 100%;
-    text-align: center;
-    padding: 12px 14px;
+  .stub-header {
+    font-size: 0.66rem;
+    padding-bottom: 6px;
   }
 
-  .stub-interactive-area {
-    padding: 16px 14px;
+  .stub-barcode-box {
+    padding: 6px 8px;
+    margin: 2px 0;
+  }
+
+  .ascii-barcode {
+    max-height: 13px;
+    font-size: 0.6rem;
+    line-height: 0.9;
+    margin-bottom: 2px;
+  }
+
+  .barcode-num {
+    font-size: 0.58rem;
+  }
+
+  .stub-specs-list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 10px;
+    padding: 8px 0;
+    font-size: 0.68rem;
+  }
+
+  .stub-verified-badge {
+    font-size: 0.62rem;
+    margin: 2px 0;
+  }
+
+  .stub-cta-btn {
+    padding: 12px 14px;
+    font-size: 0.78rem;
+    font-weight: 800;
   }
 
   /* Section 05: Attendee Badge Generator */
@@ -6148,11 +6424,7 @@ footer {
   }
 
   .p-brand {
-    font-size: 1.05rem;
-  }
-
-  .p-edition {
-    font-size: 0.72rem;
+    font-size: 1.18rem;
   }
 
   .pass-display-name {
@@ -6191,34 +6463,150 @@ footer {
     text-align: right;
   }
 
-  /* Section 06: Venue & Wayfinding */
+  /* Section 06: Venue & Wayfinding Mobile Responsiveness */
+  .venue-section {
+    padding: 40px 14px !important;
+    overflow-x: clip;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .venue-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+  }
+
   .venue-info-panel,
+  .venue-blueprint-panel,
   .venue-blueprint-panel .blueprint-card {
-    padding: 18px 14px;
+    padding: 16px 14px;
+    box-shadow: 4px 4px 0px var(--color-black);
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .venue-card-header,
+  .blueprint-header {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.72rem;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
   }
 
   .venue-address-block .addr-title {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
+    line-height: 1.25;
   }
 
-  .map-tactical-box {
-    height: 280px;
+  .venue-address-block .addr-coords {
+    font-size: 0.68rem;
+    word-break: break-word;
   }
 
-  .transit-tab-row {
+  .transit-item {
+    gap: 10px;
+  }
+
+  .transit-item .tr-badge {
+    min-width: 44px;
+    font-size: 0.72rem;
+  }
+
+  /* Map HUD Bar on Phone: Wrap gracefully so it never pushes screen width */
+  .map-hud-bar {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 10px;
+    font-size: 0.65rem;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .map-hud-bar .hud-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .map-hud-bar .hud-coord-text {
+    font-size: 0.62rem;
+  }
+
+  /* Map Tactical Canvas Box on Phone */
+  .map-tactical-box {
+    width: 100%;
+    max-width: 100%;
+    height: 230px;
+    overflow: hidden;
+    box-shadow: 3px 3px 0px var(--color-black);
+  }
+
+  .tactical-map-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* Keep Zoom Controls Compact and in Top Corner */
+  .tactical-zoom-controls {
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+
+  .tactical-ctrl-btn {
+    padding: 4px 7px;
+    font-size: 0.65rem;
+  }
+
+  /* Keep Scale Cluster Small and Tucked in Corner */
+  .tactical-scale-cluster {
+    bottom: 8px;
+    left: 8px;
+    padding: 2px 6px;
+    font-size: 0.58rem;
     gap: 6px;
   }
 
-  .transit-tab-btn {
+  /* Map Actions Bar: Stack full-width on mobile with balanced spacing */
+  .map-actions-bar {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    padding: 10px 12px;
-    font-size: 0.75rem;
+    gap: 10px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    box-sizing: border-box;
   }
 
+  .map-actions-bar .btn-brutalist,
   .venue-actions-strip .btn-brutalist {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    padding: 12px 14px;
+    font-size: clamp(0.72rem, 3.2vw, 0.78rem);
+    line-height: 1.35;
+    white-space: normal;
+    letter-spacing: 0.03em;
+    box-shadow: 3px 3px 0px var(--color-black);
+  }
+
+  .amenities-matrix {
+    display: none !important;
   }
 
   /* Section 07: Ecosystem, Sponsors & FAQ */
