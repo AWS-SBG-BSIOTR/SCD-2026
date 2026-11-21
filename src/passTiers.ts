@@ -18,17 +18,17 @@ export const OFFICIAL_PASS: SinglePassDetails = {
   badge: 'OFFICIAL ADMISSION: IN-PERSON DELEGATE',
   edition: 'PUNE BUILDER SPECIAL // EDITION 2026',
   date: '27 DECEMBER 2026',
-  hours: '09:00 AM – 04:00 PM IST',
+  hours: '08:00 AM – 05:30 PM IST',
   venue: 'SEASONS 24, WAGHOLI, PUNE',
   capacity: '300 STUDENT BUILDERS',
   konfhubUrl: 'https://konfhub.com/aws-scd-pune-2026',
   inclusions: [
-    'Admission to all 24+ Keynotes & Cloud Architecture Tracks',
-    'Full access to 5 interactive Cloud Checkpoint Zones & Expo',
-    'High-speed conference WiFi & official digital verified credential',
-    'Direct networking with 300+ student builders, AWS Heroes & sponsors',
-    'Access to student hackathon showcase & cloud credit giveaways',
-    'Entry to lightning architecture demos & community lounge'
+    'Admission to all Keynotes, Technical Deep Dives & Panel Discussion',
+    'Exclusive AWS Student Community Day Pune Swag & Builder Kit',
+    'Morning breakfast, buffet lunch, and evening high-tea at Seasons 24',
+    'Verified digital participation certificate & social badge',
+    'Direct face-to-face networking with AWS Community Leaders & Mentors',
+    'Full access to sponsor exhibits & interactive tech demos'
   ]
 };
 
@@ -53,10 +53,10 @@ export class PassTiersController {
       <div class="passes-section-wrapper">
         <!-- Section Header -->
         <div class="section-meta-header">
-          <span class="section-tag mono">(05) Tickets & Registration</span>
+          <span class="section-tag mono">(04) // TICKETS & REGISTRATION</span>
           <h2 class="section-headline">Official Admission Pass. Powered by KonfHub.</h2>
           <p class="section-sub">
-            One single pass. All-inclusive in-person admission to all 24+ sessions, keynotes, hands-on workshops, and 5 Cloud Checkpoint Zones at Seasons 24, Wagholi on 27 December 2026.
+            One single pass. All-inclusive in-person admission to all keynotes, technical sessions, and community networking at Seasons 24, Wagholi on 27 December 2026.
           </p>
         </div>
 

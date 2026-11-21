@@ -70,7 +70,7 @@ export const FAQ_LIST: FAQEntry[] = [
     id: 'faq-2',
     category: 'LOGISTICS',
     question: 'Where and when will the conference take place?',
-    answer: 'The event takes place on 27 December 2026, 09:00 AM – 04:00 PM IST at Seasons 24, Wagholi, Pune, Maharashtra. The venue is located along the Pune-Ahmednagar highway, well connected by direct PMT transit, ride shares, and cabs from Pune Railway Station (15 km) and Pune International Airport (11 km).'
+    answer: 'The event takes place on 27 December 2026, 08:00 AM – 05:30 PM IST at Seasons 24, Wagholi, Pune, Maharashtra. The venue is located along the Pune-Ahmednagar highway, well connected by direct PMT transit, ride shares, and cabs from Pune Railway Station (15 km) and Pune International Airport (11 km).'
   },
   {
     id: 'faq-3',

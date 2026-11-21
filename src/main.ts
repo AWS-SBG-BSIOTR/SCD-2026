@@ -2,7 +2,7 @@ import './style.css';
 import { sound } from './audio';
 import { HeroVariableController } from './hero-variable';
 import { TickerController } from './ticker';
-import { CheckpointsController } from './checkpoints';
+import { OverviewController } from './overview';
 import { SpeakersController } from './speakers';
 import { ScheduleController } from './schedule';
 import { PassGeneratorController } from './passGenerator';
@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
     new TickerController(tickerEl);
   }
 
-  // 6. Initialize AWS SCD Cloud Checkpoint Zones
-  const checkpointsEl = document.getElementById('checkpoints');
-  if (checkpointsEl) {
-    new CheckpointsController(checkpointsEl);
+  // 6. Initialize Event Overview, Countdown & Attendee Perks
+  const overviewEl = document.getElementById('overview');
+  if (overviewEl) {
+    new OverviewController(overviewEl);
   }
 
   // 7. Initialize AWS SCD Speakers & Keynotes
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new SpeakersController(speakersEl);
   }
 
-  // 8. Initialize 09:00 AM – 04:00 PM Master Schedule
+  // 8. Initialize 08:00 AM – 05:30 PM Master Schedule
   const scheduleEl = document.getElementById('schedule');
   if (scheduleEl) {
     new ScheduleController(scheduleEl);
@@ -154,24 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (headerTrialBtn) headerTrialBtn.addEventListener('click', triggerPassSection);
   if (drawerTrialBtn) drawerTrialBtn.addEventListener('click', triggerPassSection);
 
-  // 12. Newsletter Form Submission
-  const newsForm = document.getElementById('newsletter-form') as HTMLFormElement;
-  const newsStatus = document.getElementById('newsletter-status');
-  if (newsForm && newsStatus) {
-    newsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const emailInput = document.getElementById('newsletter-email') as HTMLInputElement;
-      const email = emailInput ? emailInput.value : '';
 
-      sound.playSuccess();
-      newsStatus.innerHTML = `
-        <div class="status-success-box">
-          [SUCCESS] SUBSCRIBED: [${email.toUpperCase()}] HAS BEEN ADDED TO OUR FOUR-ISSUE ANNUAL DISPATCH. NO SPAM EVER.
-        </div>
-      `;
-      newsForm.reset();
-    });
-  }
 
   // 13. Back to Top Button
   const backToTopBtn = document.getElementById('btn-back-to-top');
@@ -184,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Smooth keyboard anchor scrolling
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
+    anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
       if (href && href.startsWith('#') && href.length > 1) {
         const target = document.querySelector(href);

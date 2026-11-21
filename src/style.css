@@ -21,6 +21,7 @@
   --color-muted-grey: #8D897F;
   --color-border: rgba(1, 1, 1, 0.25);
   --color-border-strong: #010101;
+  --color-aws-orange: #FF9900;
 
   --font-display: 'Roboto Flex', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: 'Fraunces', Georgia, serif;
@@ -92,6 +93,10 @@ body {
 
 .text-vermilion {
   color: var(--color-vermilion);
+}
+
+.text-orange {
+  color: var(--color-aws-orange);
 }
 
 .text-accent {
@@ -972,51 +977,228 @@ body {
 }
 
 /* ==========================================================================
-   04b. AWS SCD 2026 CLOUD CHECKPOINT ZONES
+   04b. AWS SCD 2026 ROADMAP, COUNTDOWN & ATTENDEE PERKS
    ========================================================================== */
-.checkpoints-section {
+.overview-section {
   padding: 80px 24px;
   border-bottom: 2px solid var(--color-black);
   background-color: var(--color-cream-light);
 }
 
-.conduit-stepper {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-  margin-bottom: 32px;
+.overview-inner {
+  max-width: 1360px;
+  margin: 0 auto;
 }
 
-.conduit-step-btn {
-  background-color: var(--color-cream);
+.overview-header-tagline {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Live Countdown Terminal (The Original First Terminal) --- */
+.overview-countdown-panel {
+  background-color: #0d0f12;
+  color: #FFFFFF;
   border: 2px solid var(--color-black);
-  padding: 16px 12px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 4px 4px 0px var(--color-black);
+  box-shadow: 6px 6px 0px var(--color-black);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+}
+
+.countdown-panel-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  font-size: 0.75rem;
+}
+
+.countdown-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #00FF66;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.status-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #00FF66;
+  box-shadow: 0 0 8px #00FF66;
+  animation: pulse-glow 1.5s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.countdown-location {
+  color: #999999;
+  letter-spacing: 0.05em;
+}
+
+.countdown-display-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.countdown-digit-block {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  flex: 1;
 }
 
-.conduit-step-btn:hover {
+.countdown-number {
+  font-family: var(--font-mono);
+  font-size: clamp(38px, 6vw, 76px);
+  font-weight: 900;
+  line-height: 1;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+}
+
+.countdown-unit {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+}
+
+.countdown-sep {
+  font-family: var(--font-mono);
+  font-size: clamp(28px, 4.5vw, 54px);
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.35);
+  line-height: 1;
+  padding: 0 8px;
+  margin-top: -20px;
+}
+
+/* --- 4-Block Impact Metrics Grid --- */
+.overview-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.metric-card {
+  background-color: #FFFFFF;
+  border: 2px solid var(--color-black);
+  box-shadow: 4px 4px 0px var(--color-black);
+  padding: 22px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.metric-card:hover {
   transform: translateY(-2px);
   box-shadow: 6px 6px 0px var(--color-black);
 }
 
-.conduit-step-btn.is-active {
-  background-color: #FFFFFF;
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: clamp(34px, 3.8vw, 56px);
+  font-weight: 900;
+  line-height: 1;
   color: var(--color-black);
-  transform: translateY(-2px);
-  box-shadow: 5px 5px 0px var(--color-black), inset 0 4px 0 var(--color-vermilion);
 }
 
-.step-badge-row {
+.metric-tag {
+  color: var(--color-vermilion);
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin: 12px 0 4px;
+  letter-spacing: 0.05em;
+}
+
+.metric-desc {
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #222222;
+}
+
+/* --- Quick Actions Row --- */
+.overview-actions-row {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.68rem;
-  margin-bottom: 4px;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+
+/* --- Responsive Breakpoints for Overview Section --- */
+@media (max-width: 1024px) {
+  .overview-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .overview-section {
+    padding: 56px 16px;
+  }
+
+  .overview-countdown-panel {
+    padding: 16px 14px;
+  }
+
+  .countdown-panel-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .countdown-number {
+    font-size: clamp(26px, 7.5vw, 40px);
+  }
+
+  .countdown-sep {
+    font-size: clamp(18px, 5vw, 28px);
+    padding: 0 3px;
+    margin-top: -12px;
+  }
+
+  .countdown-unit {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+  }
+
+  .overview-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .overview-actions-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .overview-cta-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
 .step-idx {
@@ -1379,16 +1561,16 @@ body {
 }
 
 /* Classified Telemetry Banner */
-.classified-status-banner {
+.speakers-status-banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
-  background-color: var(--color-black);
-  color: var(--color-cream);
-  padding: 10px 18px;
-  border: 1px solid var(--color-black);
+  background-color: #FFFFFF;
+  color: var(--color-black);
+  padding: 12px 18px;
+  border: 2px solid var(--color-black);
   margin-bottom: 24px;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
@@ -1401,18 +1583,13 @@ body {
   gap: 8px;
 }
 
-.csb-blip {
-  color: var(--color-vermilion);
-  animation: radarBlink 1.4s infinite alternate;
-}
-
 .csb-title {
   font-weight: 700;
-  color: #FFFFFF;
+  color: var(--color-black);
 }
 
 .csb-sep {
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(0, 0, 0, 0.4);
 }
 
 .csb-count {
@@ -1421,9 +1598,9 @@ body {
 }
 
 .csb-status-pill {
-  background-color: rgba(253, 11, 3, 0.2);
-  color: #FF5A45;
-  border: 1px solid var(--color-vermilion);
+  background-color: var(--color-cream);
+  color: var(--color-black);
+  border: 1px solid var(--color-black);
   padding: 2px 8px;
   font-size: 0.65rem;
   font-weight: 700;
@@ -1431,278 +1608,186 @@ body {
 
 .speakers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
   gap: 24px;
   margin-bottom: 32px;
 }
 
+/* --- Idea 3: The Split Badging Speaker Card (Mockup Exact Match) --- */
 .speaker-card {
   background-color: #FFFFFF;
-  border: 2px solid var(--color-black);
-  padding: 24px;
-  box-shadow: 6px 6px 0px var(--color-black);
+  border: 2.5px solid #000000;
+  box-shadow: 6px 6px 0px #000000;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .speaker-card:hover {
   transform: translateY(-2px);
-  box-shadow: 8px 8px 0px var(--color-black);
+  box-shadow: 8px 8px 0px #000000;
 }
 
-.speaker-card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.badge-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.badge-role {
-  font-size: 0.65rem;
-  font-weight: 700;
-  background-color: var(--color-black);
-  color: var(--color-cream);
-  padding: 2px 6px;
-}
-
-.badge-track {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-vermilion);
-}
-
-.badge-level {
-  font-size: 0.65rem;
-  padding: 2px 6px;
-  border: 1px solid var(--color-border);
-}
-
-.level-beginner {
-  background-color: #DCFCE7;
-  color: #166534;
-}
-
-.level-intermediate {
-  background-color: #FEF9C3;
-  color: #854D0E;
-}
-
-.level-advanced {
-  background-color: #FEE2E2;
-  color: #991B1B;
-}
-
-.speaker-profile-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-  min-height: 56px;
-}
-
-.profile-avatar-box {
-  width: 54px;
-  height: 54px;
-  background-color: var(--color-black);
-  border: 2px solid var(--color-black);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.avatar-classified-box {
-  flex-direction: column;
-  cursor: pointer;
+.speaker-photo-frame {
   position: relative;
+  width: 100%;
+  height: 210px;
+  border: 2px solid #000000;
   overflow: hidden;
-  box-shadow: inset 0 0 8px rgba(253, 11, 3, 0.25);
-  transition: all 0.2s ease;
+  background-color: #0c0d0e;
+  margin-bottom: 16px;
 }
 
-.avatar-classified-box:hover {
-  background-color: #1A1412;
-  border-color: var(--color-vermilion);
+.speaker-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-.enc-hash-text {
-  font-size: 0.8rem;
-  font-weight: 900;
-  color: var(--color-vermilion);
-  line-height: 1;
-  letter-spacing: 0.05em;
-  font-family: var(--font-mono);
+.speaker-card:hover .speaker-photo-img {
+  transform: scale(1.04);
 }
 
-.enc-sub-tag {
-  font-size: 0.55rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 700;
-  margin-top: 3px;
+.speaker-track-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #000000;
+  color: #FFFFFF;
+  border: 1px solid #FFFFFF;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  z-index: 2;
 }
 
-.avatar-placeholder {
-  color: var(--color-cream);
-  font-weight: 900;
-  font-size: 1.1rem;
-  letter-spacing: 0.05em;
-}
-
-.profile-text {
+.speaker-content {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
 }
 
-.classified-name-row {
+.speaker-header-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   flex-wrap: wrap;
-}
-
-.redacted-bar {
-  background-color: #010101;
-  color: #010101;
-  font-family: var(--font-mono);
-  font-size: 1.15rem;
-  font-weight: 900;
-  letter-spacing: 0.12em;
-  padding: 2px 6px;
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.18s ease;
-  line-height: 1.2;
-}
-
-.redacted-bar:hover {
-  background-color: var(--color-vermilion);
-  color: #FFFFFF;
-}
-
-.classified-pill {
-  font-size: 0.62rem;
-  font-weight: 700;
-  background-color: #FEE2E2;
-  color: #991B1B;
-  border: 1px solid rgba(153, 27, 27, 0.3);
-  padding: 1px 6px;
-  line-height: 1.3;
 }
 
 .speaker-name {
   font-family: var(--font-display);
   font-size: 1.45rem;
   font-weight: 900;
+  color: #000000;
   line-height: 1.1;
-  font-variation-settings: 'wght' 850;
+  letter-spacing: -0.02em;
 }
 
-.speaker-role {
-  font-size: 0.72rem;
-  color: var(--color-brown);
-}
-
-.speaker-company {
-  font-size: 0.68rem;
-  color: var(--color-muted-grey);
-}
-
-.session-brief {
-  margin-bottom: 16px;
-}
-
-.session-topic {
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1.3;
-  margin-bottom: 10px;
-  min-height: 2.7em;
-}
-
-.session-meta-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 0.72rem;
-  color: var(--color-brown);
-}
-
-.session-expanded-content {
-  background-color: var(--color-cream-light);
-  border: 1px solid var(--color-border);
-  padding: 14px;
-  margin-bottom: 16px;
-  font-size: 0.85rem;
-  line-height: 1.45;
-}
-
-.classified-clearance-stamp {
-  display: flex;
-  justify-content: space-between;
+.speaker-linkedin-pill {
+  display: inline-flex;
   align-items: center;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
-  border-bottom: 1px dashed var(--color-border);
-  font-size: 0.68rem;
+  border: 1px solid #000000;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.62rem;
   font-weight: 700;
-}
-
-.stamp-pill {
-  color: var(--color-black);
-}
-
-.stamp-wave {
-  color: var(--color-vermilion);
-}
-
-.session-desc {
-  color: var(--color-brown);
-  margin-bottom: 12px;
-}
-
-.session-tags-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
-}
-
-.tag-chip {
-  font-size: 0.65rem;
+  color: #000000;
   background-color: #FFFFFF;
-  border: 1px solid var(--color-border);
-  padding: 2px 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.classified-notice-strip {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--color-border);
-  font-size: 0.68rem;
-  color: #5C413C;
+.speaker-linkedin-pill:hover {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.speaker-role-line {
+  font-size: 0.75rem;
+  color: #333333;
+  margin-bottom: 14px;
+  font-family: var(--font-mono);
   line-height: 1.35;
 }
 
-.speaker-card-footer {
-  margin-top: auto;
+.speaker-topic {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #000000;
+  margin-bottom: 18px;
+  flex-grow: 1;
+}
+
+.speaker-abstract-drawer {
+  background-color: var(--color-cream-light);
+  border: 1px solid #000000;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.abstract-text {
+  color: #222222;
+  margin-bottom: 8px;
+}
+
+.abstract-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.abstract-tag-chip {
+  font-size: 0.65rem;
+  background-color: #FFFFFF;
+  border: 1px solid #000000;
+  padding: 1px 6px;
+}
+
+.speaker-bottom-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 14px;
-  border-top: 1px solid var(--color-border);
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+.speaker-loc {
   font-size: 0.72rem;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: 0.03em;
+  font-family: var(--font-mono);
+}
+
+.btn-speaker-details {
+  background-color: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  padding: 6px 14px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #000000;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-speaker-details:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+  background-color: var(--color-cream);
 }
 
 .btn-toggle-abstract {
@@ -1879,12 +1964,15 @@ body {
 }
 
 .pass-legal-note {
-  font-size: 0.68rem;
-  color: var(--color-muted-grey);
-  line-height: 1.5;
+  font-size: 0.72rem;
+  color: #4A453C;
+  line-height: 1.55;
   border-top: 1px solid var(--color-border);
-  padding-top: 12px;
-  margin-top: 6px;
+  border-left: 2px solid var(--color-vermilion);
+  padding: 10px 0 2px 10px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 /* Stage Preview */
@@ -1919,9 +2007,14 @@ body {
   border-top: none;
   margin-bottom: -4px;
   z-index: 5;
+  transition: transform 0.15s ease;
 }
 
-/* Physical Card */
+.pass-preview-stage:hover .lanyard-clip {
+  transform: scale(1.06);
+}
+
+/* Physical Card with Lanyard Pivot & Dangling Physics */
 .physical-pass-card {
   width: 100%;
   max-width: 480px;
@@ -1930,6 +2023,46 @@ body {
   box-shadow: 10px 10px 0px var(--color-black);
   position: relative;
   overflow: hidden;
+  transform-origin: 50% 0%; /* Pinned to top center lanyard clip */
+  transition: transform 0.08s cubic-bezier(0.2, 0, 0.38, 0.9), box-shadow 0.08s ease-out;
+  cursor: grab;
+  will-change: transform, box-shadow;
+}
+
+.physical-pass-card:active {
+  cursor: grabbing;
+}
+
+/* Harmonic Pendulum Release Swing */
+.physical-pass-card.is-dangling {
+  animation: lanyardReleaseSwing 1.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes lanyardReleaseSwing {
+  0% {
+    transform: perspective(900px) rotateZ(5.5deg) rotateY(4deg);
+    box-shadow: 6px 10px 0px var(--color-black);
+  }
+  22% {
+    transform: perspective(900px) rotateZ(-4.2deg) rotateY(-3deg);
+    box-shadow: 13px 10px 0px var(--color-black);
+  }
+  44% {
+    transform: perspective(900px) rotateZ(2.8deg) rotateY(2deg);
+    box-shadow: 8px 10px 0px var(--color-black);
+  }
+  66% {
+    transform: perspective(900px) rotateZ(-1.4deg) rotateY(-1deg);
+    box-shadow: 11px 10px 0px var(--color-black);
+  }
+  85% {
+    transform: perspective(900px) rotateZ(0.6deg) rotateY(0.4deg);
+    box-shadow: 9.5px 10px 0px var(--color-black);
+  }
+  100% {
+    transform: perspective(900px) rotateZ(0deg) rotateY(0deg);
+    box-shadow: 10px 10px 0px var(--color-black);
+  }
 }
 
 .pass-top-accent {
@@ -5555,31 +5688,162 @@ body {
 }
 
 @media (max-width: 600px) {
-  .top-status-bar {
+  /* Global Mobile Padding Tuning */
+  .hero-section {
+    padding: 32px 16px 24px;
+    min-height: calc(100vh - 56px);
+  }
+
+  .speakers-section,
+  .schedule-section,
+  .passes-section,
+  .pass-generator-section,
+  .venue-section,
+  .ecosystem-section {
+    padding: 56px 16px !important;
+  }
+
+  .hero-ctas {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-    padding: 8px 16px;
-  }
-
-  .status-left {
-    flex-wrap: wrap;
-    font-size: 0.68rem;
-  }
-
-  .status-right {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
+    gap: 10px;
   }
 
+  .hero-ctas .btn-brutalist {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  /* Speaker Cards on Mobile */
   .speakers-grid {
     grid-template-columns: 1fr;
   }
 
-  .scd-event-badge-banner {
+  .speaker-card {
+    padding: 14px;
+  }
+
+  .speaker-photo-frame {
+    height: 180px;
+    margin-bottom: 12px;
+  }
+
+  .speaker-name {
+    font-size: 1.25rem;
+  }
+
+  .speaker-bottom-row {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .btn-speaker-details {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Interactive Pass Generator on Mobile */
+  .pass-preview-stage {
+    padding: 0 4px;
+  }
+
+  .physical-pass-card {
+    box-shadow: 6px 6px 0px var(--color-black) !important;
+  }
+
+  .pass-inner-container {
+    padding: 18px 14px;
+    gap: 14px;
+  }
+
+  .pass-display-name {
+    font-size: clamp(1.4rem, 6.5vw, 2.2rem) !important;
+  }
+
+  .tier-select-row {
+    flex-direction: column;
     gap: 6px;
+  }
+
+  .tier-select-row .btn-tier-opt {
+    width: 100%;
+    text-align: center;
+  }
+
+  .lanyard-strap {
+    font-size: 0.58rem;
+    padding: 4px 12px;
+    text-align: center;
+  }
+
+  /* Ticket Stub on Mobile */
+  .ticket-stub-card {
+    box-shadow: 6px 6px 0px var(--color-black);
+  }
+
+  .ticket-main-body {
+    padding: 18px 14px;
+  }
+
+  .ticket-giant-title {
+    font-size: clamp(30px, 8vw, 44px);
+  }
+
+  .ticket-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  /* Schedule Cards on Mobile */
+  .timeline-slot-card {
+    padding: 18px 14px;
+  }
+
+  .schedule-filter-bar {
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+
+  .schedule-filter-chip {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+  }
+
+  /* Venue & Ecosystem */
+  .transit-tab-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .transit-tab-btn {
+    flex: 1 1 calc(50% - 6px);
+    text-align: center;
+  }
+
+  .sponsors-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+@media (max-width: 400px) {
+  .countdown-terminal-number {
+    font-size: 24px;
+  }
+
+  .countdown-terminal-sep {
+    font-size: 16px;
+    padding: 0 1px;
+  }
+
+  .p-brand {
+    font-size: 1.05rem;
   }
 }

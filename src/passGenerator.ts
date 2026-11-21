@@ -6,7 +6,7 @@ export interface PassConfig {
   college: string;
   role: string;
   track: string;
-  tier: 'STUDENT BUILDER' | 'VIP ARCHITECT' | 'COMMUNITY LEAD';
+  tier: 'STUDENT BUILDER' | 'COMMUNITY' | 'SPEAKER';
   passNumber: string;
 }
 
@@ -35,10 +35,10 @@ export class PassGeneratorController {
     this.container.innerHTML = `
       <div class="pass-generator-section-wrapper">
         <div class="section-meta-header">
-          <span class="section-tag mono">[AWS SCD 2026] // ADMISSION PASS</span>
+          <span class="section-tag mono">(05) // ATTENDEE BADGE GENERATOR</span>
           <h2 class="section-headline">Generate Your Builder Pass.</h2>
           <p class="section-sub">
-            Customize and claim your official credential for AWS Student Community Day 2026 Pune. Personalized with variable typography and unique telemetry hash.
+            Customize and generate your official social credential for AWS Student Community Day 2026 Pune. Personalized with variable typography and unique telemetry hash.
           </p>
         </div>
 
@@ -105,11 +105,11 @@ export class PassGeneratorController {
                   <button type="button" class="btn-tier-opt ${this.config.tier === 'STUDENT BUILDER' ? 'is-active' : ''}" data-tier="STUDENT BUILDER">
                     STUDENT BUILDER
                   </button>
-                  <button type="button" class="btn-tier-opt ${this.config.tier === 'VIP ARCHITECT' ? 'is-active' : ''}" data-tier="VIP ARCHITECT">
-                    VIP ARCHITECT
+                  <button type="button" class="btn-tier-opt ${this.config.tier === 'COMMUNITY' ? 'is-active' : ''}" data-tier="COMMUNITY">
+                    COMMUNITY
                   </button>
-                  <button type="button" class="btn-tier-opt ${this.config.tier === 'COMMUNITY LEAD' ? 'is-active' : ''}" data-tier="COMMUNITY LEAD">
-                    COMMUNITY LEAD
+                  <button type="button" class="btn-tier-opt ${this.config.tier === 'SPEAKER' ? 'is-active' : ''}" data-tier="SPEAKER">
+                    SPEAKER
                   </button>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export class PassGeneratorController {
               </div>
 
               <div class="pass-legal-note">
-                [NOTICE] REGISTRATION VIA KONFHUB. ADMISSION VALID AT SEASONS 24, WAGHOLI, PUNE (27 DEC 2026 · 09:00 AM – 04:00 PM IST).
+                [NOTICE] THIS BADGE IS STRICTLY FOR SOCIAL MEDIA &amp; LINKEDIN SHARING. IT DOES NOT GRANT IN-PERSON ENTRY AT SEASONS 24. OFFICIAL ADMISSION PASSES ARE ISSUED EXCLUSIVELY UPON KONFHUB REGISTRATION.
               </div>
             </form>
           </div>
@@ -182,7 +182,7 @@ export class PassGeneratorController {
                   </div>
                   <div class="meta-cell">
                     <span class="lbl">DATES & HOURS:</span>
-                    <strong class="val">27 DEC · 09:00–16:00</strong>
+                    <strong class="val">27 DEC · 08:00–17:30 IST</strong>
                   </div>
                 </div>
 
@@ -330,6 +330,54 @@ export class PassGeneratorController {
         }
       });
     }
+
+    // Interactive Dangling Lanyard Card Physics (Option B)
+    const card = this.container.querySelector<HTMLElement>('#physical-pass-card');
+    const stage = this.container.querySelector<HTMLElement>('.pass-preview-stage');
+    if (card && stage) {
+      let isHovered = false;
+      let dampTimeout: number | null = null;
+
+      stage.addEventListener('mouseenter', () => {
+        isHovered = true;
+        if (dampTimeout) clearTimeout(dampTimeout);
+        card.classList.remove('is-dangling');
+        sound.playHover(480, 0.02);
+      });
+
+      stage.addEventListener('mousemove', (e: MouseEvent) => {
+        if (!isHovered) return;
+        const rect = card.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const mouseX = e.clientX - centerX;
+        const normalizedX = Math.max(-1, Math.min(1, mouseX / (rect.width / 2)));
+
+        // Pendulum rotation angles pinned to top center
+        const maxAngle = 6.5; // degrees
+        const angle = normalizedX * maxAngle;
+        const tiltY = normalizedX * 4; // subtle 3D perspective turn
+
+        // Dynamic shadow offset: shifts opposite to rotation
+        const shadowX = 10 - angle * 0.7;
+        const shadowY = 10 + Math.abs(angle) * 0.2;
+
+        card.style.transform = `perspective(900px) rotateZ(${angle.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+        card.style.boxShadow = `${shadowX.toFixed(1)}px ${shadowY.toFixed(1)}px 0px var(--color-black)`;
+      });
+
+      stage.addEventListener('mouseleave', () => {
+        isHovered = false;
+        // Clear inline overrides so CSS keyframe animation takes over
+        card.style.transform = '';
+        card.style.boxShadow = '';
+        card.classList.add('is-dangling');
+        sound.playHover(540, 0.02);
+
+        dampTimeout = window.setTimeout(() => {
+          card.classList.remove('is-dangling');
+        }, 1400);
+      });
+    }
   }
 
   private downloadPassPNG() {
@@ -417,7 +465,7 @@ export class PassGeneratorController {
     ctx.fillText('EVENT DATE & TIME:', 420, 460);
     ctx.fillStyle = '#010101';
     ctx.font = 'bold 17px monospace';
-    ctx.fillText('27 DEC 2026 // 09:00-16:00', 420, 490);
+    ctx.fillText('27 DEC 2026 // 08:00–17:30 IST', 420, 490);
 
     // Checkpoint route strip
     ctx.fillStyle = '#010101';

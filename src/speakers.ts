@@ -2,117 +2,110 @@ import { sound } from './audio';
 
 export interface SpeakerSession {
   id: string;
-  codeName: string;
-  telemetryId: string;
+  name: string;
+  photoUrl: string;
+  linkedinUrl: string;
   badge: string;
-  roleHint: string;
-  affiliationHint: string;
+  role: string;
+  affiliation: string;
   topic: string;
   time: string;
   track: 'GenAI' | 'Serverless' | 'Architecture' | 'DevOps' | 'Security' | 'Community';
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
   location: string;
   description: string;
   tags: string[];
-  revealWave: string;
 }
 
 export const SESSIONS_DATA: SpeakerSession[] = [
   {
     id: 'spk-01',
-    codeName: 'SPEAKER // DOSSIER 01',
-    telemetryId: '0x7F2A',
+    name: 'Dr. Elena Vance',
+    photoUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
     badge: 'AWS LEADER',
-    roleHint: 'Principal Solutions Architect',
-    affiliationHint: 'Amazon Web Services India',
+    role: 'Principal Solutions Architect',
+    affiliation: 'Amazon Web Services India',
     topic: 'Opening Keynote: Cloud Evolution & The Student Builder Era',
-    time: '09:45 - 10:30 IST',
+    time: '10:00 - 10:45 AM IST',
     track: 'Architecture',
-    level: 'Beginner',
-    location: 'Main Auditorium (Localhost Arena)',
+    location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'A comprehensive opening roadmap into modern cloud computing architectures, cloud economics, and how student developers can build global resilience from Pune.',
-    tags: ['Cloud Architecture', 'AWS Well-Architected', 'Student Builders'],
-    revealWave: 'DROP 01 // WAVE 1'
+    tags: ['Cloud Architecture', 'AWS Well-Architected', 'Student Builders']
   },
   {
     id: 'spk-02',
-    codeName: 'SPEAKER // DOSSIER 02',
-    telemetryId: '0x9E1B',
+    name: 'Marcus Chen',
+    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
     badge: 'AWS COMMUNITY HERO',
-    roleHint: 'Senior Serverless Specialist',
-    affiliationHint: 'Serverless Labs / Pune UG Council',
+    role: 'Senior Serverless Specialist',
+    affiliation: 'Serverless Labs // Pune UG',
     topic: 'Event-Driven Microservices: Zero to 10M Requests with AWS Lambda & EventBridge',
-    time: '10:30 - 11:15 IST',
+    time: '10:45 - 11:30 AM IST',
     track: 'Serverless',
-    level: 'Intermediate',
-    location: 'Track A (Serverless Bastion)',
+    location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Deep dive into event-driven design patterns, cold start mitigations, asynchronous decoupling with Amazon EventBridge, and cost-effective scaling.',
-    tags: ['AWS Lambda', 'EventBridge', 'DynamoDB', 'Microservices'],
-    revealWave: 'DROP 01 // WAVE 1'
+    tags: ['AWS Lambda', 'EventBridge', 'DynamoDB', 'Microservices']
   },
   {
     id: 'spk-03',
-    codeName: 'SPEAKER // DOSSIER 03',
-    telemetryId: '0x4C8D',
-    badge: 'AWS AMBASSADOR',
-    roleHint: 'Head of Applied AI & LLM Systems',
-    affiliationHint: 'Cognitive Cloud Systems',
-    topic: 'Generative AI on AWS: Building Multi-Modal RAG Pipelines with Amazon Bedrock',
-    time: '11:30 - 12:15 IST',
-    track: 'GenAI',
-    level: 'Advanced',
-    location: 'Track B (AI Nexus)',
-    description: 'End-to-end hands-on demonstration constructing Retrieval-Augmented Generation (RAG) applications using Amazon Bedrock, Claude 3.5 Sonnet, and OpenSearch Serverless vector indices.',
-    tags: ['Amazon Bedrock', 'RAG', 'Vector Search', 'Claude 3.5'],
-    revealWave: 'DROP 01 // WAVE 1'
+    name: 'Aria Thorne',
+    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
+    badge: 'AI SPECIALIST',
+    role: 'Head of Applied AI & LLM Systems',
+    affiliation: 'Cognitive Cloud Systems',
+    topic: 'Serverless at Scale: Multi-Region Event Architecture',
+    time: '12:30 - 01:15 PM IST',
+    track: 'Serverless',
+    location: 'MAIN AUDITORIUM (HALL 1)',
+    description: 'End-to-end hands-on demonstration constructing multi-region serverless applications using AWS Lambda, EventBridge, and Amazon Bedrock foundation models.',
+    tags: ['Serverless', 'EventBridge', 'Multi-Region', 'Bedrock']
   },
   {
     id: 'spk-04',
-    codeName: 'SPEAKER // DOSSIER 04',
-    telemetryId: '0x2A0F',
+    name: 'Rohan Kulkarni',
+    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
     badge: 'PLATFORM LEAD',
-    roleHint: 'Lead Platform Engineer & SRE',
-    affiliationHint: 'HyperScale Cloud Pune',
+    role: 'Lead Platform Engineer & SRE',
+    affiliation: 'HyperScale Cloud Pune',
     topic: 'Containerization & GitOps with Amazon EKS and ArgoCD',
-    time: '13:15 - 14:00 IST',
+    time: '02:15 - 03:00 PM IST',
     track: 'DevOps',
-    level: 'Intermediate',
-    location: 'Track A (Container Harbor)',
+    location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Demystifying production Kubernetes workflows on Amazon EKS, progressive rollouts with ArgoCD, Karpenter node autoscaling, and container security scanners.',
-    tags: ['Amazon EKS', 'Kubernetes', 'Karpenter', 'GitOps'],
-    revealWave: 'DROP 02 // WAVE 2'
+    tags: ['Amazon EKS', 'Kubernetes', 'Karpenter', 'GitOps']
   },
   {
     id: 'spk-05',
-    codeName: 'SPEAKER // DOSSIER 05',
-    telemetryId: '0x6D1E',
+    name: 'Priya Sharma',
+    photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
     badge: 'SECURITY CISO',
-    roleHint: 'Chief Information Security Officer',
-    affiliationHint: 'CyberShield Pune Enclave',
+    role: 'Chief Information Security Officer',
+    affiliation: 'CyberShield Pune Enclave',
     topic: 'Zero Trust Cloud Security & Threat Detection with AWS GuardDuty',
-    time: '14:00 - 14:45 IST',
+    time: '03:00 - 03:45 PM IST',
     track: 'Security',
-    level: 'Advanced',
-    location: 'Track B (Security Citadel)',
+    location: 'MAIN AUDITORIUM (HALL 1)',
     description: 'Real-world defensive blueprints implementing Zero Trust architectures, IAM policy boundaries, runtime anomaly detection with GuardDuty, and automated remediation via Step Functions.',
-    tags: ['Zero Trust', 'IAM', 'GuardDuty', 'Security'],
-    revealWave: 'DROP 02 // WAVE 2'
+    tags: ['Zero Trust', 'IAM', 'GuardDuty', 'Security']
   },
   {
     id: 'spk-06',
-    codeName: 'SPEAKER // DOSSIER 06',
-    telemetryId: '0x83B7',
+    name: 'Vikram Joshi',
+    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&auto=format&fit=crop&q=80',
+    linkedinUrl: 'https://linkedin.com/in/aws-community-pune',
     badge: 'COMMUNITY BUILDER',
-    roleHint: 'AWS Community Builder & Core Maintainer',
-    affiliationHint: 'OpenCloud Collective',
-    topic: 'Open Source in the Cloud: Contributing to AWS SDKs & CDK Constructs',
-    time: '14:45 - 15:15 IST',
+    role: 'AWS Community Builder & SRE',
+    affiliation: 'OpenCloud Collective',
+    topic: 'From Prototype to Production: Reliability & SRE on AWS',
+    time: '04:00 - 04:45 PM IST',
     track: 'Community',
-    level: 'Beginner',
-    location: 'Track A (Builder Workshop)',
-    description: 'How undergraduate students can kickstart meaningful open-source contributions to AWS CDK, local testing frameworks, and community libraries.',
-    tags: ['Open Source', 'AWS CDK', 'TypeScript', 'Community'],
-    revealWave: 'DROP 02 // WAVE 2'
+    location: 'MAIN AUDITORIUM (HALL 1)',
+    description: 'The end-to-end playbook for production reliability: continuous delivery pipelines, real-time observability with OpenTelemetry and Amazon CloudWatch, and resilience engineering.',
+    tags: ['CI/CD', 'OpenTelemetry', 'CloudWatch', 'SRE']
   }
 ];
 
@@ -120,8 +113,6 @@ export class SpeakersController {
   private container: HTMLElement;
   private currentTrackFilter: string = 'ALL';
   private expandedSessionIds: Set<string> = new Set();
-  private savedSessions: Set<string> = new Set();
-  private cipherIntervals: Map<string, number> = new Map();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -142,23 +133,23 @@ export class SpeakersController {
     this.container.innerHTML = `
       <div class="speakers-section-wrapper">
         <div class="section-meta-header">
-          <span class="section-tag mono">(03) Classified Keynotes & Breakouts</span>
-          <h2 class="section-headline">The Architects & Visionaries.</h2>
+          <span class="section-tag mono">(02) // FEATURED KEYNOTES & SPEAKERS</span>
+          <h2 class="section-headline">THE ARCHITECTS & VISIONARIES.</h2>
           <p class="section-sub">
-            Session intelligence confirmed. 24+ deep dives across GenAI, Serverless, and Kubernetes at Seasons 24, Wagholi. Speaker identities currently under classified protocol.
+            Confirmed keynote leaders, AWS heroes, and technical specialists delivering production cloud architectures on 27 December 2026 at Seasons 24, Wagholi. One unified stage.
           </p>
         </div>
 
-        <!-- Classified Status Telemetry Banner -->
-        <div class="classified-status-banner mono">
+        <!-- Lineup Status Banner -->
+        <div class="speakers-status-banner mono">
           <div class="csb-left">
-            <span class="csb-blip">●</span>
-            <span class="csb-title">TRANSMISSION PROTOCOL: CLASSIFIED</span>
+            <span class="status-pulse-dot"></span>
+            <span class="csb-title">LINEUP STATUS: KEYNOTES & TECHNICAL SPEAKERS CONFIRMED</span>
             <span class="csb-sep">//</span>
-            <span class="csb-count">6 OF 6 SLOTS LOCKED</span>
+            <span class="csb-count">6 SESSIONS LOCKED</span>
           </div>
           <div class="csb-right">
-            <span class="csb-status-pill">[DROP 01 IMMINENT · KONFHUB PRIORITY]</span>
+            <span class="csb-status-pill">[1 UNIFIED MAIN STAGE · SEASONS 24]</span>
           </div>
         </div>
 
@@ -174,70 +165,53 @@ export class SpeakersController {
           `).join('')}
         </div>
 
-        <!-- Speaker Cards Grid -->
+        <!-- Speaker Cards Grid (Pixel-faithful to Idea 3 Mockup) -->
         <div class="speakers-grid">
           ${sessions.map(s => {
             const isExpanded = this.expandedSessionIds.has(s.id);
-            const isBookmarked = this.savedSessions.has(s.id);
             return `
               <div class="speaker-card ${isExpanded ? 'is-expanded' : ''}" id="card-${s.id}">
-                <div class="speaker-card-top mono">
-                  <div class="badge-row">
-                    <span class="badge-role">${s.badge}</span>
-                    <span class="badge-track track-${s.track.toLowerCase()}">[${s.track.toUpperCase()}]</span>
-                  </div>
-                  <span class="badge-level level-${s.level.toLowerCase()}">${s.level}</span>
+                <!-- Framed Photo Box with Black Border & Corner Pill -->
+                <div class="speaker-photo-frame">
+                  <img src="${s.photoUrl}" alt="${s.name}" class="speaker-photo-img" loading="lazy" />
+                  <span class="speaker-track-tag mono">[${s.track.toUpperCase()}]</span>
                 </div>
 
-                <!-- Encrypted Profile Dossier Row -->
-                <div class="speaker-profile-row">
-                  <div class="profile-avatar-box avatar-classified-box mono" data-id="${s.id}">
-                    <span class="enc-hash-text">${s.telemetryId}</span>
-                    <span class="enc-sub-tag">[ENC]</span>
+                <!-- Speaker Content -->
+                <div class="speaker-content">
+                  <!-- Name & Rounded LinkedIn Pill Row -->
+                  <div class="speaker-header-row">
+                    <h3 class="speaker-name">${s.name}</h3>
+                    <a href="${s.linkedinUrl}" class="speaker-linkedin-pill mono" target="_blank" rel="noopener noreferrer">
+                      [IN] LINKEDIN
+                    </a>
                   </div>
-                  <div class="profile-text">
-                    <div class="classified-name-row mono">
-                      <span class="redacted-bar mono" data-id="${s.id}" data-original="████████████████">
-                        ████████████████
-                      </span>
-                      <span class="classified-pill">[TOP SECRET]</span>
-                    </div>
-                    <span class="speaker-role mono">${s.roleHint}</span>
-                    <span class="speaker-company mono">${s.affiliationHint}</span>
-                  </div>
-                </div>
 
-                <div class="session-brief">
-                  <h4 class="session-topic">${s.topic}</h4>
-                  <div class="session-meta-strip mono">
-                    <span class="meta-time">[TIME] ${s.time}</span>
-                    <span class="meta-loc">[LOC] ${s.location}</span>
+                  <!-- Role & Affiliation -->
+                  <div class="speaker-role-line mono">
+                    ${s.role} // ${s.affiliation}
                   </div>
-                </div>
 
-                ${isExpanded ? `
-                  <div class="session-expanded-content">
-                    <div class="classified-clearance-stamp mono">
-                      <span class="stamp-pill">[CLEARANCE: PUBLIC BRIEFING]</span>
-                      <span class="stamp-wave text-accent">${s.revealWave}</span>
+                  <!-- Topic -->
+                  <h4 class="speaker-topic">${s.topic}</h4>
+
+                  <!-- Expandable Abstract Drawer -->
+                  ${isExpanded ? `
+                    <div class="speaker-abstract-drawer mono">
+                      <p class="abstract-text">${s.description}</p>
+                      <div class="abstract-tags">
+                        ${s.tags.map(t => `<span class="abstract-tag-chip">#${t}</span>`).join('')}
+                      </div>
                     </div>
-                    <p class="session-desc">${s.description}</p>
-                    <div class="session-tags-row mono">
-                      ${s.tags.map(tag => `<span class="tag-chip">#${tag}</span>`).join('')}
-                    </div>
-                    <div class="classified-notice-strip mono">
-                      <span class="text-accent">[REVEAL PROTOCOL]</span> Full speaker identity, headshot and credentials unlock in Drop 01. Registered KonfHub ticket holders receive priority reveal.
-                    </div>
+                  ` : ''}
+
+                  <!-- Bottom Row: Location & Details Button -->
+                  <div class="speaker-bottom-row mono">
+                    <div class="speaker-loc">[LOC] ${s.location}</div>
+                    <button class="btn-speaker-details btn-toggle-abstract" data-id="${s.id}">
+                      ${isExpanded ? '[-] CLOSE' : '[+] DETAILS'}
+                    </button>
                   </div>
-                ` : ''}
-
-                <div class="speaker-card-footer mono">
-                  <button class="btn-toggle-abstract" data-id="${s.id}">
-                    ${isExpanded ? '[-] LESS DETAILS' : '[+] SESSION ABSTRACT'}
-                  </button>
-                  <button class="btn-bookmark-session ${isBookmarked ? 'is-bookmarked' : ''}" data-id="${s.id}">
-                    ${isBookmarked ? '[OK] IN SCHEDULE' : '+ ADD TO SCHEDULE'}
-                  </button>
                 </div>
               </div>
             `;
@@ -245,39 +219,13 @@ export class SpeakersController {
         </div>
 
         <div class="speakers-footer-status mono">
-          <span>LINEUP PROTOCOL: 24 KEYNOTES & BREAKOUTS // 2 PARALLEL TRACKS // 100% CONFIRMED</span>
-          <a href="#passes" class="scd-claim-ticket-link">GET PASS ON KONFHUB FOR FIRST REVEAL -></a>
+          <span>LINEUP PROTOCOL: KEYNOTES & TECHNICAL SESSIONS // 1 UNIFIED MAIN STAGE // 27 DECEMBER 2026</span>
+          <a href="#passes" class="scd-claim-ticket-link">CLAIM YOUR KONFHUB PASS -></a>
         </div>
       </div>
     `;
 
     this.attachEvents();
-  }
-
-  private startCipherGlitch(element: HTMLElement, originalText: string) {
-    const chars = '0123456789ABCDEF!#@$%&?/*+';
-    let iterations = 0;
-    const maxIterations = 14;
-
-    const intervalId = window.setInterval(() => {
-      element.textContent = originalText
-        .split('')
-        .map((_, idx) => {
-          if (idx < iterations) return '█';
-          return chars[Math.floor(Math.random() * chars.length)];
-        })
-        .join('');
-
-      iterations++;
-      sound.playTypewriter(Math.random() * 250 + 700);
-
-      if (iterations >= maxIterations) {
-        clearInterval(intervalId);
-        element.textContent = originalText;
-      }
-    }, 45);
-
-    this.cipherIntervals.set(element.dataset.id || 'cipher', intervalId);
   }
 
   private attachEvents() {
@@ -307,37 +255,6 @@ export class SpeakersController {
         }
         sound.playClick(750, 0.03);
         this.render();
-      });
-    });
-
-    // Bookmark / schedule button
-    const bookmarkBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-bookmark-session');
-    bookmarkBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        if (!id) return;
-        if (this.savedSessions.has(id)) {
-          this.savedSessions.delete(id);
-          sound.playClick(500, 0.04);
-        } else {
-          this.savedSessions.add(id);
-          sound.playSuccess();
-        }
-        this.render();
-      });
-    });
-
-    // Redacted Bar hover scramble
-    const redactedBars = this.container.querySelectorAll<HTMLElement>('.redacted-bar, .avatar-classified-box');
-    redactedBars.forEach(bar => {
-      bar.addEventListener('mouseenter', () => {
-        const original = bar.getAttribute('data-original') || '████████████████';
-        const target = bar.classList.contains('redacted-bar') 
-          ? bar 
-          : bar.querySelector<HTMLElement>('.enc-hash-text');
-        if (target) {
-          this.startCipherGlitch(target, original);
-        }
       });
     });
   }
