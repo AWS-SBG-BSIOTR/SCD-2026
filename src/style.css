@@ -548,6 +548,14 @@ footer {
   box-shadow: 3px 3px 0px var(--color-black);
 }
 
+.hero-mobile-hud {
+  display: none;
+}
+
+.pass-gyro-hint {
+  display: none;
+}
+
 .scd-badge-pill {
   background-color: var(--color-black);
   color: var(--color-cream);
@@ -5970,8 +5978,69 @@ footer {
 
   /* Global Section Spacing */
   .hero-section {
-    padding: 28px 16px 36px;
+    padding: 24px 16px 36px;
     min-height: auto;
+  }
+
+  /* Mobile Hero Telemetry HUD */
+  .hero-mobile-hud {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+    width: 100%;
+  }
+
+  .hud-status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--color-vermilion);
+  }
+
+  .hud-pulse-blip {
+    display: inline-block;
+    color: var(--color-vermilion);
+    animation: blipPulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes blipPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  .hud-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+
+  .hud-tag {
+    background: rgba(1, 1, 1, 0.06);
+    border: 1px solid rgba(1, 1, 1, 0.18);
+    padding: 3px 7px;
+    letter-spacing: 0.04em;
+  }
+
+  .hud-tag-accent {
+    background: rgba(253, 11, 3, 0.08);
+    border-color: var(--color-vermilion);
+    color: var(--color-vermilion);
+  }
+
+  .pass-gyro-hint {
+    display: block;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--color-vermilion);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
   }
 
   .overview-section,

@@ -108,6 +108,7 @@ export class PassGeneratorController {
               <div class="lanyard-strap mono">AWS COMMUNITY PUNE // STUDENT BUILDER PASS</div>
               <div class="lanyard-clip"></div>
             </div>
+            <div class="pass-gyro-hint mono">[TILT PHONE OR SWIPE TO SWING BADGE]</div>
 
             <!-- The Authentic Brutalist Pass Card -->
             <div class="physical-pass-card" id="physical-pass-card">
@@ -273,52 +274,127 @@ export class PassGeneratorController {
       });
     }
 
-    // Interactive Dangling Lanyard Card Physics (Option B)
+    // Interactive Dangling Lanyard Card Physics (Mouse, Mobile Touch & Gyro)
     const card = this.container.querySelector<HTMLElement>('#physical-pass-card');
     const stage = this.container.querySelector<HTMLElement>('.pass-preview-stage');
     if (card && stage) {
-      let isHovered = false;
+      let isInteracting = false;
+      let isTouchDragging = false;
+      let touchStartX = 0;
+      let touchDeltaX = 0;
       let dampTimeout: number | null = null;
+      let gyroActive = false;
+      let targetAngle = 0;
+      let currentAngle = 0;
 
+      const triggerDangle = () => {
+        card.style.transform = '';
+        card.style.boxShadow = '';
+        card.classList.add('is-dangling');
+        if (dampTimeout) clearTimeout(dampTimeout);
+        dampTimeout = window.setTimeout(() => {
+          card.classList.remove('is-dangling');
+        }, 1400);
+      };
+
+      const applyPhysics = (angleDeg: number, tiltYDeg: number) => {
+        const shadowX = 10 - angleDeg * 0.75;
+        const shadowY = 10 + Math.abs(angleDeg) * 0.25;
+        card.style.transform = `perspective(900px) rotateZ(${angleDeg.toFixed(2)}deg) rotateY(${tiltYDeg.toFixed(2)}deg)`;
+        card.style.boxShadow = `${shadowX.toFixed(1)}px ${shadowY.toFixed(1)}px 0px var(--color-black)`;
+      };
+
+      // 1. Mouse Events (Desktop)
       stage.addEventListener('mouseenter', () => {
-        isHovered = true;
+        isInteracting = true;
         if (dampTimeout) clearTimeout(dampTimeout);
         card.classList.remove('is-dangling');
         sound.playHover(480, 0.02);
       });
 
       stage.addEventListener('mousemove', (e: MouseEvent) => {
-        if (!isHovered) return;
+        if (!isInteracting || isTouchDragging) return;
         const rect = card.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const mouseX = e.clientX - centerX;
         const normalizedX = Math.max(-1, Math.min(1, mouseX / (rect.width / 2)));
 
-        // Pendulum rotation angles pinned to top center
-        const maxAngle = 6.5; // degrees
-        const angle = normalizedX * maxAngle;
-        const tiltY = normalizedX * 4; // subtle 3D perspective turn
-
-        // Dynamic shadow offset: shifts opposite to rotation
-        const shadowX = 10 - angle * 0.7;
-        const shadowY = 10 + Math.abs(angle) * 0.2;
-
-        card.style.transform = `perspective(900px) rotateZ(${angle.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
-        card.style.boxShadow = `${shadowX.toFixed(1)}px ${shadowY.toFixed(1)}px 0px var(--color-black)`;
+        const angle = normalizedX * 7.5;
+        const tiltY = normalizedX * 4.5;
+        applyPhysics(angle, tiltY);
       });
 
       stage.addEventListener('mouseleave', () => {
-        isHovered = false;
-        // Clear inline overrides so CSS keyframe animation takes over
-        card.style.transform = '';
-        card.style.boxShadow = '';
-        card.classList.add('is-dangling');
+        isInteracting = false;
+        triggerDangle();
         sound.playHover(540, 0.02);
-
-        dampTimeout = window.setTimeout(() => {
-          card.classList.remove('is-dangling');
-        }, 1400);
       });
+
+      // 2. Mobile Touch Events (Swipe, Drag & Tap Jiggle)
+      stage.addEventListener('touchstart', (e: TouchEvent) => {
+        if (e.touches.length > 0) {
+          isInteracting = true;
+          isTouchDragging = true;
+          touchStartX = e.touches[0].clientX;
+          touchDeltaX = 0;
+          if (dampTimeout) clearTimeout(dampTimeout);
+          card.classList.remove('is-dangling');
+          sound.playHover(480, 0.02);
+
+          // Request DeviceOrientation permission on iOS Safari if required
+          if (typeof (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> })?.requestPermission === 'function') {
+            (DeviceOrientationEvent as unknown as { requestPermission: () => Promise<string> }).requestPermission().then((res: string) => {
+              if (res === 'granted') gyroActive = true;
+            }).catch(() => {});
+          }
+        }
+      }, { passive: true });
+
+      stage.addEventListener('touchmove', (e: TouchEvent) => {
+        if (!isTouchDragging || e.touches.length === 0) return;
+        const currentX = e.touches[0].clientX;
+        touchDeltaX = currentX - touchStartX;
+        const rect = card.getBoundingClientRect();
+        const normalizedX = Math.max(-1, Math.min(1, touchDeltaX / (rect.width * 0.45)));
+        const angle = normalizedX * 8.5;
+        const tiltY = normalizedX * 5.5;
+        applyPhysics(angle, tiltY);
+      }, { passive: true });
+
+      stage.addEventListener('touchend', () => {
+        isInteracting = false;
+        isTouchDragging = false;
+        // If it was a quick tap (< 10px movement), play click audio for tactile feedback
+        if (Math.abs(touchDeltaX) < 10) {
+          sound.playClick(850, 0.04);
+        }
+        triggerDangle();
+      }, { passive: true });
+
+      // 3. Gyroscope / Device Tilt Physics
+      const handleOrientation = (e: DeviceOrientationEvent) => {
+        if (isInteracting || isTouchDragging) return;
+        if (e.gamma !== null && e.gamma !== undefined) {
+          gyroActive = true;
+          // Clamp gamma tilt between -25 and +25 degrees
+          const clampedGamma = Math.max(-25, Math.min(25, e.gamma));
+          targetAngle = (clampedGamma / 25) * 8.0;
+        }
+      };
+
+      const gyroLoop = () => {
+        if (gyroActive && !isInteracting && !isTouchDragging) {
+          currentAngle += (targetAngle - currentAngle) * 0.12;
+          if (Math.abs(currentAngle) > 0.05) {
+            const tiltY = (currentAngle / 8.0) * 5.0;
+            applyPhysics(currentAngle, tiltY);
+          }
+        }
+        requestAnimationFrame(gyroLoop);
+      };
+
+      window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+      requestAnimationFrame(gyroLoop);
     }
   }
 

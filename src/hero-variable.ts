@@ -91,6 +91,16 @@ export class HeroVariableController {
       this.resetToRest();
     }, { passive: true });
 
+    // Gyroscope tilt reaction for mobile hero variable typography
+    window.addEventListener('deviceorientation', (e: DeviceOrientationEvent) => {
+      if (this.isPointerInside) return;
+      if (e.gamma !== null && e.gamma !== undefined) {
+        const clamped = Math.max(-25, Math.min(25, e.gamma));
+        this.manualScrub = 0.5 + (clamped / 25) * 0.35;
+        this.applyManualScrub();
+      }
+    }, { passive: true });
+
     // Hero Excitement & Hype range scrubber
     const scrubSlider = this.heroElement.querySelector<HTMLInputElement>('#hero-scrub-slider');
     const scrubVal = this.heroElement.querySelector('#hero-scrub-val');
