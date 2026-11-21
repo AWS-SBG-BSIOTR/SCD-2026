@@ -85,10 +85,7 @@ export class PassGeneratorController {
               </div>
 
               <div class="form-actions-strip">
-                <button type="button" class="btn-brutalist btn-accent w-full" id="btn-claim-pass">
-                  CLAIM PASS VIA KONFHUB ->
-                </button>
-                <button type="button" class="btn-brutalist btn-secondary w-full" id="btn-download-pass-png">
+                <button type="button" class="btn-brutalist btn-accent w-full" id="btn-download-pass-png">
                   DOWNLOAD BADGE (PNG) [v]
                 </button>
                 <button type="button" class="btn-brutalist btn-secondary w-full" id="btn-regen-pass">
@@ -248,29 +245,6 @@ export class PassGeneratorController {
         this.config.passNumber = this.generateNewPassNumber();
         sound.playClick(900, 0.04);
         this.updatePassDisplay();
-      });
-    }
-
-    // Claim Pass button
-    const claimBtn = this.container.querySelector<HTMLButtonElement>('#btn-claim-pass');
-    const toast = this.container.querySelector<HTMLElement>('#pass-claim-toast');
-    if (claimBtn) {
-      claimBtn.addEventListener('click', () => {
-        sound.playSuccess();
-        confetti({
-          particleCount: 70,
-          spread: 65,
-          origin: { y: 0.6 },
-          colors: ['#FD0B03', '#010101', '#DCD4C2', '#9F180F']
-        });
-
-        if (toast) {
-          toast.style.display = 'block';
-          toast.textContent = `[SUCCESS] PASS RESERVED: #${this.config.passNumber} FOR ${this.config.name || 'DELEGATE'}! REDIRECTING TO KONFHUB EVENT CHECKOUT...`;
-          setTimeout(() => {
-            toast.style.display = 'none';
-          }, 6000);
-        }
       });
     }
 

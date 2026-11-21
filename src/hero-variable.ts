@@ -1,17 +1,34 @@
 import { sound } from './audio';
-import confetti from 'canvas-confetti';
+
+interface LetterNode {
+  element: HTMLElement;
+  char: string;
+  isSpace: boolean;
+  index: number;
+  currentWght: number;
+  targetWght: number;
+  currentWdth: number;
+  targetWdth: number;
+  currentY: number;
+  targetY: number;
+  currentScale: number;
+  targetScale: number;
+}
 
 export class HeroVariableController {
   private heroElement: HTMLElement;
   private wordmarkElement: HTMLElement | null = null;
-  private letters: HTMLElement[] = [];
+  private letters: LetterNode[] = [];
   private isPointerInside: boolean = false;
-  private mouseX: number = 0;
-  private mouseY: number = 0;
+  private pointerX: number = 0;
+  private pointerY: number = 0;
   private rafId: number | null = null;
 
-  // Manual scrub factor (0 to 1)
-  private manualScrub: number = 0.5;
+  // Gyroscope tilt telemetry
+  private gyroTiltX: number = 0; // -1 (tilted left) to +1 (tilted right)
+  private gyroPitchY: number = 0; // front/back tilt
+  private gyroActive: boolean = false;
+  private lastActiveCharIndex: number = -1;
 
   constructor(heroElement: HTMLElement) {
     this.heroElement = heroElement;
@@ -23,20 +40,36 @@ export class HeroVariableController {
     this.letters = [];
     this.wordmarkElement.innerHTML = '';
 
-    newText.split('').forEach((char) => {
+    const chars = newText.split('');
+    chars.forEach((char, index) => {
       const span = document.createElement('span');
       span.className = 'hero-char';
-      if (char === ' ') {
+      const isSpace = char === ' ';
+      if (isSpace) {
         span.innerHTML = '&nbsp;';
         span.classList.add('char-space');
       } else {
         span.textContent = char;
       }
       this.wordmarkElement?.appendChild(span);
-      this.letters.push(span);
+
+      this.letters.push({
+        element: span,
+        char,
+        isSpace,
+        index,
+        currentWght: 800,
+        targetWght: 800,
+        currentWdth: 105,
+        targetWdth: 105,
+        currentY: 0,
+        targetY: 0,
+        currentScale: 1,
+        targetScale: 1
+      });
     });
 
-    this.applyManualScrub();
+    this.adjustFit();
   }
 
   private onResize = () => {
@@ -49,125 +82,72 @@ export class HeroVariableController {
 
     this.setWordmark('AWS SCD 2026');
     this.attachEvents();
-    this.startLoop();
+    this.startPhysicsLoop();
     this.adjustFit();
 
     window.addEventListener('resize', this.onResize, { passive: true });
   }
 
   private attachEvents() {
-    // Pointer proximity on hero
-    this.heroElement.addEventListener('pointerenter', () => {
+    const container = this.heroElement.querySelector<HTMLElement>('.hero-wordmark-container') || this.heroElement;
+
+    // Pointer Events (Mouse + Pen)
+    container.addEventListener('pointerenter', () => {
       this.isPointerInside = true;
     });
 
-    this.heroElement.addEventListener('pointerleave', () => {
+    container.addEventListener('pointerleave', () => {
       this.isPointerInside = false;
-      this.resetToRest();
+      this.lastActiveCharIndex = -1;
     });
 
-    this.heroElement.addEventListener('pointermove', (e: PointerEvent) => {
-      this.mouseX = e.clientX;
-      this.mouseY = e.clientY;
+    container.addEventListener('pointermove', (e: PointerEvent) => {
+      this.pointerX = e.clientX;
+      this.pointerY = e.clientY;
       this.isPointerInside = true;
     });
 
-    // Touch support
-    this.heroElement.addEventListener('touchmove', (e: TouchEvent) => {
+    // Touch Events (Mobile Drag & Swipe Ripple)
+    const onTouch = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        this.mouseX = e.touches[0].clientX;
-        this.mouseY = e.touches[0].clientY;
+        this.pointerX = e.touches[0].clientX;
+        this.pointerY = e.touches[0].clientY;
         this.isPointerInside = true;
+        this.requestGyroPermission();
       }
+    };
+
+    container.addEventListener('touchstart', onTouch, { passive: true });
+    container.addEventListener('touchmove', onTouch, { passive: true });
+
+    container.addEventListener('touchend', () => {
+      this.isPointerInside = false;
+      this.lastActiveCharIndex = -1;
     }, { passive: true });
 
-    this.heroElement.addEventListener('touchend', () => {
+    container.addEventListener('touchcancel', () => {
       this.isPointerInside = false;
-      this.resetToRest();
-    }, { passive: true });
-
-    this.heroElement.addEventListener('touchcancel', () => {
-      this.isPointerInside = false;
-      this.resetToRest();
+      this.lastActiveCharIndex = -1;
     }, { passive: true });
 
     // Gyroscope tilt reaction for mobile hero variable typography
     window.addEventListener('deviceorientation', (e: DeviceOrientationEvent) => {
-      if (this.isPointerInside) return;
       if (e.gamma !== null && e.gamma !== undefined) {
-        const clamped = Math.max(-25, Math.min(25, e.gamma));
-        this.manualScrub = 0.5 + (clamped / 25) * 0.35;
-        this.applyManualScrub();
+        this.gyroActive = true;
+        const clampedGamma = Math.max(-30, Math.min(30, e.gamma));
+        const clampedBeta = Math.max(-20, Math.min(60, (e.beta ?? 45) - 45));
+
+        // Smooth target normalization
+        this.gyroTiltX = clampedGamma / 30; // -1 to 1
+        this.gyroPitchY = clampedBeta / 30;
       }
     }, { passive: true });
-
-    // Hero Excitement & Hype range scrubber
-    const scrubSlider = this.heroElement.querySelector<HTMLInputElement>('#hero-scrub-slider');
-    const scrubVal = this.heroElement.querySelector('#hero-scrub-val');
-    const statusTag = this.heroElement.querySelector('#hype-status-tag');
-    let hasTriggeredMaxConfetti = false;
-
-    if (scrubSlider) {
-      scrubSlider.addEventListener('input', () => {
-        const val = Number(scrubSlider.value);
-        this.manualScrub = val / 100;
-        if (scrubVal) {
-          scrubVal.textContent = `${val}%`;
-        }
-
-        // Dynamic hype status tags
-        if (statusTag) {
-          if (val <= 25) {
-            statusTag.textContent = '[STATUS: CURIOUS // EXPLORING THE CLOUD]';
-            statusTag.className = 'hype-status-banner stage-low mono';
-          } else if (val <= 50) {
-            statusTag.textContent = '[STATUS: STOKED // LAPTOP CHARGED & READY]';
-            statusTag.className = 'hype-status-banner stage-mid mono';
-          } else if (val <= 75) {
-            statusTag.textContent = '[STATUS: HYPED // ARCHITECTING RAG PIPELINES]';
-            statusTag.className = 'hype-status-banner stage-high mono';
-          } else if (val < 100) {
-            statusTag.textContent = '[STATUS: MAXIMUM OVERDRIVE // READY TO BUILD AT SEASONS 24!]';
-            statusTag.className = 'hype-status-banner stage-max mono';
-          } else {
-            statusTag.textContent = '[STATUS: 100% MAXIMUM HYPED // SEE YOU AT SEASONS 24 WAGHOLI!]';
-            statusTag.className = 'hype-status-banner stage-ultra mono';
-          }
-        }
-
-        // Escalating frequency audio click
-        sound.playClick(450 + val * 6, 0.02);
-
-        // 100% celebratory explosion!
-        if (val === 100 && !hasTriggeredMaxConfetti) {
-          hasTriggeredMaxConfetti = true;
-          sound.playSuccess();
-          confetti({
-            particleCount: 90,
-            spread: 80,
-            origin: { y: 0.65 },
-            colors: ['#FD0B03', '#010101', '#DCD4C2', '#9F180F']
-          });
-        } else if (val < 95) {
-          hasTriggeredMaxConfetti = false;
-        }
-
-        this.applyManualScrub();
-      });
-    }
   }
 
-  private applyManualScrub() {
-    this.letters.forEach((letter) => {
-      if (letter.classList.contains('char-space')) return;
-      // Option 1 Solid Brand Anchor: default at 50% slider is wght: 850, wdth: 110
-      const wght = Math.round(700 + this.manualScrub * 300); // 700 to 1000 ultra-bold range
-      const wdth = Math.round(90 + this.manualScrub * 40);   // 90 to 130 wide range
-      letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
-      letter.style.transform = 'none';
-    });
-
-    this.adjustFit();
+  private requestGyroPermission() {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+      (DeviceOrientationEvent as any).requestPermission().catch(() => {});
+    }
   }
 
   public adjustFit() {
@@ -175,7 +155,6 @@ export class HeroVariableController {
     const container = this.heroElement.querySelector<HTMLElement>('.hero-wordmark-container');
     if (!container) return;
 
-    // Temporarily reset wordmark transform to read natural unscaled scrollWidth
     this.wordmarkElement.style.transform = 'none';
 
     const containerWidth = container.clientWidth;
@@ -191,46 +170,82 @@ export class HeroVariableController {
     }
   }
 
-  private startLoop() {
+  private startPhysicsLoop() {
     const update = () => {
-      if (this.isPointerInside && this.letters.length > 0) {
-        const maxDist = 320; // Proximity radius in pixels
+      const isMobile = window.innerWidth <= 768;
+      const proximityRadius = isMobile ? 105 : 190;
+      const totalLetters = this.letters.length;
 
-        this.letters.forEach((letter) => {
-          if (letter.classList.contains('char-space')) return;
+      this.letters.forEach((node, idx) => {
+        if (node.isSpace) return;
 
-          const rect = letter.getBoundingClientRect();
+        // Base values modulated by gyroscope tilt
+        // Normalized position across the word: -1 (leftmost) to +1 (rightmost)
+        const normalizedPos = totalLetters > 1 ? (idx / (totalLetters - 1)) * 2 - 1 : 0;
+        
+        // When tilted left (gyroTiltX < 0), left letters expand and right letters compress.
+        // When tilted right (gyroTiltX > 0), right letters expand and left letters compress.
+        const gyroInfluence = this.gyroTiltX * normalizedPos;
+        const baseWght = 800 + gyroInfluence * 140;
+        const baseWdth = 105 + gyroInfluence * 20;
+
+        let targetWght = baseWght;
+        let targetWdth = baseWdth;
+        let targetY = 0;
+        let targetScale = 1;
+
+        // Touch / Pointer Magnetic Proximity Ripple
+        if (this.isPointerInside) {
+          const rect = node.element.getBoundingClientRect();
           const letterCenterX = rect.left + rect.width / 2;
           const letterCenterY = rect.top + rect.height / 2;
 
-          const dx = this.mouseX - letterCenterX;
-          const dy = this.mouseY - letterCenterY;
+          const dx = this.pointerX - letterCenterX;
+          const dy = this.pointerY - letterCenterY;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < maxDist) {
-            const factor = Math.pow(1 - dist / maxDist, 1.4); // Smooth falloff curve
-            const wght = Math.round(850 + factor * 100);
-            const wdth = Math.round(110 + factor * 20);
-            letter.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}`;
-            letter.style.transform = 'none';
-          } else {
-            // Letters outside cursor proximity maintain rock-solid rest state
-            const restWght = Math.round(700 + this.manualScrub * 300);
-            const restWdth = Math.round(90 + this.manualScrub * 40);
-            letter.style.fontVariationSettings = `'wght' ${restWght}, 'wdth' ${restWdth}`;
-            letter.style.transform = 'none';
+          if (dist < proximityRadius) {
+            const factor = Math.pow(1 - dist / proximityRadius, 1.6);
+            
+            // Expand weight and width under the finger
+            targetWght = Math.min(1000, baseWght + factor * 220);
+            targetWdth = Math.min(135, baseWdth + factor * 30);
+            targetY = -factor * 7; // subtle physical lift
+            targetScale = 1 + factor * 0.06;
+
+            // Trigger micro tactile audio tick and haptic pulse on peak crossing
+            if (factor > 0.65 && this.lastActiveCharIndex !== idx) {
+              this.lastActiveCharIndex = idx;
+              sound.playClick(680 + idx * 35, 0.015);
+              if (typeof navigator !== 'undefined' && navigator.vibrate) {
+                try { navigator.vibrate(8); } catch {}
+              }
+            }
           }
-        });
-      }
+        }
+
+        // Smooth spring lerping (0.16 factor for snappy physical return)
+        node.currentWght += (targetWght - node.currentWght) * 0.16;
+        node.currentWdth += (targetWdth - node.currentWdth) * 0.16;
+        node.currentY += (targetY - node.currentY) * 0.18;
+        node.currentScale += (targetScale - node.currentScale) * 0.18;
+
+        const roundedWght = Math.round(node.currentWght);
+        const roundedWdth = Math.round(node.currentWdth);
+        node.element.style.fontVariationSettings = `'wght' ${roundedWght}, 'wdth' ${roundedWdth}`;
+
+        // Apply physical lift + scale
+        if (Math.abs(node.currentY) > 0.1 || Math.abs(node.currentScale - 1) > 0.005) {
+          node.element.style.transform = `translate3d(0, ${node.currentY.toFixed(2)}px, 0) scale(${node.currentScale.toFixed(3)})`;
+        } else {
+          node.element.style.transform = 'none';
+        }
+      });
 
       this.rafId = requestAnimationFrame(update);
     };
 
     this.rafId = requestAnimationFrame(update);
-  }
-
-  private resetToRest() {
-    this.applyManualScrub();
   }
 
   public destroy() {

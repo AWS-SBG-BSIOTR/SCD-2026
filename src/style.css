@@ -657,6 +657,7 @@ footer {
   padding: 44px 0 40px 0;
   text-align: center;
   user-select: none;
+  -webkit-user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -665,6 +666,7 @@ footer {
   width: 100%;
   max-width: 100%;
   overflow: hidden;
+  touch-action: pan-y;
 }
 
 .hero-wordmark-title {
@@ -679,14 +681,15 @@ footer {
   max-width: 100%;
   justify-content: center;
   transform-origin: center center;
-  transition: transform 0.12s ease-out;
 }
 
 .hero-char {
   display: inline-block;
   will-change: font-variation-settings, transform;
-  transition: font-variation-settings 0.12s ease-out, transform 0.12s ease-out;
+  transform-origin: center bottom;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .hero-char:hover {
@@ -6246,6 +6249,13 @@ footer {
     background: rgba(253, 11, 3, 0.08);
     border-color: var(--color-vermilion);
     color: var(--color-vermilion);
+  }
+
+  .hud-tag-gyro {
+    background: rgba(1, 1, 1, 0.04);
+    border: 1px dashed rgba(1, 1, 1, 0.28);
+    color: var(--color-vermilion);
+    letter-spacing: 0.06em;
   }
 
   .pass-gyro-hint {

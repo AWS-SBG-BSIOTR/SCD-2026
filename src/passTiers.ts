@@ -23,11 +23,13 @@ export const OFFICIAL_PASS: SinglePassDetails = {
   capacity: '300 STUDENT BUILDERS',
   konfhubUrl: 'https://konfhub.com/aws-scd-pune-2026',
   inclusions: [
-    'Admission to all Keynotes, Technical Deep Dives & Panel Discussion',
-    'Exclusive AWS Student Community Day Pune Swag & Builder Kit',
-    'Morning breakfast, buffet lunch, and evening high-tea at Seasons 24',
-    'Verified digital participation certificate & social badge',
-    'Direct face-to-face networking with AWS Community Leaders & Mentors',
+    'Admission to all Keynotes, Technical Sessions & Panel Discussions',
+    'Exclusive AWS Swag & Developer Builder Kit',
+    'Hot morning breakfast, delicious buffet lunch & evening high-tea at Seasons 24',
+    'Official Credly digital attendee badge & verified participation credential',
+    'High-impact networking with student builders & cloud professionals',
+    'Reserved priority seating rows for professionals & invited delegates',
+    'Direct 1-on-1 mentorship & interaction with AWS Community Leaders',
     'Full access to sponsor exhibits & interactive tech demos'
   ]
 };
