@@ -155,9 +155,6 @@ export class OverviewController {
 
         <!-- Quick Section Actions -->
         <div class="overview-actions-row">
-          <a href="#passes" class="btn-brutalist btn-accent overview-cta-btn">
-            CLAIM YOUR KONFHUB PASS ->
-          </a>
           <a href="#schedule" class="btn-brutalist btn-secondary overview-cta-btn">
             EXPLORE 15-SLOT SCHEDULE [v]
           </a>

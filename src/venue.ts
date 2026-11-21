@@ -341,18 +341,7 @@ export class VenueController {
                 </div>
               </div>
 
-              <!-- On-Site Facilities & Amenities Matrix -->
-              <div class="amenities-matrix">
-                <span class="matrix-title">ON-SITE FACILITIES & AMENITIES:</span>
-                <div class="amenity-tags-grid">
-                  <span>[OK] HIGH-DENSITY GIGABIT WIFI</span>
-                  <span>[OK] AIR-CONDITIONED KEYNOTE HALLS</span>
-                  <span>[OK] DEV CHARGING STATIONS</span>
-                  <span>[OK] FIRST-AID & MEDICAL BAY</span>
-                  <span>[OK] RESTROOMS & PRAYER ROOM</span>
-                  <span>[OK] REFRESHMENT & FOOD KIOSKS</span>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>

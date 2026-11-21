@@ -1,13 +1,12 @@
 import { sound } from './audio';
 
-export interface SponsorItem {
+export interface SponsorPartnerItem {
   id: string;
   name: string;
-  tier: 'Title' | 'Platinum' | 'Gold' | 'Community';
-  tagline: string;
-  description: string;
-  booth: string;
-  perk: string;
+  category: 'SPONSOR' | 'COMMUNITY_PARTNER';
+  tier: string;
+  logoUrl: string;
+  websiteUrl: string;
 }
 
 export interface FAQEntry {
@@ -17,51 +16,49 @@ export interface FAQEntry {
   answer: string;
 }
 
-export const SPONSORS_LIST: SponsorItem[] = [
+export const OFFICIAL_SPONSORS: SponsorPartnerItem[] = [
   {
     id: 'sp-aws',
     name: 'Amazon Web Services',
-    tier: 'Title',
-    tagline: 'Build Without Limits',
-    description: 'The world’s most comprehensive cloud platform, offering over 200 fully featured services globally.',
-    booth: 'Hall A — Main Builder Showcase',
-    perk: '$100 Cloud Credits + AWS Backpack'
-  },
-  {
-    id: 'sp-datadog',
-    name: 'Datadog Observability',
-    tier: 'Platinum',
-    tagline: 'Modern APM & Cloud Monitoring',
-    description: 'Unified monitoring, trace observability, and real-time security postures for modern cloud systems.',
-    booth: 'Hall B — Booth 101',
-    perk: 'Custom Mechanical Keycaps & Swag'
-  },
-  {
-    id: 'sp-hashi',
-    name: 'HashiCorp / IBM',
-    tier: 'Platinum',
-    tagline: 'Infrastructure as Code at Scale',
-    description: 'Empowering engineering teams to provision and secure multi-cloud infrastructure with Terraform and Vault.',
-    booth: 'Hall B — Booth 102',
-    perk: 'Terraform T-shirts & Dev Hoodies'
-  },
-  {
-    id: 'sp-mongo',
-    name: 'MongoDB Atlas',
-    tier: 'Gold',
-    tagline: 'Multi-Cloud Developer Data Platform',
-    description: 'Integrated cloud database services for transactional data, vector search, and edge synchronization.',
-    booth: 'Hall C — Booth 201',
-    perk: 'Atlas Water Bottles & Desk Mats'
+    category: 'SPONSOR',
+    tier: 'TITLE SPONSOR',
+    logoUrl: '/logos/aws-full.svg',
+    websiteUrl: 'https://aws.amazon.com/'
   },
   {
     id: 'sp-postman',
     name: 'Postman',
-    tier: 'Gold',
-    tagline: 'API Platform for Builders',
-    description: 'The leading API platform used by over 30 million developers to build and test distributed REST & gRPC APIs.',
-    booth: 'Hall C — Booth 202',
-    perk: 'API Testing Kits & Stickers'
+    category: 'SPONSOR',
+    tier: 'SPONSOR',
+    logoUrl: '/logos/postman.svg',
+    websiteUrl: 'https://www.postman.com/'
+  },
+  {
+    id: 'sp-mongo',
+    name: 'MongoDB',
+    category: 'SPONSOR',
+    tier: 'SPONSOR',
+    logoUrl: '/logos/mongodb.svg',
+    websiteUrl: 'https://www.mongodb.com/'
+  }
+];
+
+export const COMMUNITY_PARTNERS: SponsorPartnerItem[] = [
+  {
+    id: 'cp-awsug',
+    name: 'AWS User Group Pune',
+    category: 'COMMUNITY_PARTNER',
+    tier: 'COMMUNITY PARTNER',
+    logoUrl: '/logos/aws-ug-pune.png',
+    websiteUrl: 'https://www.awsugpune.in/'
+  },
+  {
+    id: 'cp-cncf',
+    name: 'CNCF (Cloud Native)',
+    category: 'COMMUNITY_PARTNER',
+    tier: 'COMMUNITY PARTNER',
+    logoUrl: '/logos/cncf.svg',
+    websiteUrl: 'https://www.cncf.io/'
   }
 ];
 
@@ -126,37 +123,60 @@ export class EcosystemController {
           <span class="section-tag mono">[AWS SCD 2026] // ECOSYSTEM & PROTOCOLS</span>
           <h2 class="section-headline">Partners, Sponsors & Field Protocols.</h2>
           <p class="section-sub">
-            Supported by premier cloud technology partners and designed to prepare 300+ student attendees for the Pune conference.
+            Supported by premier cloud technology leaders and academic partners for AWS Student Community Day 2026.
           </p>
         </div>
 
-        <!-- 1. SPONSORS & PARTNERS SHOWCASE -->
+        <!-- 1. SPONSORS & COMMUNITY PARTNERS SHOWCASE -->
         <div class="sponsors-showcase-block mono">
-          <div class="block-header">
-            <span class="header-tag">OFFICIAL CLOUD PARTNERS</span>
-            <span class="header-meta">TITLE · PLATINUM · GOLD · COMMUNITY</span>
+          <!-- Tier A: Official Sponsors -->
+          <div class="sponsors-subgroup">
+            <div class="block-header">
+              <span class="header-tag">OFFICIAL SPONSORS</span>
+              <span class="header-meta">TITLE · CLOUD · DEV TOOLS</span>
+            </div>
+
+            <div class="sponsors-logo-grid sponsors-grid-tier">
+              ${OFFICIAL_SPONSORS.map(item => `
+                <a 
+                  href="${item.websiteUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="sponsor-logo-card tier-${item.tier.toLowerCase().replace(/[^a-z]/g, '')}" 
+                  title="${item.name}">
+                  <div class="logo-frame">
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
+                  </div>
+                  <span class="logo-brand-label mono">${item.name}</span>
+                </a>
+              `).join('')}
+            </div>
           </div>
 
-          <div class="sponsors-matrix">
-            ${SPONSORS_LIST.map(sp => `
-              <div class="sponsor-card tier-${sp.tier.toLowerCase()}">
-                <div class="card-tier-tag">[TIER: ${sp.tier.toUpperCase()}]</div>
-                <h4 class="sponsor-brand">${sp.name}</h4>
-                <div class="sponsor-tagline">${sp.tagline}</div>
-                <p class="sponsor-desc">${sp.description}</p>
-                <div class="sponsor-footer-meta">
-                  <span>BOOTH: <strong>${sp.booth}</strong></span>
-                  <span class="perk-highlight">PERK: ${sp.perk}</span>
-                </div>
-              </div>
-            `).join('')}
-          </div>
+          <!-- Divider Between Sponsors & Community Partners -->
+          <div class="sponsors-tier-divider"></div>
 
-          <!-- Academic and Club Partners Banner -->
-          <div class="academic-partners-strip">
-            <span class="strip-label">UNIVERSITY COMMUNITY PARTNER:</span>
-            <div class="strip-names">
-              <span>JSPM BSIOTR</span>
+          <!-- Tier B: Community Partners -->
+          <div class="sponsors-subgroup">
+            <div class="block-header">
+              <span class="header-tag">COMMUNITY PARTNERS</span>
+              <span class="header-meta">ECOSYSTEM · TECH COMMUNITIES</span>
+            </div>
+
+            <div class="sponsors-logo-grid community-grid-tier">
+              ${COMMUNITY_PARTNERS.map(item => `
+                <a 
+                  href="${item.websiteUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="sponsor-logo-card tier-communitypartner" 
+                  title="${item.name}">
+                  <div class="logo-frame">
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
+                  </div>
+                  <span class="logo-brand-label mono">${item.name}</span>
+                </a>
+              `).join('')}
             </div>
           </div>
         </div>
@@ -208,10 +228,7 @@ export class EcosystemController {
           </div>
 
           <div class="faq-terminal-footer">
-            <span>NEED FURTHER CLARIFICATION? CONTACT ORGANIZERS: <a href="mailto:awssbgbsiotr@gmail.com" class="text-accent"><strong>awssbgbsiotr@gmail.com</strong></a></span>
-            <a href="https://konfhub.com/aws-scd-pune-2026" target="_blank" rel="noopener noreferrer" class="btn-brutalist btn-accent scd-jump-pass-btn">
-              GET PASS ON KONFHUB [EXT ->]
-            </a>
+            <span>NEED FURTHER CLARIFICATION? CONTACT ORGANIZERS: <a href="mailto:awssbgbsiotr@gmail.com" class="faq-contact-email"><strong>awssbgbsiotr@gmail.com</strong></a></span>
           </div>
         </div>
       </div>

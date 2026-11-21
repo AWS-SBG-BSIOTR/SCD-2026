@@ -158,11 +158,11 @@ export class SpeakersController {
           `).join('')}
         </div>
 
-        <!-- Speaker Cards Grid (Pixel-faithful to Idea 3 Mockup) -->
+        <!-- Speaker Cards Grid (Spacious & Minimal) -->
         <div class="speakers-grid">
           ${sessions.map(s => `
             <div class="speaker-card" id="card-${s.id}">
-              <!-- Framed Photo Box with Black Border & Corner Pill -->
+              <!-- Framed Photo Box -->
               <div class="speaker-photo-frame">
                 <img src="${s.photoUrl}" alt="${s.name}" class="speaker-photo-img" loading="lazy" />
                 <span class="speaker-track-tag mono">[${s.track.toUpperCase()}]</span>
@@ -170,28 +170,18 @@ export class SpeakersController {
 
               <!-- Speaker Content -->
               <div class="speaker-content">
-                <!-- Name & Rounded LinkedIn Pill Row -->
-                <div class="speaker-header-row">
-                  <h3 class="speaker-name">${s.name}</h3>
-                  <a href="${s.linkedinUrl}" class="speaker-linkedin-pill mono" target="_blank" rel="noopener noreferrer">
-                    [IN] LINKEDIN
-                  </a>
+                <div class="speaker-meta-top">
+                  <h3 class="speaker-name">
+                    <a href="${s.linkedinUrl}" class="speaker-name-link" target="_blank" rel="noopener noreferrer" title="View LinkedIn Profile">
+                      ${s.name}
+                    </a>
+                  </h3>
+                  <span class="speaker-affiliation mono">${s.affiliation}</span>
                 </div>
 
-                <!-- Role & Affiliation -->
-                <div class="speaker-role-line mono">
-                  ${s.role} // ${s.affiliation}
-                </div>
-
-                <!-- Topic -->
-                <h4 class="speaker-topic">${s.topic}</h4>
-
-                <!-- Bottom Row: Direct Link to Scheduled Session Time in Schedule -->
-                <div class="speaker-bottom-row mono">
-                  <a href="#${s.slotId}" class="btn-speaker-schedule mono" data-slot="${s.slotId}">
-                    [SCHEDULE: ${s.time.replace(' IST', '')} ->]
-                  </a>
-                </div>
+                <a href="#${s.slotId}" class="speaker-topic-link" data-slot="${s.slotId}" title="View session in schedule">
+                  <h4 class="speaker-topic">${s.topic}</h4>
+                </a>
               </div>
             </div>
           `).join('')}
@@ -217,8 +207,8 @@ export class SpeakersController {
     });
 
     // Jump to schedule slot
-    const scheduleLinks = this.container.querySelectorAll<HTMLAnchorElement>('.btn-speaker-schedule');
-    scheduleLinks.forEach(link => {
+    const slotLinks = this.container.querySelectorAll<HTMLAnchorElement>('.speaker-topic-link');
+    slotLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         const slotId = link.getAttribute('data-slot');
         if (slotId) {
@@ -239,7 +229,6 @@ export class SpeakersController {
             }
 
             targetSlot.classList.remove('is-target-highlight');
-            // Force reflow to re-trigger CSS keyframe pulse animation
             void targetSlot.offsetWidth;
             targetSlot.classList.add('is-target-highlight');
           }

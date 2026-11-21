@@ -40,6 +40,7 @@ export class PassTiersController {
   private startX: number = 0;
   private currentProgress: number = 0;
   private lastSoundProgress: number = 0;
+  private autoRejoinTimeout: number | null = null;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -60,13 +61,7 @@ export class PassTiersController {
           </p>
         </div>
 
-        <!-- Compact Registration Partner Strip -->
-        <div class="konfhub-banner mono">
-          <span class="partner-badge">[PARTNER]</span>
-          <span class="partner-txt">OFFICIAL KONFHUB TICKETING ENGINE</span>
-          <span class="partner-sep">//</span>
-          <span class="partner-txt">INSTANT QR PASS CONFIRMATION</span>
-        </div>
+
 
         <!-- The Physical Perforated Ticket Stub Card -->
         <div class="ticket-stub-wrapper">
@@ -228,9 +223,6 @@ export class PassTiersController {
                   id="btn-reopen-konfhub">
                   OPEN KONFHUB REGISTRATION [->]
                 </a>
-                <button type="button" class="btn-reset-ticket mono" id="btn-reset-ticket">
-                  [RESET & TEAR AGAIN]
-                </button>
               </div>
             </div>
           </div>
@@ -269,12 +261,24 @@ export class PassTiersController {
       });
     }
 
-    // Reset button
-    const resetBtn = this.container.querySelector<HTMLButtonElement>('#btn-reset-ticket');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.resetTicket();
+    // Auto-rejoin smoothly if user switches back to this tab from KonfHub
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && this.isTorn) {
+        window.setTimeout(() => {
+          if (this.isTorn) {
+            this.rejoinTicket();
+          }
+        }, 200);
+      }
+    });
+
+    // Clicking anywhere on the claimed receipt (except the Konfhub button) also rejoins immediately
+    const claimedReceipt = this.container.querySelector<HTMLElement>('#ticket-stub-claimed');
+    if (claimedReceipt) {
+      claimedReceipt.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('#btn-reopen-konfhub')) return;
+        this.rejoinTicket();
       });
     }
 
@@ -297,10 +301,12 @@ export class PassTiersController {
       }
     });
 
-    // Simple Click on perforation divider
+    // Simple Click on perforation divider (tears if intact, rejoins if torn)
     perf.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (!this.isTorn && !this.isDragging) {
+      if (this.isTorn) {
+        this.rejoinTicket();
+      } else if (!this.isDragging) {
         this.triggerTear();
       }
     });
@@ -424,6 +430,13 @@ export class PassTiersController {
     perf.addEventListener('pointercancel', finishDrag);
   }
 
+  private clearAutoRejoin() {
+    if (this.autoRejoinTimeout) {
+      window.clearTimeout(this.autoRejoinTimeout);
+      this.autoRejoinTimeout = null;
+    }
+  }
+
   private triggerTear() {
     if (this.isTorn) return;
     this.isTorn = true;
@@ -456,11 +469,12 @@ export class PassTiersController {
     if (pricePill) {
       pricePill.innerHTML = `
         <span class="price-status text-accent">[TICKET TORN // CLAIMED]</span>
-        <span class="price-platform">[REDIRECTING TO KONFHUB...]</span>
+        <span class="price-platform">[POWERED BY KONFHUB]</span>
       `;
     }
 
     if (card) {
+      card.classList.remove('is-rejoining');
       card.classList.add('is-tearing');
     }
     if (ripFill) {
@@ -468,21 +482,18 @@ export class PassTiersController {
       ripFill.style.width = '100%';
     }
 
-    if (prefersReducedMotion) {
-      if (card) {
-        card.classList.remove('is-tearing');
-        card.classList.add('is-torn');
+    // Direct user to official KonfHub registration in a new window/tab
+    let popupBlocked = false;
+    try {
+      const opened = window.open(OFFICIAL_PASS.konfhubUrl, '_blank', 'noopener,noreferrer');
+      if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+        popupBlocked = true;
       }
-      if (claimedReceipt) {
-        claimedReceipt.classList.add('show-claimed');
-        claimedReceipt.setAttribute('aria-hidden', 'false');
-      }
-      window.open(OFFICIAL_PASS.konfhubUrl, '_blank', 'noopener,noreferrer');
-      return;
+    } catch {
+      popupBlocked = true;
     }
 
-    // Detach stub with momentum animation
-    setTimeout(() => {
+    const onTornComplete = () => {
       if (card) {
         card.classList.remove('is-tearing');
         card.classList.add('is-torn');
@@ -493,20 +504,35 @@ export class PassTiersController {
       if (claimedReceipt) {
         claimedReceipt.classList.add('show-claimed');
         claimedReceipt.setAttribute('aria-hidden', 'false');
+        const descEl = claimedReceipt.querySelector<HTMLElement>('.claimed-desc');
+        if (descEl) {
+          if (popupBlocked) {
+            descEl.textContent = 'Admission stub detached. Browser popup blocked; click the red button below to register:';
+          } else {
+            descEl.textContent = 'Delegate admission submitted. KonfHub registration opened in new tab...';
+          }
+        }
       }
-    }, 180);
 
-    // After animation completes (~750ms), transition to KonfHub
-    setTimeout(() => {
-      window.open(OFFICIAL_PASS.konfhubUrl, '_blank', 'noopener,noreferrer');
-    }, 760);
+      // Automatically rejoin the ticket cleanly after 2.8 seconds
+      this.clearAutoRejoin();
+      this.autoRejoinTimeout = window.setTimeout(() => {
+        this.rejoinTicket();
+      }, 2800);
+    };
+
+    if (prefersReducedMotion) {
+      onTornComplete();
+      return;
+    }
+
+    // Detach stub with momentum animation
+    setTimeout(onTornComplete, 180);
   }
 
-  private resetTicket() {
-    this.isTorn = false;
-    this.isDragging = false;
-    this.currentProgress = 0;
-    this.lastSoundProgress = 0;
+  public rejoinTicket() {
+    this.clearAutoRejoin();
+    if (!this.isTorn) return;
 
     const card = this.container.querySelector<HTMLElement>('#ticket-stub-card');
     const stub = this.container.querySelector<HTMLElement>('#ticket-stub-aside');
@@ -515,33 +541,60 @@ export class PassTiersController {
     const pricePill = this.container.querySelector<HTMLElement>('#ticket-price-pill');
     const stubStatus = this.container.querySelector<HTMLElement>('#stub-status-val');
 
-    if (stubStatus) {
-      stubStatus.textContent = 'READY';
+    // Play crisp tactile snap audio
+    sound.playClick(940, 0.035);
+
+    // Hide claimed overlay
+    if (claimedReceipt) {
+      claimedReceipt.classList.remove('show-claimed');
+      claimedReceipt.setAttribute('aria-hidden', 'true');
     }
+
+    // Trigger rejoining animation
+    if (card) {
+      card.classList.remove('is-torn');
+      card.classList.add('is-rejoining');
+    }
+
+    if (ripFill) {
+      ripFill.style.transition = 'height 0.4s ease, width 0.4s ease';
+      ripFill.style.height = '0%';
+      ripFill.style.width = '0%';
+    }
+
     if (pricePill) {
       pricePill.innerHTML = `
-        <span class="price-status">ALL-INCLUSIVE ADMISSION</span>
+        <span class="price-status">[TICKET RE-ATTACHED // READY]</span>
         <span class="price-platform">[POWERED BY KONFHUB]</span>
       `;
     }
 
-    if (card) {
-      card.classList.remove('is-tearing', 'is-torn');
-    }
-    if (stub) {
-      stub.style.transform = '';
-      stub.style.boxShadow = '';
-      stub.style.transition = '';
-    }
-    if (ripFill) {
-      ripFill.style.height = '0%';
-      ripFill.style.width = '0%';
-    }
-    if (claimedReceipt) {
-      claimedReceipt.classList.remove('show-claimed');
-      claimedReceipt.setAttribute('aria-hidden', 'false');
-    }
+    setTimeout(() => {
+      this.isTorn = false;
+      this.isDragging = false;
+      this.currentProgress = 0;
+      this.lastSoundProgress = 0;
 
-    sound.playClick(720, 0.02);
+      if (stubStatus) {
+        stubStatus.textContent = 'READY';
+      }
+      if (pricePill) {
+        pricePill.innerHTML = `
+          <span class="price-status">ALL-INCLUSIVE ADMISSION</span>
+          <span class="price-platform">[POWERED BY KONFHUB]</span>
+        `;
+      }
+      if (card) {
+        card.classList.remove('is-rejoining', 'is-tearing');
+      }
+      if (stub) {
+        stub.style.transform = '';
+        stub.style.boxShadow = '';
+        stub.style.transition = '';
+      }
+      if (ripFill) {
+        ripFill.style.transition = '';
+      }
+    }, 550);
   }
 }

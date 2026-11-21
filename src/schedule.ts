@@ -254,66 +254,54 @@ export class ScheduleController {
           }).join('')}
         </div>
 
-        <!-- Flight-Board Compact Ledger Table (Option 1) -->
+        <!-- Flight-Board Compact Ledger Table (Minimal & Spacious) -->
         <div class="flightboard-container mono">
           <!-- Flightboard Table Header (Desktop) -->
           <div class="flightboard-table-header">
-            <div class="fb-col fb-col-idx">#</div>
             <div class="fb-col fb-col-time">TIMING (IST)</div>
+            <div class="fb-col fb-col-title">SESSION &amp; SPEAKER</div>
             <div class="fb-col fb-col-track">TRACK</div>
-            <div class="fb-col fb-col-title">SESSION &amp; ARCHITECTURE</div>
-            <div class="fb-col fb-col-action">SYLLABUS</div>
+            <div class="fb-col fb-col-action">DETAILS</div>
           </div>
 
           <!-- Flightboard Rows -->
           <div class="flightboard-body">
-            ${sessions.map((item, idx) => {
+            ${sessions.map((item) => {
               const isExpanded = this.expandedIds.has(item.id);
               return `
                 <article class="flightboard-row ${isExpanded ? 'is-expanded' : ''}" id="${item.id}" data-slot-id="${item.id}">
-                  <div class="fb-row-main">
-                    <div class="fb-col fb-col-idx">#${String(idx + 1).padStart(2, '0')}</div>
-                    
-                    <div class="fb-col fb-col-time">
-                      <span class="fb-time-start">${item.timeStart}</span>
-                      <span class="fb-time-sep">-</span>
-                      <span class="fb-time-end">${item.timeEnd}</span>
+                  <div class="fb-row-main" role="button" tabindex="0" aria-expanded="${isExpanded}" title="Click to view session details">
+                    <div class="fb-col-time">
+                      <span class="fb-time-range mono">${item.timeStart} — ${item.timeEnd}</span>
                     </div>
 
-                    <div class="fb-col fb-col-track">
-                      <span class="badge-track track-${item.track.replace(/[^a-zA-Z]/g, '').toLowerCase()}">[${item.track}]</span>
-                      ${item.level ? `<span class="badge-level-tag">[${item.level.split(' - ')[0]}]</span>` : ''}
-                    </div>
-
-                    <div class="fb-col fb-col-title">
-                      <div class="fb-session-heading">${item.title}</div>
+                    <div class="fb-col-title">
+                      <h4 class="fb-session-heading">${item.title}</h4>
                       ${item.speaker ? `
-                        <div class="fb-session-speaker">
-                          <span class="fb-spk-sep">//</span>
-                          <span class="fb-spk-name">SPEAKER: ${item.speaker}</span>
-                          <span class="fb-spk-role">(${item.speakerRole})</span>
+                        <div class="fb-session-speaker mono">
+                          ${item.speaker}${item.speakerRole ? ` · ${item.speakerRole}` : ''}
                         </div>
                       ` : ''}
                     </div>
 
-                    <div class="fb-col fb-col-action">
-                      <button 
-                        type="button" 
-                        class="btn-fb-abstract-toggle mono" 
-                        data-id="${item.id}" 
-                        aria-expanded="${isExpanded}">
-                        ${isExpanded ? '[-] HIDE' : '[+] ABSTRACT'}
-                      </button>
+                    <div class="fb-col-track">
+                      <span class="badge-track mono">[${item.track}]</span>
+                    </div>
+
+                    <div class="fb-col-action">
+                      <span class="fb-expand-indicator mono">${isExpanded ? '[-]' : '[+]'}</span>
                     </div>
                   </div>
 
                   <!-- Collapsible Abstract Drawer -->
                   <div class="flightboard-drawer ${isExpanded ? 'is-open' : ''}" id="drawer-${item.id}">
                     <p class="drawer-abstract">${item.abstract}</p>
-                    <div class="drawer-highlights">
-                      <span class="hl-tag">KEY TOPICS:</span>
-                      ${item.highlights.map(h => `<span class="hl-item">* ${h}</span>`).join(' ')}
-                    </div>
+                    ${item.highlights && item.highlights.length ? `
+                      <div class="drawer-highlights">
+                        <span class="hl-tag">KEY TOPICS:</span>
+                        ${item.highlights.map(h => `<span class="hl-item">* ${h}</span>`).join(' ')}
+                      </div>
+                    ` : ''}
                   </div>
                 </article>
               `;
@@ -340,32 +328,42 @@ export class ScheduleController {
       });
     });
 
-    // Abstract toggle buttons
-    const toggleBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-fb-abstract-toggle');
-    toggleBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const id = btn.getAttribute('data-id');
-        if (!id) return;
-        const row = document.getElementById(id);
-        if (!row) return;
+    // Row click toggle for abstract drawer
+    const rowMains = this.container.querySelectorAll<HTMLElement>('.fb-row-main');
+    rowMains.forEach(rowMain => {
+      const row = rowMain.closest('.flightboard-row');
+      if (!row) return;
+      const id = row.getAttribute('data-slot-id');
+      if (!id) return;
+
+      const toggleAction = (e?: Event) => {
+        if (e) e.stopPropagation();
         const drawer = row.querySelector('.flightboard-drawer');
+        const icon = row.querySelector('.fb-expand-indicator');
         const isOpen = this.expandedIds.has(id);
 
         if (isOpen) {
           this.expandedIds.delete(id);
           row.classList.remove('is-expanded');
           if (drawer) drawer.classList.remove('is-open');
-          btn.textContent = '[+] ABSTRACT';
-          btn.setAttribute('aria-expanded', 'false');
+          if (icon) icon.textContent = '[+]';
+          rowMain.setAttribute('aria-expanded', 'false');
           sound.playClick(450, 0.03);
         } else {
           this.expandedIds.add(id);
           row.classList.add('is-expanded');
           if (drawer) drawer.classList.add('is-open');
-          btn.textContent = '[-] HIDE';
-          btn.setAttribute('aria-expanded', 'true');
+          if (icon) icon.textContent = '[-]';
+          rowMain.setAttribute('aria-expanded', 'true');
           sound.playClick(750, 0.04);
+        }
+      };
+
+      rowMain.addEventListener('click', toggleAction);
+      rowMain.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleAction();
         }
       });
     });
