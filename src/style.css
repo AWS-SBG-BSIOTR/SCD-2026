@@ -45,6 +45,9 @@ html {
   font-size: 16px;
   background-color: var(--color-cream);
   color: var(--color-black);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -54,7 +57,19 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+  position: relative;
+}
+
+main,
+section,
+footer {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  box-sizing: border-box;
 }
 
 ::selection {
@@ -383,11 +398,14 @@ body {
   inset: 0;
   z-index: 200;
   visibility: hidden;
+  overflow: hidden; /* Prevent off-screen translated drawer panel from expanding mobile scroll canvas */
+  pointer-events: none;
   transition: visibility 0.3s ease;
 }
 
 .menu-drawer.is-open {
   visibility: visible;
+  pointer-events: auto;
 }
 
 .drawer-backdrop {
@@ -578,7 +596,7 @@ body {
   flex: 1;
   width: 100%;
   max-width: 100%;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .hero-wordmark-title {
@@ -1980,6 +1998,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 12px 6px 18px;
 }
 
 .pass-badge-lanyard {
@@ -5693,8 +5715,19 @@ body {
 @media (max-width: 600px) {
   /* Site Header on Mobile */
   .site-header {
+    padding: 0;
+    height: 56px;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .header-inner {
     padding: 0 16px;
     height: 56px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .header-actions .btn-trial-action {
@@ -6004,6 +6037,8 @@ body {
   /* Section 04: Official KonfHub Ticket & Stub */
   .ticket-stub-card {
     box-shadow: 6px 6px 0px var(--color-black);
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .ticket-main-body {
@@ -6057,6 +6092,13 @@ body {
   /* Section 05: Attendee Badge Generator */
   .pass-controls-card {
     padding: 18px 14px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .form-row-2 {
+    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .tier-select-row {
