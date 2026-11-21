@@ -5687,37 +5687,182 @@ body {
   box-shadow: 1px 1px 0 var(--color-black) !important;
 }
 
+/* ==========================================================================
+   MOBILE & TOUCH VIEWPORT REFINEMENTS (Max Width: 600px & 380px)
+   ========================================================================== */
 @media (max-width: 600px) {
-  /* Global Mobile Padding Tuning */
-  .hero-section {
-    padding: 32px 16px 24px;
-    min-height: calc(100vh - 56px);
+  /* Site Header on Mobile */
+  .site-header {
+    padding: 0 16px;
+    height: 56px;
   }
 
+  .header-actions .btn-trial-action {
+    display: none; /* Drawer & Hero provide direct passes triggers */
+  }
+
+  .brand-badge {
+    display: none; /* Keep brand mark crisp on single line */
+  }
+
+  .brand-mark {
+    font-size: 1.22rem;
+  }
+
+  /* Global Section Spacing */
+  .hero-section {
+    padding: 28px 16px 36px;
+    min-height: auto;
+  }
+
+  .overview-section,
   .speakers-section,
   .schedule-section,
   .passes-section,
   .pass-generator-section,
   .venue-section,
   .ecosystem-section {
-    padding: 56px 16px !important;
+    padding: 48px 16px !important;
+  }
+
+  /* Hero Section */
+  .hero-wordmark-title {
+    font-size: clamp(34px, 10vw, 80px);
+  }
+
+  .hero-tagline {
+    font-size: clamp(1.3rem, 5.2vw, 1.85rem);
+    margin-bottom: 16px;
+  }
+
+  .scd-hero-subline {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 22px;
   }
 
   .hero-ctas {
     flex-direction: column;
     width: 100%;
-    gap: 10px;
+    gap: 12px;
   }
 
   .hero-ctas .btn-brutalist {
     width: 100%;
     text-align: center;
     justify-content: center;
+    padding: 14px 18px;
+    font-size: 0.88rem;
   }
 
-  /* Speaker Cards on Mobile */
+  /* Section 01: Overview & Live Countdown Terminal */
+  .overview-countdown-panel {
+    padding: 16px 12px;
+    margin-bottom: 16px;
+  }
+
+  .countdown-panel-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+  }
+
+  .countdown-label {
+    font-size: 0.7rem;
+  }
+
+  .countdown-location {
+    font-size: 0.65rem;
+  }
+
+  .countdown-display-grid {
+    padding: 4px 0 6px;
+  }
+
+  .countdown-number {
+    font-size: clamp(26px, 7.5vw, 38px) !important;
+  }
+
+  .countdown-sep {
+    font-size: clamp(18px, 5vw, 28px) !important;
+    padding: 0 2px;
+    margin-top: -10px;
+  }
+
+  .countdown-unit {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  .overview-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .metric-card {
+    padding: 14px 12px;
+  }
+
+  .metric-value {
+    font-size: clamp(24px, 6.5vw, 32px);
+  }
+
+  .metric-tag {
+    font-size: 0.62rem;
+    margin: 4px 0;
+  }
+
+  .metric-desc {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .overview-actions-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .overview-actions-row .btn-brutalist {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Section 02: Featured Keynotes & Speakers */
+  .speakers-status-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px 12px;
+  }
+
+  .tracks-filter-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 12px;
+    gap: 6px;
+    scrollbar-width: none;
+    margin-bottom: 20px;
+  }
+
+  .tracks-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track-filter-btn {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 0.72rem;
+  }
+
   .speakers-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .speaker-card {
@@ -5725,41 +5870,193 @@ body {
   }
 
   .speaker-photo-frame {
-    height: 180px;
+    height: 190px;
     margin-bottom: 12px;
+  }
+
+  .speaker-header-row {
+    justify-content: space-between;
+    gap: 8px;
   }
 
   .speaker-name {
     font-size: 1.25rem;
   }
 
+  .speaker-role-line {
+    font-size: 0.72rem;
+    margin-bottom: 10px;
+  }
+
+  .speaker-topic {
+    font-size: 1.05rem;
+    margin-bottom: 14px;
+  }
+
   .speaker-bottom-row {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .speaker-loc {
+    font-size: 0.7rem;
   }
 
   .btn-speaker-details {
     width: 100%;
+    padding: 10px 16px;
     text-align: center;
   }
 
-  /* Interactive Pass Generator on Mobile */
-  .pass-preview-stage {
-    padding: 0 4px;
+  .speakers-footer-status {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 
-  .physical-pass-card {
-    box-shadow: 6px 6px 0px var(--color-black) !important;
+  .speakers-footer-status .scd-claim-ticket-link {
+    width: 100%;
+    text-align: center;
   }
 
-  .pass-inner-container {
+  /* Section 03: Master Schedule & Timeline */
+  .schedule-overview-banner {
+    padding: 14px 12px;
+    gap: 10px;
+  }
+
+  .schedule-filter-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+    gap: 6px;
+    scrollbar-width: none;
+    margin-bottom: 18px;
+  }
+
+  .schedule-filter-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .schedule-filter-chip {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .timeline-slot-card {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+
+  .slot-time-col {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-right: none !important;
+    border-bottom: 1px dashed rgba(1, 1, 1, 0.2) !important;
+    padding-bottom: 10px !important;
+    padding-right: 0 !important;
+    margin-bottom: 4px;
+  }
+
+  .slot-time-col .time-block {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .slot-time-col .t-start {
+    font-size: 1rem !important;
+  }
+
+  .slot-time-col .t-connector {
+    font-size: 0.65rem !important;
+  }
+
+  .slot-time-col .t-end {
+    font-size: 0.88rem !important;
+  }
+
+  .slot-time-col .slot-idx {
+    font-size: 0.82rem !important;
+    font-weight: 800;
+  }
+
+  .slot-title {
+    font-size: 1.05rem;
+  }
+
+  .slot-actions-row {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .slot-actions-row button {
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+  }
+
+  /* Section 04: Official KonfHub Ticket & Stub */
+  .ticket-stub-card {
+    box-shadow: 6px 6px 0px var(--color-black);
+  }
+
+  .ticket-main-body {
     padding: 18px 14px;
-    gap: 14px;
   }
 
-  .pass-display-name {
-    font-size: clamp(1.4rem, 6.5vw, 2.2rem) !important;
+  .ticket-giant-title {
+    font-size: clamp(28px, 7.5vw, 40px);
+  }
+
+  .ticket-parameters-matrix {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .param-item {
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(1, 1, 1, 0.12);
+  }
+
+  .param-item:last-child {
+    border-bottom: none;
+  }
+
+  .inclusions-list {
+    font-size: 0.78rem;
+  }
+
+  .inclusion-item {
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  .ticket-actions-bar {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .ticket-actions-bar .btn-brutalist {
+    width: 100%;
+    text-align: center;
+    padding: 12px 14px;
+  }
+
+  .stub-interactive-area {
+    padding: 16px 14px;
+  }
+
+  /* Section 05: Attendee Badge Generator */
+  .pass-controls-card {
+    padding: 18px 14px;
   }
 
   .tier-select-row {
@@ -5770,6 +6067,22 @@ body {
   .tier-select-row .btn-tier-opt {
     width: 100%;
     text-align: center;
+    padding: 10px 12px;
+  }
+
+  .form-actions-strip {
+    gap: 10px;
+  }
+
+  .form-actions-strip .btn-brutalist {
+    width: 100%;
+    min-height: 46px;
+    font-size: 0.82rem;
+  }
+
+  .pass-preview-stage {
+    padding: 0;
+    width: 100%;
   }
 
   .lanyard-strap {
@@ -5778,72 +6091,178 @@ body {
     text-align: center;
   }
 
-  /* Ticket Stub on Mobile */
-  .ticket-stub-card {
-    box-shadow: 6px 6px 0px var(--color-black);
+  .physical-pass-card {
+    max-width: 100%;
+    box-shadow: 6px 6px 0px var(--color-black) !important;
   }
 
-  .ticket-main-body {
-    padding: 18px 14px;
+  .pass-inner-container {
+    padding: 16px 12px;
+    gap: 12px;
   }
 
-  .ticket-giant-title {
-    font-size: clamp(30px, 8vw, 44px);
+  .pass-header-strip {
+    align-items: center;
   }
 
-  .ticket-meta-grid {
-    grid-template-columns: 1fr;
-    gap: 8px;
+  .p-brand {
+    font-size: 1.05rem;
   }
 
-  /* Schedule Cards on Mobile */
-  .timeline-slot-card {
-    padding: 18px 14px;
-  }
-
-  .schedule-filter-bar {
-    gap: 6px;
-    margin-bottom: 24px;
-  }
-
-  .schedule-filter-chip {
-    padding: 6px 10px;
+  .p-edition {
     font-size: 0.72rem;
   }
 
-  /* Venue & Ecosystem */
-  .transit-tab-row {
+  .pass-display-name {
+    font-size: clamp(1.4rem, 6.5vw, 2.2rem) !important;
+    word-break: break-word;
+  }
+
+  .pass-college-name {
+    font-size: 0.78rem;
+    word-break: break-word;
+  }
+
+  .pass-meta-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    font-size: 0.7rem;
+    padding: 8px 0;
+  }
+
+  .pass-route-strip {
+    font-size: 0.58rem;
     flex-wrap: wrap;
+    word-break: break-all;
+    padding: 6px 8px;
+  }
+
+  .fake-ascii-barcode {
+    font-size: 0.82rem;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .pass-security-seal {
+    font-size: 0.65rem;
+    text-align: right;
+  }
+
+  /* Section 06: Venue & Wayfinding */
+  .venue-info-panel,
+  .venue-blueprint-panel .blueprint-card {
+    padding: 18px 14px;
+  }
+
+  .venue-address-block .addr-title {
+    font-size: 1.15rem;
+  }
+
+  .map-tactical-box {
+    height: 280px;
+  }
+
+  .transit-tab-row {
+    flex-direction: column;
     gap: 6px;
   }
 
   .transit-tab-btn {
-    flex: 1 1 calc(50% - 6px);
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 0.75rem;
+  }
+
+  .venue-actions-strip .btn-brutalist {
+    width: 100%;
     text-align: center;
   }
 
-  .sponsors-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+  /* Section 07: Ecosystem, Sponsors & FAQ */
+  .sponsors-showcase-block,
+  .faq-terminal-block {
+    padding: 18px 14px;
+  }
+
+  .sponsors-matrix {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .partner-card {
+    padding: 16px 14px;
+  }
+
+  .faq-question-btn {
+    padding: 12px 14px;
+  }
+
+  .q-left {
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .q-text {
+    font-size: 0.88rem;
+    width: 100%;
+  }
+
+  .faq-answer-drawer {
+    padding: 12px 14px;
+    font-size: 0.82rem;
+  }
+
+  .faq-footer-action {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .faq-footer-action .btn-brutalist {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 48px 16px 24px;
   }
 
   .footer-top-grid {
     grid-template-columns: 1fr;
     gap: 28px;
   }
+
+  .footer-bottom-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 0.68rem;
+  }
 }
 
-@media (max-width: 400px) {
-  .countdown-terminal-number {
-    font-size: 24px;
+/* Extra-narrow Phone Screens (Max Width: 380px) */
+@media (max-width: 380px) {
+  .countdown-number {
+    font-size: 22px !important;
   }
 
-  .countdown-terminal-sep {
-    font-size: 16px;
+  .countdown-sep {
+    font-size: 15px !important;
     padding: 0 1px;
   }
 
-  .p-brand {
-    font-size: 1.05rem;
+  .countdown-unit {
+    font-size: 0.54rem !important;
+  }
+
+  .pass-meta-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .overview-metrics-grid {
+    grid-template-columns: 1fr !important;
   }
 }
