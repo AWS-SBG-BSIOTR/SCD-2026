@@ -6251,13 +6251,6 @@ footer {
     color: var(--color-vermilion);
   }
 
-  .hud-tag-gyro {
-    background: rgba(1, 1, 1, 0.04);
-    border: 1px dashed rgba(1, 1, 1, 0.28);
-    color: var(--color-vermilion);
-    letter-spacing: 0.06em;
-  }
-
   .pass-gyro-hint {
     display: block;
     text-align: center;
@@ -6280,7 +6273,9 @@ footer {
 
   /* Hero Section */
   .hero-wordmark-title {
-    font-size: clamp(34px, 10vw, 80px);
+    font-size: clamp(52px, 14.5vw, 98px);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
   }
 
   .hero-tagline {
