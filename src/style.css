@@ -1706,7 +1706,7 @@ footer {
 
 .speakers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   gap: 24px;
   margin-bottom: 32px;
 }
@@ -1720,6 +1720,8 @@ footer {
   display: flex;
   flex-direction: column;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+  max-width: 400px;
+  width: 100%;
 }
 
 .speaker-card:hover {

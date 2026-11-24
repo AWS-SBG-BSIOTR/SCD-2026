@@ -19,7 +19,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '10:00 AM IST',
     stage: 'HALL 1',
     track: 'Architecture',
-    photoUrl: './assets/avatars/drop-01.svg',
+    photoUrl: './assets/avatars/drop-01.svg?v=2',
     slotId: 'slot-04'
   },
   {
@@ -29,7 +29,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '10:45 AM IST',
     stage: 'HALL 1',
     track: 'GenAI',
-    photoUrl: './assets/avatars/drop-02.svg',
+    photoUrl: './assets/avatars/drop-02.svg?v=2',
     slotId: 'slot-05'
   },
   {
@@ -39,7 +39,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '12:30 PM IST',
     stage: 'HALL 1',
     track: 'Serverless',
-    photoUrl: './assets/avatars/drop-03.svg',
+    photoUrl: './assets/avatars/drop-03.svg?v=2',
     slotId: 'slot-08'
   },
   {
@@ -49,7 +49,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '02:15 PM IST',
     stage: 'HALL 1',
     track: 'DevOps',
-    photoUrl: './assets/avatars/drop-04.svg',
+    photoUrl: './assets/avatars/drop-04.svg?v=2',
     slotId: 'slot-10'
   },
   {
@@ -59,7 +59,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '03:00 PM IST',
     stage: 'HALL 1',
     track: 'Security',
-    photoUrl: './assets/avatars/drop-05.svg',
+    photoUrl: './assets/avatars/drop-05.svg?v=2',
     slotId: 'slot-11'
   },
   {
@@ -69,7 +69,7 @@ export const SESSIONS_DATA: SpeakerSession[] = [
     time: '04:00 PM IST',
     stage: 'HALL 1',
     track: 'Community',
-    photoUrl: './assets/avatars/drop-06.svg',
+    photoUrl: './assets/avatars/drop-06.svg?v=2',
     slotId: 'slot-13'
   }
 ];
