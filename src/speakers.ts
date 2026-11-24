@@ -98,7 +98,7 @@ export class SpeakersController {
       <div class="speakers-section-wrapper">
         <div class="section-meta-header">
           <span class="section-tag mono">(02) // FEATURED KEYNOTES & TECHNICAL SESSIONS</span>
-          <h2 class="section-headline">THE ARCHITECTS & VISIONARIES.</h2>
+          <h2 class="section-headline">MEET THE SPEAKERS.</h2>
           <p class="section-sub">
             Confirmed keynote leaders, AWS specialists, and technical architects delivering production cloud architectures on 27 December 2026 at Seasons 24, Wagholi. Official speaker announcements releasing soon.
           </p>
