@@ -22,7 +22,7 @@ export const OFFICIAL_SPONSORS: SponsorPartnerItem[] = [
     name: 'Amazon Web Services',
     category: 'SPONSOR',
     tier: 'TITLE SPONSOR',
-    logoUrl: '/logos/aws-full.svg',
+    logoUrl: './logos/aws-full.svg',
     websiteUrl: 'https://aws.amazon.com/'
   },
   {
@@ -30,7 +30,7 @@ export const OFFICIAL_SPONSORS: SponsorPartnerItem[] = [
     name: 'Postman',
     category: 'SPONSOR',
     tier: 'SPONSOR',
-    logoUrl: '/logos/postman.svg',
+    logoUrl: './logos/postman.svg',
     websiteUrl: 'https://www.postman.com/'
   },
   {
@@ -38,7 +38,7 @@ export const OFFICIAL_SPONSORS: SponsorPartnerItem[] = [
     name: 'MongoDB',
     category: 'SPONSOR',
     tier: 'SPONSOR',
-    logoUrl: '/logos/mongodb.svg',
+    logoUrl: './logos/mongodb.svg',
     websiteUrl: 'https://www.mongodb.com/'
   }
 ];
@@ -49,7 +49,7 @@ export const COMMUNITY_PARTNERS: SponsorPartnerItem[] = [
     name: 'AWS User Group Pune',
     category: 'COMMUNITY_PARTNER',
     tier: 'COMMUNITY PARTNER',
-    logoUrl: '/logos/aws-ug-pune.png',
+    logoUrl: './logos/aws-ug-pune.png',
     websiteUrl: 'https://www.awsugpune.in/'
   },
   {
@@ -57,7 +57,7 @@ export const COMMUNITY_PARTNERS: SponsorPartnerItem[] = [
     name: 'CNCF (Cloud Native)',
     category: 'COMMUNITY_PARTNER',
     tier: 'COMMUNITY PARTNER',
-    logoUrl: '/logos/cncf.svg',
+    logoUrl: './logos/cncf.svg',
     websiteUrl: 'https://www.cncf.io/'
   }
 ];
@@ -73,13 +73,13 @@ export const FAQ_LIST: FAQEntry[] = [
     id: 'faq-3',
     category: 'TECHNICAL',
     question: 'Do I need prior AWS cloud experience to attend?',
-    answer: 'Not at all. We host parallel beginner-friendly tracks starting from cloud fundamentals and local dev loops (Zone 00: Localhost), alongside advanced architectures in Generative AI (Amazon Bedrock) and Kubernetes (Amazon EKS).'
+    answer: 'Not at all. The conference is engineered for builders at all stages—from beginners exploring cloud fundamentals and core architecture, to practitioners looking into modern cloud computing, real-world case studies, and scalable design.'
   },
   {
     id: 'faq-4',
     category: 'LOGISTICS',
     question: 'Will there be food, beverages, and conference swag?',
-    answer: 'Yes. All verified attendees receive catered lunch, morning coffee/tea, evening snacks, and an official AWS SCD Pune 2026 swag pack with t-shirts, stickers, notebooks, and sponsor giveaways.'
+    answer: 'Yes. All verified attendees receive delicious buffet lunch, morning breakfast with coffee/tea, evening high-tea, and AWS exclusive swags for participating builders.'
   },
   {
     id: 'faq-5',
@@ -97,7 +97,7 @@ export const FAQ_LIST: FAQEntry[] = [
     id: 'faq-7',
     category: 'GENERAL',
     question: 'How can my college or club partner with AWS SCD Pune 2026?',
-    answer: 'Student clubs and university technical societies can register as Community Outreach Partners by contacting partner@awsugpune.in. Partner campuses receive reserved ticket allocations and community recognitions.'
+    answer: 'Student clubs and university technical societies can register as Community Outreach Partners by contacting awssbgbsiotr@gmail.com. Partner campuses receive reserved ticket allocations and community recognitions.'
   }
 ];
 
@@ -145,7 +145,7 @@ export class EcosystemController {
                   class="sponsor-logo-card tier-${item.tier.toLowerCase().replace(/[^a-z]/g, '')}" 
                   title="${item.name}">
                   <div class="logo-frame">
-                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" onerror="if (!this.dataset.fallback) { this.dataset.fallback = '1'; this.src = './assets/' + this.src.split('/').pop(); }" />
                   </div>
                   <span class="logo-brand-label mono">${item.name}</span>
                 </a>
@@ -172,7 +172,7 @@ export class EcosystemController {
                   class="sponsor-logo-card tier-communitypartner" 
                   title="${item.name}">
                   <div class="logo-frame">
-                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" onerror="if (!this.dataset.fallback) { this.dataset.fallback = '1'; this.src = './assets/' + this.src.split('/').pop(); }" />
                   </div>
                   <span class="logo-brand-label mono">${item.name}</span>
                 </a>

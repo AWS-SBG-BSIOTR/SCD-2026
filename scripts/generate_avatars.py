@@ -1,0 +1,116 @@
+import os
+
+svg_template = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+  <defs>
+    <!-- Linear Gradient for Corridor Lighting -->
+    <linearGradient id="backlight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F2F4F7" />
+      <stop offset="50%" stop-color="#D0D5DD" />
+      <stop offset="100%" stop-color="#98A2B3" />
+    </linearGradient>
+    <linearGradient id="shadowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#101216" />
+      <stop offset="100%" stop-color="#050506" />
+    </linearGradient>
+    <!-- CRT Scanlines -->
+    <pattern id="scanlines" width="100" height="4" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="100" y2="0" stroke="#000000" stroke-width="1.5" opacity="0.25" />
+    </pattern>
+  </defs>
+
+  <!-- Outer Dark Background -->
+  <rect width="600" height="600" fill="#0A0B0D" />
+
+  <!-- Architectural Corridor Perspective Background -->
+  <g opacity="0.95">
+    <!-- Left Angled Wall with Grid Lines -->
+    <polygon points="0,0 210,130 210,470 0,600" fill="#12151A" stroke="#252930" stroke-width="1.5" />
+    <line x1="50" y1="31" x2="50" y2="569" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="110" y1="68" x2="110" y2="532" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="160" y1="99" x2="160" y2="501" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="0" y1="150" x2="210" y2="220" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="0" y1="300" x2="210" y2="300" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="0" y1="450" x2="210" y2="380" stroke="#252930" stroke-width="1" opacity="0.7" />
+
+    <!-- Right Angled Wall with Grid Lines -->
+    <polygon points="600,0 390,130 390,470 600,600" fill="#12151A" stroke="#252930" stroke-width="1.5" />
+    <line x1="550" y1="31" x2="550" y2="569" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="490" y1="68" x2="490" y2="532" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="440" y1="99" x2="440" y2="501" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="600" y1="150" x2="390" y2="220" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="600" y1="300" x2="390" y2="300" stroke="#252930" stroke-width="1" opacity="0.7" />
+    <line x1="600" y1="450" x2="390" y2="380" stroke="#252930" stroke-width="1" opacity="0.7" />
+
+    <!-- Ceiling and Floor Perspective -->
+    <polygon points="0,0 600,0 390,130 210,130" fill="#0D0F12" stroke="#252930" stroke-width="1.5" />
+    <polygon points="0,600 600,600 390,470 210,470" fill="#08090B" stroke="#252930" stroke-width="1.5" />
+
+    <!-- Center Illuminated Gateway -->
+    <rect x="210" y="130" width="180" height="340" fill="url(#backlight)" stroke="#475467" stroke-width="1" />
+    
+    <!-- Light Diffuser Lines in doorway -->
+    <line x1="210" y1="190" x2="390" y2="190" stroke="#FFFFFF" stroke-width="0.75" opacity="0.6" />
+    <line x1="210" y1="250" x2="390" y2="250" stroke="#FFFFFF" stroke-width="0.75" opacity="0.6" />
+    <line x1="210" y1="310" x2="390" y2="310" stroke="#FFFFFF" stroke-width="0.75" opacity="0.6" />
+    <line x1="210" y1="370" x2="390" y2="370" stroke="#FFFFFF" stroke-width="0.75" opacity="0.6" />
+    <line x1="300" y1="130" x2="300" y2="470" stroke="#FFFFFF" stroke-width="0.75" opacity="0.5" />
+  </g>
+
+  <!-- Human Silhouette Backlit in Center -->
+  <g fill="url(#shadowGrad)">
+    <path d="M 300,165 C 255,165 240,195 240,240 C 240,285 260,320 280,335 L 280,360 L 245,375 C 170,405 130,470 120,580 L 480,580 C 470,470 430,405 355,375 L 320,360 L 320,335 C 340,320 360,285 360,240 C 360,195 345,165 300,165 Z" />
+  </g>
+
+  <!-- Scanlines Overlay -->
+  <rect width="600" height="600" fill="url(#scanlines)" pointer-events="none" />
+
+  <!-- Top-Left HUD Reticle -->
+  <g>
+    <text x="32" y="52" font-family="'Space Mono', monospace" font-size="24" font-weight="700" fill="#FF3B30">[+]</text>
+    <text x="72" y="50" font-family="'Space Mono', monospace" font-size="11" font-weight="600" fill="#8E8E93" letter-spacing="1.5">TARGET: CONFIDENTIAL</text>
+  </g>
+
+  <!-- Top-Right Red Status Badge -->
+  <g>
+    <rect x="395" y="28" width="175" height="32" fill="#FF3B30" rx="2" />
+    <text x="482" y="49" font-family="'Space Mono', monospace" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">[LOCKED // DROP {drop_num}]</text>
+  </g>
+
+  <!-- Center Editorial Banner Across Chest -->
+  <g>
+    <rect x="110" y="410" width="380" height="44" fill="#0A0B0D" stroke="#FF3B30" stroke-width="1.5" rx="2" />
+    <text x="300" y="438" font-family="'Space Mono', monospace" font-size="14" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="2">[IDENTITY REVEALING SOON]</text>
+  </g>
+
+  <!-- Bottom Telemetry HUD Line -->
+  <g opacity="0.85">
+    <rect x="24" y="544" width="552" height="28" fill="#0D0F12" stroke="#252930" stroke-width="1" />
+    <text x="36" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#98A2B3" letter-spacing="1">STAGE: {stage} // TIME: {time_slot}</text>
+    <text x="564" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#FF3B30" text-anchor="end" letter-spacing="1">{track_tag}</text>
+  </g>
+</svg>"""
+
+drops = [
+    ('01', 'HALL 1', '10:00 AM', '[TRACK // ARCHITECTURE]'),
+    ('02', 'HALL 1', '10:45 AM', '[TRACK // GENAI]'),
+    ('03', 'HALL 1', '12:30 PM', '[TRACK // SERVERLESS]'),
+    ('04', 'HALL 1', '02:15 PM', '[TRACK // DEVOPS]'),
+    ('05', 'HALL 1', '03:00 PM', '[TRACK // SECURITY]'),
+    ('06', 'HALL 1', '04:00 PM', '[TRACK // COMMUNITY]'),
+]
+
+out_dirs = [
+    r'c:\Users\DELL\Desktop\SCD-2026\fifth web\public\assets\avatars',
+    r'c:\Users\DELL\Desktop\SCD-2026\fifth web\dist\assets\avatars'
+]
+
+for d in out_dirs:
+    os.makedirs(d, exist_ok=True)
+    for num, stage, time_slot, track in drops:
+        content = svg_template.format(drop_num=num, stage=stage, time_slot=time_slot, track_tag=track)
+        filepath = os.path.join(d, f'drop-{num}.svg')
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f'Wrote {filepath}')
+
+print("All 6 avatar SVG assets generated successfully.")
