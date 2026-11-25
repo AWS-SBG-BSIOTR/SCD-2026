@@ -66,7 +66,7 @@ export class SpeakersController {
           <div class="csb-left">
             <span class="csb-title">[STATUS: LINEUP ANNOUNCEMENT UNDERWAY]</span>
             <span class="csb-sep">//</span>
-            <span>SPEAKERS ANNOUNCING SOON</span>
+            <span>7+ SPEAKERS ANNOUNCING SOON</span>
           </div>
           <div class="csb-right">
             <span class="csb-status-pill">[RELEASING SOON]</span>

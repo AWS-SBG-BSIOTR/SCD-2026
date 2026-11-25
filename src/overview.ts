@@ -66,6 +66,7 @@ export const WHY_ATTEND_DATA: WhyAttendCard[] = [
 export class OverviewController {
   private container: HTMLElement;
   private timerInterval: number | null = null;
+  private abortController: AbortController = new AbortController();
   // Target: 27 December 2026, 08:00 AM IST (Indian Standard Time UTC+05:30)
   private targetDate: number = new Date('2026-12-27T08:00:00+05:30').getTime();
 
@@ -116,25 +117,42 @@ export class OverviewController {
   }
 
   private bindEvents(): void {
+    this.abortController.abort();
+    this.abortController = new AbortController();
+    const { signal } = this.abortController;
+
     const cards = this.container.querySelectorAll('.metric-card, .overview-countdown-panel, .why-attend-card');
     cards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        sound.playHover(460, 0.02);
-      });
-      card.addEventListener('click', () => {
-        sound.playClick(680, 0.03);
-      });
+      card.addEventListener(
+        'mouseenter',
+        () => {
+          sound.playHover(460, 0.02);
+        },
+        { signal }
+      );
+      card.addEventListener(
+        'click',
+        () => {
+          sound.playClick(680, 0.03);
+        },
+        { signal }
+      );
     });
 
     const ctaBtns = this.container.querySelectorAll('.overview-cta-btn');
     ctaBtns.forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        sound.playHover(520, 0.02);
-      });
+      btn.addEventListener(
+        'mouseenter',
+        () => {
+          sound.playHover(520, 0.02);
+        },
+        { signal }
+      );
     });
   }
 
   public destroy(): void {
+    this.abortController.abort();
     if (this.timerInterval !== null) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;

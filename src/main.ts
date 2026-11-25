@@ -18,7 +18,8 @@ const initApp = () => {
   const { signal } = abortController;
   const controllers: Destroyable[] = [];
 
-  // 1. Navigation Drawer Toggle (with scroll lock, focus/inert containment & Escape key)
+  // 1. Navigation Drawer Toggle (with scroll lock, focus/inert containment, Tab trap & Escape key)
+  const headerEl = document.getElementById('header');
   const menuToggle = document.getElementById('menu-drawer-toggle');
   const menuDrawer = document.getElementById('menu-drawer');
   const drawerCloseBtn = document.getElementById('drawer-close-btn');
@@ -27,9 +28,42 @@ const initApp = () => {
   const mainEl = document.querySelector<HTMLElement>('main');
   const footerEl = document.getElementById('footer');
 
+  // Sound toggle controls (desktop header + mobile drawer, synced in-memory)
+  const soundToggleBtn = document.getElementById('sound-toggle-btn');
+  const drawerSoundBtn = document.getElementById('drawer-sound-toggle-btn');
+  const drawerSoundState = drawerSoundBtn?.querySelector<HTMLElement>('.sound-state-pill');
+
+  const syncSoundUI = () => {
+    const enabled = sound.isEnabled();
+    if (soundToggleBtn) {
+      soundToggleBtn.textContent = enabled ? '[SFX: ON]' : '[SFX: OFF]';
+      soundToggleBtn.classList.toggle('is-active', enabled);
+      soundToggleBtn.setAttribute('aria-pressed', String(enabled));
+    }
+    if (drawerSoundBtn) {
+      drawerSoundBtn.classList.toggle('is-active', enabled);
+      drawerSoundBtn.setAttribute('aria-pressed', String(enabled));
+    }
+    if (drawerSoundState) {
+      drawerSoundState.textContent = enabled ? '[ON]' : '[OFF]';
+    }
+  };
+
+  syncSoundUI();
+  [soundToggleBtn, drawerSoundBtn].forEach((btn) => {
+    btn?.addEventListener(
+      'click',
+      () => {
+        sound.toggle();
+        syncSoundUI();
+      },
+      { signal }
+    );
+  });
+
   const setBackgroundInert = (isInert: boolean) => {
     const supportsInert = 'inert' in HTMLElement.prototype;
-    [mainEl, footerEl].forEach((el) => {
+    [headerEl, mainEl, footerEl].forEach((el) => {
       if (!el) return;
       if (supportsInert) {
         el.inert = isInert;
@@ -38,6 +72,15 @@ const initApp = () => {
       } else {
         el.removeAttribute('aria-hidden');
       }
+    });
+  };
+
+  const getDrawerFocusableElements = (): HTMLElement[] => {
+    if (!menuDrawer) return [];
+    const selector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    return Array.from(menuDrawer.querySelectorAll<HTMLElement>(selector)).filter((el) => {
+      const style = window.getComputedStyle(el);
+      return style.display !== 'none' && style.visibility !== 'hidden';
     });
   };
 
@@ -71,7 +114,10 @@ const initApp = () => {
     closeDrawer();
     menuToggle?.focus({ preventScroll: true });
   }, { signal });
-  drawerBackdrop?.addEventListener('click', () => closeDrawer(), { signal });
+  drawerBackdrop?.addEventListener('click', () => {
+    closeDrawer();
+    menuToggle?.focus({ preventScroll: true });
+  }, { signal });
   drawerLinks.forEach(link => {
     link.addEventListener('click', () => closeDrawer(true), { signal });
   });
@@ -79,16 +125,34 @@ const initApp = () => {
   document.addEventListener(
     'keydown',
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && menuDrawer?.classList.contains('is-open')) {
+      if (!menuDrawer?.classList.contains('is-open')) return;
+      if (e.key === 'Escape') {
         closeDrawer();
         menuToggle?.focus({ preventScroll: true });
+        return;
+      }
+      if (e.key === 'Tab') {
+        const focusables = getDrawerFocusableElements();
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        if (e.shiftKey) {
+          if (!active || !menuDrawer.contains(active) || active === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (!active || !menuDrawer.contains(active) || active === last) {
+          e.preventDefault();
+          first.focus();
+        }
       }
     },
     { signal }
   );
 
   // Release drawer scroll lock & inert state on desktop resize, hash navigation, or pagehide
-  const desktopMediaQuery = window.matchMedia('(min-width: 769px)');
+  const desktopMediaQuery = window.matchMedia('(min-width: 1201px)');
   const onDesktopMatchChange = (e: MediaQueryListEvent | MediaQueryList) => {
     if (e.matches) {
       closeDrawer(true);

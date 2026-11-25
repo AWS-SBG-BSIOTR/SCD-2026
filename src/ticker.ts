@@ -169,6 +169,8 @@ export class TickerController {
         'visibilitychange',
         () => {
           if (document.hidden) {
+            this.isTouching = false;
+            this.isHovering = false;
             this.stopLoop();
           } else if (this.isVisible) {
             this.startLoop();
@@ -177,6 +179,15 @@ export class TickerController {
         { signal }
       );
     }
+
+    window.addEventListener(
+      'blur',
+      () => {
+        this.isTouching = false;
+        this.isHovering = false;
+      },
+      { passive: true, signal }
+    );
 
     window.addEventListener(
       'resize',

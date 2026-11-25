@@ -5,7 +5,7 @@
 > The official frontend web platform for **AWS Student Community Day 2026 Pune**, inspired by architectural editorial brutalism and variable cloud typography.
 
 ## Event Brief
-- **Date:** 27 December 2026 (09:00 AM – 04:00 PM IST)
+- **Date:** 27 December 2026 (08:00 AM – 05:00 PM IST)
 - **Venue:** Seasons 24 Banquet & Conventions, Wagholi, Pune, Maharashtra 412207, India
 - **Capacity:** 300 Student Builders
 - **Ticketing & Registration:** Powered by KonfHub

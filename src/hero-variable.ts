@@ -641,6 +641,15 @@ export class HeroVariableController {
           })()
         : this.pointerY;
 
+      // Batch all DOM layout reads before style writes to avoid per-character reflow thrashing
+      const letterCenters: number[] | null = this.isPointerInside
+        ? this.letters.map((node) => {
+            if (node.isSpace) return 0;
+            const rect = node.element.getBoundingClientRect();
+            return rect.left + rect.width / 2;
+          })
+        : null;
+
       let anyUnsettled = false;
 
       for (let idx = 0; idx < totalLetters; idx++) {
@@ -701,9 +710,8 @@ export class HeroVariableController {
         }
 
         // 3. Touch / Pointer magnetic proximity ripple + velocity boost
-        if (this.isPointerInside) {
-          const rect = node.element.getBoundingClientRect();
-          const letterCenterX = rect.left + rect.width / 2;
+        if (this.isPointerInside && letterCenters) {
+          const letterCenterX = letterCenters[idx];
           const dist = Math.hypot(this.pointerX - letterCenterX, this.pointerY - wordmarkCenterY);
           const effectiveRadius = proximityRadius * (1 + this.pointerSpeed * 0.25);
 

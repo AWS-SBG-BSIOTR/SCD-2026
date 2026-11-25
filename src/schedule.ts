@@ -185,7 +185,7 @@ export class ScheduleController {
                     </div>
 
                     <div class="fb-col-title">
-                      <h4 class="fb-session-heading">${item.title}</h4>
+                      <h3 class="fb-session-heading">${item.title}</h3>
                       ${item.speaker ? `
                         <div class="fb-session-speaker mono">
                           ${item.speaker}${item.speakerRole ? ` · ${item.speakerRole}` : ''}

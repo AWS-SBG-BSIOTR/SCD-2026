@@ -331,14 +331,14 @@ export class ScrollRevealController {
     header.querySelectorAll<HTMLElement>('.section-headline').forEach((el) => {
       if (!seen.has(el)) {
         seen.add(el);
-        items.push({ el, delayMs: 60 });
+        items.push({ el, delayMs: 90 });
       }
     });
 
     header.querySelectorAll<HTMLElement>('.section-sub').forEach((el) => {
       if (!seen.has(el)) {
         seen.add(el);
-        items.push({ el, delayMs: 120 });
+        items.push({ el, delayMs: 180 });
       }
     });
 
@@ -530,6 +530,9 @@ export class ScrollRevealController {
       el.removeEventListener('transitionend', onTransitionEnd);
       window.clearTimeout(timerId);
       this.cleanupTimers.delete(timerId);
+      el.classList.remove('sr-will-change');
+      el.classList.add('sr-settled');
+      el.style.removeProperty('--sr-delay');
     };
 
     const onTransitionEnd = (e: TransitionEvent) => {

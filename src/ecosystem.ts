@@ -164,7 +164,7 @@ export class EcosystemController {
                   class="sponsor-logo-card tier-${item.tier.toLowerCase().replace(/[^a-z]/g, '')}" 
                   title="${item.name}">
                   <div class="logo-frame">
-                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" onerror="if (!this.dataset.fallback) { this.dataset.fallback = '1'; this.src = './assets/' + this.src.split('/').pop(); }" />
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
                   </div>
                   <span class="logo-brand-label mono">${item.name}</span>
                 </a>
@@ -191,7 +191,7 @@ export class EcosystemController {
                   class="sponsor-logo-card tier-communitypartner" 
                   title="${item.name}">
                   <div class="logo-frame">
-                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" onerror="if (!this.dataset.fallback) { this.dataset.fallback = '1'; this.src = './assets/' + this.src.split('/').pop(); }" />
+                    <img src="${item.logoUrl}" alt="${item.name}" class="sponsor-logo-img logo-${item.id}" loading="lazy" />
                   </div>
                   <span class="logo-brand-label mono">${item.name}</span>
                 </a>

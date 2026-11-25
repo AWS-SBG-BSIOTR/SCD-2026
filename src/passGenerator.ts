@@ -4,9 +4,6 @@ export interface PassConfig {
   name: string;
   college: string;
   role: string;
-  track: string;
-  tier: 'STUDENT BUILDER' | 'COMMUNITY' | 'SPEAKER';
-  passNumber: string;
   photoDataUrl: string;
 }
 
@@ -27,13 +24,12 @@ export class PassGeneratorController {
   private inputPulseToggle: boolean = false;
   private triggerInputNudge: (() => void) | null = null;
   private triggerRoleNudge: (() => void) | null = null;
+  private eventsAbortController: AbortController = new AbortController();
+  private physicsAbortController: AbortController = new AbortController();
   private config: PassConfig = {
     name: '',
     college: '',
     role: 'STUDENT ATTENDEE',
-    track: 'GENAI & BEDROCK',
-    tier: 'STUDENT BUILDER',
-    passNumber: 'SCD26-PUNE-4892',
     photoDataUrl: ''
   };
 
@@ -381,11 +377,15 @@ export class PassGeneratorController {
   }
 
   private attachEvents() {
+    this.eventsAbortController.abort();
+    this.eventsAbortController = new AbortController();
+    const { signal } = this.eventsAbortController;
+
     const form = this.container.querySelector<HTMLFormElement>('#pass-customizer-form');
     if (form) {
       form.addEventListener('submit', (e) => {
         e.preventDefault();
-      });
+      }, { signal });
     }
 
     // Name input
@@ -396,7 +396,7 @@ export class PassGeneratorController {
         sound.playTypewriter(Math.random() * 200 + 400);
         this.updatePassDisplay();
         this.triggerInputNudge?.();
-      });
+      }, { signal });
     }
 
     // College input
@@ -407,7 +407,7 @@ export class PassGeneratorController {
         sound.playTypewriter(Math.random() * 200 + 400);
         this.updatePassDisplay();
         this.triggerInputNudge?.();
-      });
+      }, { signal });
     }
 
     // Role select
@@ -418,7 +418,7 @@ export class PassGeneratorController {
         sound.playClick(650, 0.03);
         this.updatePassDisplay();
         this.triggerRoleNudge?.();
-      });
+      }, { signal });
     }
 
     // Profile photo upload & remove
@@ -431,7 +431,7 @@ export class PassGeneratorController {
       choosePhotoBtn.addEventListener('click', () => {
         sound.playClick(720, 0.03);
         photoInp.click();
-      });
+      }, { signal });
     }
 
     if (photoInp) {
@@ -466,7 +466,7 @@ export class PassGeneratorController {
             if (statusLbl) statusLbl.textContent = 'COULD NOT READ IMAGE · TRY ANOTHER JPG OR PNG';
             photoInp.value = '';
           });
-      });
+      }, { signal });
     }
 
     if (clearPhotoBtn) {
@@ -478,7 +478,7 @@ export class PassGeneratorController {
         sound.playClick(520, 0.03);
         this.updatePassDisplay();
         this.triggerInputNudge?.();
-      });
+      }, { signal });
     }
 
     // Download Badge PNG button
@@ -486,7 +486,7 @@ export class PassGeneratorController {
     if (dlBtn) {
       dlBtn.addEventListener('click', () => {
         void this.downloadPassPNG();
-      });
+      }, { signal });
     }
 
     // Share Badge button (Native Web Share on mobile, PNG fallback on desktop)
@@ -494,7 +494,7 @@ export class PassGeneratorController {
     if (shareBtn) {
       shareBtn.addEventListener('click', () => {
         void this.sharePassBadge();
-      });
+      }, { signal });
     }
 
     if (this.pageshowHandler) {
@@ -518,6 +518,7 @@ export class PassGeneratorController {
   }
 
   private teardownPhysicsListeners() {
+    this.physicsAbortController.abort();
     if (this.orientationHandler) {
       window.removeEventListener('deviceorientation', this.orientationHandler);
       this.orientationHandler = null;
@@ -547,6 +548,8 @@ export class PassGeneratorController {
 
   private initBadgePhysics() {
     this.teardownPhysicsListeners();
+    this.physicsAbortController = new AbortController();
+    const { signal: physicsSignal } = this.physicsAbortController;
     const card = this.container.querySelector<HTMLElement>('#physical-pass-card');
     const stage = this.container.querySelector<HTMLElement>('.pass-preview-stage');
     const clip = this.container.querySelector<HTMLElement>('.lanyard-clip');
@@ -759,7 +762,7 @@ export class PassGeneratorController {
       lastMoveTime = performance.now();
       sound.playHover(480, 0.02);
       ensurePhysicsLoop();
-    });
+    }, { signal: physicsSignal });
 
     stage.addEventListener('pointermove', (e: PointerEvent) => {
       if (e.pointerType === 'touch' || isDragging) return;
@@ -770,7 +773,7 @@ export class PassGeneratorController {
       targetX = -ny * 7.5;
       lastMoveTime = performance.now();
       ensurePhysicsLoop();
-    });
+    }, { signal: physicsSignal });
 
     stage.addEventListener('pointerleave', (e: PointerEvent) => {
       if (e.pointerType === 'touch' || isDragging) return;
@@ -778,7 +781,7 @@ export class PassGeneratorController {
       resetTargetsToRest();
       sound.playHover(540, 0.015);
       ensurePhysicsLoop();
-    });
+    }, { signal: physicsSignal });
 
     // 2. Unified Grab, Drag, Flick & Click Impulse on Card
     card.addEventListener('pointerdown', (e: PointerEvent) => {
@@ -828,7 +831,7 @@ export class PassGeneratorController {
       targetX = -ny * 7.5;
       sound.playHover(480, 0.02);
       ensurePhysicsLoop();
-    });
+    }, { signal: physicsSignal });
 
     this.windowMoveHandler = (e: PointerEvent) => {
       if (!isDragging || e.pointerId !== activePointerId) return;
@@ -1181,7 +1184,7 @@ export class PassGeneratorController {
     link.download = `AWS-SCD-2026-PASS-${attendeeName.replace(/\s+/g, '_')}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
-    this.showToast(`[SUCCESS] BADGE PNG DOWNLOADED FOR ${attendeeName} (#${this.config.passNumber}).`);
+    this.showToast(`[SUCCESS] BADGE PNG DOWNLOADED FOR ${attendeeName}.`);
   }
 
   private async sharePassBadge() {
@@ -1203,7 +1206,7 @@ export class PassGeneratorController {
             text: shareText,
             files: [file]
           });
-          this.showToast(`[SHARED] BADGE SHARED SUCCESSFULLY (#${this.config.passNumber}).`);
+          this.showToast(`[SHARED] BADGE SHARED SUCCESSFULLY FOR ${attendeeName}.`);
           return;
         }
       } catch (err) {
@@ -1222,6 +1225,7 @@ export class PassGeneratorController {
   public destroy() {
     this.photoUploadSeq++;
     this.revokeActiveObjectUrl();
+    this.eventsAbortController.abort();
     if (this.pageshowHandler) {
       window.removeEventListener('pageshow', this.pageshowHandler);
       this.pageshowHandler = null;
