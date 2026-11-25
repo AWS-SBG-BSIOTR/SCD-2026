@@ -52,7 +52,6 @@ const CLEANUP_BUFFER_MS = 100;
 export class ScrollRevealController {
   private observer: IntersectionObserver | null = null;
   private mutationObserver: MutationObserver | null = null;
-  private progressBar: HTMLElement | null = null;
 
   private pendingTargets: Set<HTMLElement> = new Set();
   private pendingHeaders: Set<HTMLElement> = new Set();
@@ -70,7 +69,6 @@ export class ScrollRevealController {
   private readyToObserve: boolean = false;
 
   constructor() {
-    this.mountProgressBar();
     this.initMutationObserver();
     this.bindScrollListeners();
     this.refresh();
@@ -86,7 +84,6 @@ export class ScrollRevealController {
         this.pendingHeaders.forEach((header) => this.observer?.observe(header));
         this.pendingTargets.forEach((target) => this.observer?.observe(target));
         this.checkFallbackVisibility();
-        this.updateProgressBar();
       });
     });
 
@@ -101,7 +98,6 @@ export class ScrollRevealController {
         this.pendingTargets.forEach((target) => this.observer?.observe(target));
       }
       this.checkFallbackVisibility();
-      this.updateProgressBar();
     }, 240);
   }
 
@@ -109,7 +105,6 @@ export class ScrollRevealController {
     if (this.isDestroyed) return;
     this.pruneDisconnected();
     this.scanSubtree(document.body, false);
-    this.updateProgressBar();
   }
 
   public destroy(): void {
@@ -166,26 +161,6 @@ export class ScrollRevealController {
       this.revealElement(target, 0, true);
     });
     this.pendingTargets.clear();
-
-    if (this.progressBar && this.progressBar.parentNode) {
-      this.progressBar.parentNode.removeChild(this.progressBar);
-    }
-    this.progressBar = null;
-  }
-
-  private mountProgressBar(): void {
-    const existing = document.getElementById('scroll-progress-bar');
-    if (existing) {
-      this.progressBar = existing;
-      this.progressBar.setAttribute('aria-hidden', 'true');
-      return;
-    }
-
-    const bar = document.createElement('div');
-    bar.id = 'scroll-progress-bar';
-    bar.setAttribute('aria-hidden', 'true');
-    document.body.appendChild(bar);
-    this.progressBar = bar;
   }
 
   private initIntersectionObserver(): void {
@@ -217,7 +192,7 @@ export class ScrollRevealController {
       for (const mutation of mutations) {
         if (mutation.type !== 'childList' || mutation.addedNodes.length === 0) continue;
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLElement && node.id !== 'scroll-progress-bar') {
+          if (node instanceof HTMLElement) {
             addedRoots.push(node);
           }
         });
@@ -233,8 +208,6 @@ export class ScrollRevealController {
         const forceImmediate = Boolean(hostSection && this.revealedSections.has(hostSection));
         this.scanSubtree(root, forceImmediate);
       }
-
-      this.updateProgressBar();
     });
 
     this.mutationObserver.observe(document.body, {
@@ -257,18 +230,9 @@ export class ScrollRevealController {
     this.scrollRafId = window.requestAnimationFrame(() => {
       this.scrollRafId = null;
       if (this.isDestroyed) return;
-      this.updateProgressBar();
       this.checkFallbackVisibility();
     });
   };
-
-  private updateProgressBar(): void {
-    if (!this.progressBar) return;
-    const scrollTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = maxScroll > 0 ? Math.min(1, Math.max(0, scrollTop / maxScroll)) : 0;
-    this.progressBar.style.transform = `scaleX(${progress.toFixed(4)})`;
-  }
 
   private pruneDisconnected(): void {
     this.pendingTargets.forEach((el) => {

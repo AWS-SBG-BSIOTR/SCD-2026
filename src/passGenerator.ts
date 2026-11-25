@@ -19,6 +19,7 @@ export class PassGeneratorController {
   private windowMoveHandler: ((e: PointerEvent) => void) | null = null;
   private windowUpHandler: ((e: PointerEvent) => void) | null = null;
   private pageshowHandler: ((e: PageTransitionEvent) => void) | null = null;
+  private pagehideHandler: (() => void) | null = null;
   private roleFlashTimeout: number | null = null;
   private toastTimeout: number | null = null;
   private photoUploadSeq: number = 0;
@@ -154,9 +155,6 @@ export class PassGeneratorController {
                 </button>
                 <button type="button" class="btn-brutalist btn-secondary w-full" id="btn-share-pass">
                   SHARE BADGE [->]
-                </button>
-                <button type="button" class="btn-brutalist btn-photo-clear w-full" id="btn-reset-badge">
-                  RESET BADGE [X]
                 </button>
               </div>
 
@@ -483,16 +481,6 @@ export class PassGeneratorController {
       });
     }
 
-    // Reset entire badge back to clean defaults
-    const resetBadgeBtn = this.container.querySelector<HTMLButtonElement>('#btn-reset-badge');
-    if (resetBadgeBtn) {
-      resetBadgeBtn.addEventListener('click', () => {
-        sound.playClick(520, 0.03);
-        this.resetBadge();
-        this.triggerInputNudge?.();
-      });
-    }
-
     // Download Badge PNG button
     const dlBtn = this.container.querySelector<HTMLButtonElement>('#btn-download-pass-png');
     if (dlBtn) {
@@ -512,12 +500,19 @@ export class PassGeneratorController {
     if (this.pageshowHandler) {
       window.removeEventListener('pageshow', this.pageshowHandler);
     }
+    if (this.pagehideHandler) {
+      window.removeEventListener('pagehide', this.pagehideHandler);
+    }
     this.pageshowHandler = (e: PageTransitionEvent) => {
       if (e.persisted) {
         this.resetBadge();
       }
     };
+    this.pagehideHandler = () => {
+      this.resetBadge();
+    };
     window.addEventListener('pageshow', this.pageshowHandler);
+    window.addEventListener('pagehide', this.pagehideHandler);
 
     this.initBadgePhysics();
   }
@@ -1230,6 +1225,10 @@ export class PassGeneratorController {
     if (this.pageshowHandler) {
       window.removeEventListener('pageshow', this.pageshowHandler);
       this.pageshowHandler = null;
+    }
+    if (this.pagehideHandler) {
+      window.removeEventListener('pagehide', this.pagehideHandler);
+      this.pagehideHandler = null;
     }
     if (this.toastTimeout !== null) {
       window.clearTimeout(this.toastTimeout);
