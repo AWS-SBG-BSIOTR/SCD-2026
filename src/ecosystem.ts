@@ -24,22 +24,6 @@ export const OFFICIAL_SPONSORS: SponsorPartnerItem[] = [
     tier: 'TITLE SPONSOR',
     logoUrl: './logos/aws-full.svg',
     websiteUrl: 'https://aws.amazon.com/'
-  },
-  {
-    id: 'sp-postman',
-    name: 'Postman',
-    category: 'SPONSOR',
-    tier: 'SPONSOR',
-    logoUrl: './logos/postman.svg',
-    websiteUrl: 'https://www.postman.com/'
-  },
-  {
-    id: 'sp-mongo',
-    name: 'MongoDB',
-    category: 'SPONSOR',
-    tier: 'SPONSOR',
-    logoUrl: './logos/mongodb.svg',
-    websiteUrl: 'https://www.mongodb.com/'
   }
 ];
 
@@ -51,23 +35,21 @@ export const COMMUNITY_PARTNERS: SponsorPartnerItem[] = [
     tier: 'COMMUNITY PARTNER',
     logoUrl: './logos/aws-ug-pune.png',
     websiteUrl: 'https://www.awsugpune.in/'
-  },
-  {
-    id: 'cp-cncf',
-    name: 'CNCF (Cloud Native)',
-    category: 'COMMUNITY_PARTNER',
-    tier: 'COMMUNITY PARTNER',
-    logoUrl: './logos/cncf.svg',
-    websiteUrl: 'https://www.cncf.io/'
   }
 ];
 
 export const FAQ_LIST: FAQEntry[] = [
   {
+    id: 'faq-1',
+    category: 'REGISTRATION',
+    question: 'Does a Meetup RSVP guarantee admission at the gate?',
+    answer: 'No. A Meetup RSVP alone does not guarantee entry. You must complete official ticket registration at <a href="https://konfhub.com/aws-student-community-day-pune-2026" target="_blank" rel="noopener noreferrer" class="faq-contact-email"><strong>konfhub.com/aws-student-community-day-pune-2026</strong></a> and bring your confirmed ticket along with a valid college ID or government-issued ID card. Check-in opens at 8:00 AM IST.'
+  },
+  {
     id: 'faq-2',
     category: 'LOGISTICS',
     question: 'Where and when will the conference take place?',
-    answer: 'The event takes place on 27 December 2026, 08:00 AM – 05:30 PM IST at Seasons 24, Wagholi, Pune, Maharashtra. The venue is located along the Pune-Ahmednagar highway, well connected by direct PMT transit, ride shares, and cabs from Pune Railway Station (15 km) and Pune International Airport (11 km).'
+    answer: 'The event takes place on 27 December 2026, 08:00 AM – 05:00 PM IST (check-in opens at 08:00 AM, programme begins at 09:00 AM) at Seasons 24, Wagholi, Pune, Maharashtra. The venue is located along the Pune-Ahmednagar highway, well connected by direct PMT transit, ride shares, and cabs from Pune Railway Station (15 km) and Pune International Airport (11 km).'
   },
   {
     id: 'faq-3',
@@ -91,7 +73,7 @@ export const FAQ_LIST: FAQEntry[] = [
     id: 'faq-6',
     category: 'TECHNICAL',
     question: 'Should I bring my laptop and charger?',
-    answer: 'We strongly recommend bringing your laptop! Both Track A and Track B include hands-on breakout sessions, live cloud debugging challenges, and an on-site cloud trivia hackathon with exciting awards.'
+    answer: 'Bringing your laptop and charger is recommended—we are planning 1–2 hands-on workshops alongside live cloud demos where you can build along in real time. However, it is completely up to you, and you can comfortably follow all talks and walkthroughs even if you prefer not to carry one.'
   },
   {
     id: 'faq-7',
@@ -103,7 +85,7 @@ export const FAQ_LIST: FAQEntry[] = [
 
 export class EcosystemController {
   private container: HTMLElement;
-  private openFaqIds: Set<string> = new Set(['faq-2']);
+  private openFaqIds: Set<string> = new Set();
   private activeCategory: string = 'ALL';
 
   constructor(container: HTMLElement) {
@@ -112,7 +94,7 @@ export class EcosystemController {
   }
 
   private render() {
-    const categories = ['ALL', 'LOGISTICS', 'TECHNICAL', 'GENERAL'];
+    const categories = ['ALL', 'REGISTRATION', 'LOGISTICS', 'TECHNICAL', 'GENERAL'];
     const filteredFaq = this.activeCategory === 'ALL' 
       ? FAQ_LIST 
       : FAQ_LIST.filter(f => f.category === this.activeCategory);
@@ -133,7 +115,7 @@ export class EcosystemController {
           <div class="sponsors-subgroup">
             <div class="block-header">
               <span class="header-tag">OFFICIAL SPONSORS</span>
-              <span class="header-meta">TITLE · CLOUD · DEV TOOLS</span>
+              <span class="header-meta">TITLE · CLOUD</span>
             </div>
 
             <div class="sponsors-logo-grid sponsors-grid-tier">
@@ -160,7 +142,7 @@ export class EcosystemController {
           <div class="sponsors-subgroup">
             <div class="block-header">
               <span class="header-tag">COMMUNITY PARTNERS</span>
-              <span class="header-meta">ECOSYSTEM · TECH COMMUNITIES</span>
+              <span class="header-meta">ECOSYSTEM · COMMUNITY</span>
             </div>
 
             <div class="sponsors-logo-grid community-grid-tier">

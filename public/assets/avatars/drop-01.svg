@@ -71,7 +71,7 @@
   <!-- Top-Right Red Status Badge -->
   <g>
     <rect x="395" y="28" width="175" height="32" fill="#FF3B30" rx="2" />
-    <text x="482" y="49" font-family="'Space Mono', monospace" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">[LOCKED // DROP 01]</text>
+    <text x="482" y="49" font-family="'Space Mono', monospace" font-size="12" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">[LOCKED // SPEAKER 01]</text>
   </g>
 
   <!-- Center Editorial Banner Across Chest -->
@@ -83,7 +83,7 @@
   <!-- Bottom Telemetry HUD Line -->
   <g opacity="0.85">
     <rect x="24" y="544" width="552" height="28" fill="#0D0F12" stroke="#252930" stroke-width="1" />
-    <text x="36" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#98A2B3" letter-spacing="1">STAGE: HALL 1 // TIME: 10:00 AM</text>
-    <text x="564" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#FF3B30" text-anchor="end" letter-spacing="1">[TRACK // ARCHITECTURE]</text>
+    <text x="36" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#98A2B3" letter-spacing="1">STAGE: HALL 1 // 27 DEC 2026</text>
+    <text x="564" y="562" font-family="'Space Mono', monospace" font-size="10" font-weight="700" fill="#FF3B30" text-anchor="end" letter-spacing="1">[TOPIC // RELEASING SOON]</text>
   </g>
 </svg>

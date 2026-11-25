@@ -6,6 +6,13 @@ export class VenueController {
   private readonly minZoom: number = 1.0;
   private readonly maxZoom: number = 2.2;
   private readonly zoomStep: number = 0.3;
+  private panX: number = 0;
+  private panY: number = 0;
+  private isPanning: boolean = false;
+  private panStartX: number = 0;
+  private panStartY: number = 0;
+  private startPanX: number = 0;
+  private startPanY: number = 0;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -351,16 +358,35 @@ export class VenueController {
     this.attachEvents();
   }
 
+  private clampPan() {
+    const maxPanX = Math.max(0, (this.currentZoom - 1) * 190);
+    const maxPanY = Math.max(0, (this.currentZoom - 1) * 120);
+    this.panX = Math.max(-maxPanX, Math.min(maxPanX, this.panX));
+    this.panY = Math.max(-maxPanY, Math.min(maxPanY, this.panY));
+  }
+
   private applyZoom() {
     const mapLayer = this.container.querySelector<SVGGElement>('#tactical-map-layer');
+    const mapBox = this.container.querySelector<HTMLElement>('#tactical-map-box');
     const scaleText = this.container.querySelector<HTMLElement>('#tactical-scale-text');
     const zoomInBtn = this.container.querySelector<HTMLButtonElement>('#ctrl-zoom-in');
     const zoomOutBtn = this.container.querySelector<HTMLButtonElement>('#ctrl-zoom-out');
 
     if (!mapLayer) return;
 
-    // Smooth transform scaling centered precisely on Seasons 24 venue coordinates (475, 225)
-    mapLayer.style.transform = `scale(${this.currentZoom})`;
+    if (this.currentZoom <= this.minZoom + 0.05) {
+      this.panX = 0;
+      this.panY = 0;
+    } else {
+      this.clampPan();
+    }
+
+    if (mapBox) {
+      mapBox.classList.toggle('is-pannable', this.currentZoom > this.minZoom + 0.05);
+    }
+
+    // Smooth transform scaling and panning centered on Seasons 24 coordinates (475, 225)
+    mapLayer.style.transform = `translate(${this.panX.toFixed(1)}px, ${this.panY.toFixed(1)}px) scale(${this.currentZoom})`;
 
     // Update dynamic scale indicator
     if (scaleText) {
@@ -471,9 +497,52 @@ export class VenueController {
     if (zoomResetBtn) {
       zoomResetBtn.addEventListener('click', () => {
         this.currentZoom = 1.0;
+        this.panX = 0;
+        this.panY = 0;
         sound.playClick(750, 0.02);
         this.applyZoom();
       });
+    }
+
+    // Drag-to-pan when zoomed in
+    const mapBox = this.container.querySelector<HTMLElement>('#tactical-map-box');
+    const mapLayer = this.container.querySelector<SVGGElement>('#tactical-map-layer');
+    if (mapBox && mapLayer) {
+      mapBox.addEventListener('pointerdown', (e: PointerEvent) => {
+        if (this.currentZoom <= this.minZoom + 0.05) return;
+        if ((e.target as HTMLElement).closest('.tactical-zoom-controls')) return;
+        this.isPanning = true;
+        this.panStartX = e.clientX;
+        this.panStartY = e.clientY;
+        this.startPanX = this.panX;
+        this.startPanY = this.panY;
+        mapBox.classList.add('is-panning');
+        mapLayer.classList.add('is-dragging');
+        try {
+          mapBox.setPointerCapture(e.pointerId);
+        } catch {}
+      });
+
+      mapBox.addEventListener('pointermove', (e: PointerEvent) => {
+        if (!this.isPanning) return;
+        this.panX = this.startPanX + (e.clientX - this.panStartX);
+        this.panY = this.startPanY + (e.clientY - this.panStartY);
+        this.clampPan();
+        mapLayer.style.transform = `translate(${this.panX.toFixed(1)}px, ${this.panY.toFixed(1)}px) scale(${this.currentZoom})`;
+      });
+
+      const stopPan = (e: PointerEvent) => {
+        if (!this.isPanning) return;
+        this.isPanning = false;
+        mapBox.classList.remove('is-panning');
+        mapLayer.classList.remove('is-dragging');
+        try {
+          mapBox.releasePointerCapture(e.pointerId);
+        } catch {}
+      };
+
+      mapBox.addEventListener('pointerup', stopPan);
+      mapBox.addEventListener('pointercancel', stopPan);
     }
 
     // Target reticle hover sound

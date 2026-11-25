@@ -11,50 +11,7 @@ import { VenueController } from './venue';
 import { EcosystemController } from './ecosystem';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Audio sound toggle
-  const soundBtn = document.getElementById('sound-toggle-btn');
-  const soundLabel = document.getElementById('sound-status-label');
-
-  const updateSoundUI = () => {
-    const isEnabled = sound.isEnabled();
-    if (soundLabel) {
-      soundLabel.textContent = isEnabled ? 'ON [AUDIO]' : 'OFF [MUTED]';
-    }
-    if (soundBtn) {
-      soundBtn.classList.toggle('is-active', isEnabled);
-    }
-  };
-
-  if (soundBtn) {
-    updateSoundUI();
-    soundBtn.addEventListener('click', () => {
-      sound.toggle();
-      updateSoundUI();
-    });
-  }
-
-  // 2. Live UTC & Local IST Clocks
-  const updateClocks = () => {
-    const now = new Date();
-    const utcString = now.toUTCString().split(' ')[4] + ' UTC';
-    const headerClock = document.getElementById('header-utc-clock');
-    const footerClock = document.getElementById('footer-live-clock');
-
-    const istTimeStr = now.toLocaleTimeString('en-US', {
-      timeZone: 'Asia/Kolkata',
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-
-    if (headerClock) headerClock.textContent = utcString;
-    if (footerClock) footerClock.textContent = `PUNE LOCAL TIME: ${istTimeStr} IST`;
-  };
-  updateClocks();
-  setInterval(updateClocks, 1000);
-
-  // 3. Navigation Drawer Toggle
+  // 1. Navigation Drawer Toggle (with scroll lock & Escape key)
   const menuToggle = document.getElementById('menu-drawer-toggle');
   const menuDrawer = document.getElementById('menu-drawer');
   const drawerCloseBtn = document.getElementById('drawer-close-btn');
@@ -66,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       menuDrawer.classList.add('is-open');
       menuDrawer.setAttribute('aria-hidden', 'false');
       menuToggle?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
       sound.playClick(600, 0.04);
     }
   };
@@ -75,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       menuDrawer.classList.remove('is-open');
       menuDrawer.setAttribute('aria-hidden', 'true');
       menuToggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
       sound.playClick(500, 0.03);
     }
   };
@@ -83,6 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
   if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeDrawer);
   drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.key === 'Escape' && menuDrawer?.classList.contains('is-open')) {
+      closeDrawer();
+    }
+  });
 
   // 4. Initialize Hero Proximity Variable Typography
   const heroEl = document.getElementById('hero');
@@ -108,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new SpeakersController(speakersEl);
   }
 
-  // 8. Initialize 08:00 AM – 05:30 PM Master Schedule
+  // 8. Initialize 08:00 AM – 05:00 PM Master Schedule
   const scheduleEl = document.getElementById('schedule');
   if (scheduleEl) {
     new ScheduleController(scheduleEl);
@@ -138,23 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
     new EcosystemController(ecoEl);
   }
 
-  // Header Get Pass Button triggers Passes Section
+  // Header & Hero Register Buttons sound/drawer feedback
   const headerTrialBtn = document.getElementById('header-trial-trigger');
-  const drawerTrialBtn = document.getElementById('drawer-trial-btn');
-
-  const triggerPassSection = () => {
-    closeDrawer();
-    const passSection = document.getElementById('passes');
-    if (passSection) {
-      passSection.scrollIntoView({ behavior: 'smooth' });
+  if (headerTrialBtn) {
+    headerTrialBtn.addEventListener('click', () => {
+      closeDrawer();
       sound.playClick(720, 0.04);
-    }
-  };
+    });
+  }
 
-  if (headerTrialBtn) headerTrialBtn.addEventListener('click', triggerPassSection);
-  if (drawerTrialBtn) drawerTrialBtn.addEventListener('click', triggerPassSection);
-
-
+  const heroRegisterBtn = document.getElementById('hero-register-btn');
+  if (heroRegisterBtn) {
+    heroRegisterBtn.addEventListener('click', () => {
+      sound.playClick(720, 0.04);
+    });
+  }
 
   // 13. Back to Top Button
   const backToTopBtn = document.getElementById('btn-back-to-top');
@@ -165,10 +128,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  document.querySelectorAll('.footer-social-icon-btn, #btn-footer-register').forEach(el => {
+    el.addEventListener('click', () => {
+      sound.playClick(760, 0.03);
+    });
+  });
+
   // Smooth keyboard anchor scrolling
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const href = this.getAttribute('href');
+  document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
       if (href && href.startsWith('#') && href.length > 1) {
         const target = document.querySelector(href);
         if (target) {

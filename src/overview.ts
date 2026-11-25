@@ -9,13 +9,13 @@ export interface MetricCard {
 export const METRICS_DATA: MetricCard[] = [
   {
     value: '300+',
-    tag: '[DELEGATES]',
+    tag: '[BUILDERS]',
     desc: 'STUDENT BUILDERS & DEVELOPERS'
   },
   {
-    value: '7',
-    tag: '[CONTENT]',
-    desc: 'KEYNOTES, TALKS & PANEL DISCUSSION'
+    value: '4+',
+    tag: '[SPEAKERS]',
+    desc: 'KEYNOTES, TECH TALKS & PANEL'
   },
   {
     value: '1',
@@ -106,7 +106,7 @@ export class OverviewController {
           </div>
           <h2 class="section-headline">BUILT FOR STUDENT BUILDERS.</h2>
           <p class="section-sub">
-            Join 300+ student developers, cloud architects, and tech leaders at Seasons 24, Wagholi for Pune's premier community-driven cloud conference on 27 December 2026. One unified stage. Zero track conflicts.
+            Join fellow student developers, cloud architects, and tech leaders at Seasons 24, Wagholi for Pune's premier community-driven cloud conference on 27 December 2026.
           </p>
         </div>
 
@@ -156,7 +156,7 @@ export class OverviewController {
         <!-- Quick Section Actions -->
         <div class="overview-actions-row">
           <a href="#schedule" class="btn-brutalist btn-secondary overview-cta-btn">
-            EXPLORE 15-SLOT SCHEDULE [v]
+            EXPLORE SCHEDULE [v]
           </a>
         </div>
       </div>

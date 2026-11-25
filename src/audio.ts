@@ -64,6 +64,10 @@ class SoundManager {
     }
   }
 
+  public playHover(freq = 480, volume = 0.015) {
+    this.playClick(freq, volume);
+  }
+
   public playTypewriter(charFreq = 440) {
     if (!this.enabled) return;
     this.initContext();

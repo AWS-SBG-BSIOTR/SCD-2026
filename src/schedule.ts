@@ -8,32 +8,32 @@ export interface ScheduleItem {
   speaker?: string;
   speakerRole?: string;
   stage: string;
-  track: 'KEYNOTE' | 'SERVERLESS' | 'GENAI & LLMS' | 'SECURITY' | 'DEVOPS' | 'COMMUNITY' | 'WORKSHOP';
-  level?: string;
+  track: string;
   abstract: string;
   highlights: string[];
+  isPending?: boolean;
 }
 
 export const SCHEDULE_DATA: ScheduleItem[] = [
   {
     id: 'slot-01',
     timeStart: '08:00 AM',
-    timeEnd: '09:30 AM',
-    title: 'Registration, Breakfast & Networking',
+    timeEnd: '09:00 AM',
+    title: 'Registration, Check-in & Breakfast',
     stage: 'Seasons 24 Reception & Expo Lawn',
     track: 'COMMUNITY',
-    abstract: 'QR check-in, official attendee badge pickup, and welcome swag kits. Fuel up with hot breakfast buffet, chai, and coffee while networking across the photo and community zones.',
-    highlights: ['QR Check-in & Badge Pickup', 'Official Welcome Kit', 'Breakfast Buffet & Chai/Coffee', 'Networking & Photo Zone']
+    abstract: 'Gate check-in opens at 8:00 AM IST with ticket verification, attendee badge pickup, and morning breakfast with chai & coffee while networking before programme kickoff.',
+    highlights: ['Gate Check-in Opens 8:00 AM', 'Badge Verification & Pickup', 'Breakfast Buffet & Chai/Coffee', 'Networking & Photo Zone']
   },
   {
     id: 'slot-02',
-    timeStart: '09:30 AM',
+    timeStart: '09:00 AM',
     timeEnd: '09:45 AM',
-    title: 'Opening Ceremony',
+    title: 'Opening Ceremony & Programme Kickoff',
     stage: 'Hall 1',
     track: 'COMMUNITY',
-    abstract: 'Cinematic event opener, welcome address, and official introduction to AWS Student Builder Group (SBG) BSIOTR and AWS Student Community Day Pune 2026.',
-    highlights: ['Cinematic Event Opener', 'Introduction to AWS SBG BSIOTR', 'SCD Pune 2026 Vision & Roadmap']
+    abstract: 'Programme commences at 9:00 AM IST with the opening address, welcome remarks, and official introduction to AWS Student Builder Group (SBG) BSIOTR and AWS Student Community Day Pune 2026.',
+    highlights: ['Programme Begins 9:00 AM IST', 'Introduction to AWS SBG BSIOTR', 'SCD Pune 2026 Vision']
   },
   {
     id: 'slot-03',
@@ -44,162 +44,48 @@ export const SCHEDULE_DATA: ScheduleItem[] = [
     speakerRole: 'AWS Leadership & Institutional Guests',
     stage: 'Hall 1',
     track: 'KEYNOTE',
-    level: 'ALL LEVELS',
     abstract: 'Official address by invited AWS representative and institutional leadership, followed by guest introduction, lighting of the lamp, and felicitation ceremony.',
-    highlights: ['Invited AWS Representative Address', 'Institutional Leadership Remarks', 'Dignitary Introduction & Felicitation']
+    highlights: ['Invited AWS Representative Address', 'Institutional Leadership Remarks', 'Dignitary Felicitation']
   },
   {
-    id: 'slot-04',
+    id: 'slot-pending',
     timeStart: '10:00 AM',
-    timeEnd: '10:45 AM',
-    title: 'Keynote 01 — The Next Era of Cloud',
-    speaker: 'Lineup Drop 01',
-    speakerRole: 'Keynote Speaker // Hall 1',
-    stage: 'Hall 1',
-    track: 'KEYNOTE',
-    level: 'L200 - FOUNDATIONAL',
-    abstract: 'High-level opening keynote exploring modern cloud evolution, developer tooling, and building resilient distributed systems from student projects to global production scale.',
-    highlights: ['Modern Cloud Architecture', 'Next-Gen Developer Tooling', 'From Localhost to Global Scale']
+    timeEnd: '04:15 PM',
+    title: 'Keynotes, Technical Sessions, Community Panel & Lunch — Releasing Soon',
+    speaker: 'Confirmed Speakers & Session Lineup',
+    speakerRole: 'Cloud · AI/GenAI · DevOps · Cloud Native · Security',
+    stage: 'Hall 1 & Dining Lawn',
+    track: 'RELEASING SOON',
+    isPending: true,
+    abstract: 'The detailed session-by-session lineup (speaker talks, technical deep-dives, community panel, tea breaks, and buffet lunch timings) will be published shortly and shared with all registered delegates.',
+    highlights: ['4+ Keynote & Technical Talks', 'Community Panel Discussion', 'Chai Breaks & Delicious Buffet Lunch', 'Final Timings Unlocking Soon']
   },
   {
-    id: 'slot-05',
-    timeStart: '10:45 AM',
-    timeEnd: '11:30 AM',
-    title: 'Technical Session 02 — Building Autonomous AI',
-    speaker: 'Lineup Drop 02',
-    speakerRole: 'AI Specialist // Hall 1',
-    stage: 'Hall 1',
-    track: 'GENAI & LLMS',
-    level: 'L300 - ADVANCED',
-    abstract: 'A practical architecture session covering intelligent agent workflows, prompt routing, contextual grounding, and deploying production AI applications on cloud infrastructure.',
-    highlights: ['Autonomous AI Agents', 'Contextual Knowledge Grounding', 'Production AI Architecture']
-  },
-  {
-    id: 'slot-06',
-    timeStart: '11:30 AM',
-    timeEnd: '11:45 AM',
-    title: 'Tea, Coffee & Networking Break',
-    stage: 'Expo Atrium & Checkpoint Corridor',
-    track: 'COMMUNITY',
-    abstract: 'Grab hot chai, coffee, and refreshments. Explore the 5 interactive Cloud Checkpoint Zones and connect with peer builders, AWS heroes, and mentors.',
-    highlights: ['Hot Chai & Coffee Service', '5 Cloud Checkpoint Demos', 'Informal Peer Networking']
-  },
-  {
-    id: 'slot-07',
-    timeStart: '11:45 AM',
-    timeEnd: '12:30 PM',
-    title: 'Community Panel — From Campus to Cloud: Building Your Future',
-    speaker: 'Panel Moderator + 4–5 Leaders',
-    speakerRole: 'AWS Community Builders & Industry Architects',
-    stage: 'Hall 1',
-    track: 'COMMUNITY',
-    level: 'ALL LEVELS',
-    abstract: 'An interactive panel exploring high-impact cloud career trajectories, bridging academic theory with production engineering, open-source contributions, and cloud communities.',
-    highlights: ['Campus to Cloud Transition', 'Certifications vs Real-World Production Code', 'Open Source & Community Growth']
-  },
-  {
-    id: 'slot-08',
-    timeStart: '12:30 PM',
-    timeEnd: '01:15 PM',
-    title: 'Technical Session 03 — Serverless at Scale',
-    speaker: 'Lineup Drop 03',
-    speakerRole: 'Distributed Systems Specialist // Hall 1',
-    stage: 'Hall 1',
-    track: 'SERVERLESS',
-    level: 'L300 - ADVANCED',
-    abstract: 'Architectural patterns for high-concurrency event-driven platforms, asynchronous queues, distributed state, and multi-region fault tolerance.',
-    highlights: ['Event-Driven Blueprints', 'Asynchronous Decoupling', 'Fault-Tolerant Resilience']
-  },
-  {
-    id: 'slot-09',
-    timeStart: '01:15 PM',
-    timeEnd: '02:15 PM',
-    title: 'Lunch & Community Networking',
-    stage: 'Seasons 24 Dining Bay & Grand Lawn',
-    track: 'COMMUNITY',
-    abstract: 'Full multi-cuisine catered buffet lunch for all registered delegates. Dedicated networking time, sponsor booth interactions, and resume drop at hiring desks.',
-    highlights: ['Catered Buffet Lunch', 'Sponsor Booth Walkthrough', 'Hiring & Mentorship Networking']
-  },
-  {
-    id: 'slot-10',
-    timeStart: '02:15 PM',
-    timeEnd: '03:00 PM',
-    title: 'Technical Session 04 — Modern Cloud Delivery',
-    speaker: 'Lineup Drop 04',
-    speakerRole: 'Platform Engineer // Hall 1',
-    stage: 'Hall 1',
-    track: 'DEVOPS',
-    level: 'L300 - ADVANCED',
-    abstract: 'Streamlining engineering workflows: automated deployment pipelines, infrastructure as code, containerized platforms, and frictionless developer environments.',
-    highlights: ['Automated CI/CD Pipelines', 'Infrastructure as Code', 'Modern Platform Workflows']
-  },
-  {
-    id: 'slot-11',
-    timeStart: '03:00 PM',
-    timeEnd: '03:45 PM',
-    title: 'Technical Session 05 — Zero Trust & Cloud Defense',
-    speaker: 'Lineup Drop 05',
-    speakerRole: 'Security Architect // Hall 1',
-    stage: 'Hall 1',
-    track: 'SECURITY',
-    level: 'L300 - ADVANCED',
-    abstract: 'Securing distributed applications: modern identity perimeters, least-privilege governance, automated threat detection, and real-time defense telemetry.',
-    highlights: ['Zero Trust Architecture', 'Real-Time Threat Detection', 'Automated Security Governance']
-  },
-  {
-    id: 'slot-12',
-    timeStart: '03:45 PM',
-    timeEnd: '04:00 PM',
-    title: 'Tea, Coffee & Networking Break',
-    stage: 'Expo Atrium & Checkpoint Corridor',
-    track: 'COMMUNITY',
-    abstract: 'Afternoon tea, coffee, and refreshments. Transition back to Hall 1 for the final technical session and recognition ceremonies.',
-    highlights: ['Afternoon Refreshments', 'Final Checkpoint Zone Verification', 'Hall 1 Transition']
-  },
-  {
-    id: 'slot-13',
-    timeStart: '04:00 PM',
-    timeEnd: '04:45 PM',
-    title: 'Technical Session 06 — Production SRE Playbook',
-    speaker: 'Lineup Drop 06',
-    speakerRole: 'Reliability Engineer // Hall 1',
-    stage: 'Hall 1',
-    track: 'DEVOPS',
-    level: 'L300 - ADVANCED',
-    abstract: 'The builder playbook for 99.99% availability: end-to-end observability, incident response automation, capacity planning, and operational excellence.',
-    highlights: ['High Availability Patterns', 'Full-Stack Observability', 'Incident Response Automation']
-  },
-  {
-    id: 'slot-14',
-    timeStart: '04:45 PM',
-    timeEnd: '05:10 PM',
-    title: 'AWS Student Builders Community Recognition',
-    speaker: 'Current & Former SBG Leaders',
-    speakerRole: 'AWS Student Builder Group Leaders & Alumni',
-    stage: 'Hall 1',
-    track: 'COMMUNITY',
-    level: 'ALL LEVELS',
-    abstract: 'Welcoming participating and alumni SBG leaders, short experience reflections, community appreciation awards, and official SBG leadership group photograph.',
-    highlights: ['SBG Leaders Appreciation', 'Community Milestones & Retrospective', 'Leadership Group Photograph']
-  },
-  {
-    id: 'slot-15',
-    timeStart: '05:10 PM',
-    timeEnd: '05:30 PM',
-    title: 'Closing Ceremony & Grand Group Photo',
+    id: 'slot-closing',
+    timeStart: '04:15 PM',
+    timeEnd: '04:40 PM',
+    title: 'Closing Ceremony & Commemorative Group Photos',
     speaker: 'Organizing Council & Volunteers',
     speakerRole: 'AWS SCD Pune 2026 Core Team',
     stage: 'Hall 1',
     track: 'KEYNOTE',
-    level: 'ALL LEVELS',
-    abstract: 'Official acknowledgements, volunteer felicitation, verified event highlights, vote of thanks, and the grand 300+ student builder commemorative group photograph.',
-    highlights: ['Volunteer & Organizing Team Felicitation', 'Special Sponsor Acknowledgements', 'Grand 300+ Builder Final Group Photo']
+    abstract: 'Closing remarks, sponsor & volunteer felicitation, vote of thanks, and the official commemorative group photograph with all attendees and community leaders.',
+    highlights: ['Volunteer & Sponsor Felicitation', 'Vote of Thanks', 'Official Full-Hall Group Photograph']
+  },
+  {
+    id: 'slot-swag',
+    timeStart: '04:40 PM',
+    timeEnd: '05:00 PM',
+    title: 'Swag Kit Distribution & Event Wrap-up',
+    stage: 'Seasons 24 Exit & Distribution Counters',
+    track: 'COMMUNITY',
+    abstract: 'Exclusive event swag and AWS goodies distribution at designated exit counters (first-come, first-served subject to availability), along with Credly badge & digital certificate instructions.',
+    highlights: ['AWS Swags & Event Goodies (FCFS)', 'Credly Badge & Certificate Guidance', 'Final Community Networking']
   }
 ];
 
 export class ScheduleController {
   private container: HTMLElement;
-  private activeTrackFilter: string = 'ALL';
   private expandedIds: Set<string> = new Set();
 
   constructor(container: HTMLElement) {
@@ -207,22 +93,51 @@ export class ScheduleController {
     this.render();
   }
 
-  private filterSessions(): ScheduleItem[] {
-    if (this.activeTrackFilter === 'ALL') return SCHEDULE_DATA;
-    return SCHEDULE_DATA.filter(item => item.track === this.activeTrackFilter);
+  private parseTimeToMinutes(timeStr: string): number {
+    const match = timeStr.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+    if (!match) return -1;
+    let hours = Number(match[1]);
+    const mins = Number(match[2]);
+    const period = match[3].toUpperCase();
+    if (period === 'PM' && hours !== 12) hours += 12;
+    if (period === 'AM' && hours === 12) hours = 0;
+    return hours * 60 + mins;
+  }
+
+  private getCurrentIstSlotInfo(): { isEventDay: boolean; nowMinutes: number } {
+    try {
+      const now = new Date();
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }).formatToParts(now);
+
+      const getPart = (type: string) => parts.find(p => p.type === type)?.value || '';
+      const dateKey = `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
+      const nowMinutes = Number(getPart('hour')) * 60 + Number(getPart('minute'));
+      return { isEventDay: dateKey === '2026-12-27', nowMinutes };
+    } catch {
+      return { isEventDay: false, nowMinutes: -1 };
+    }
   }
 
   private render() {
-    const sessions = this.filterSessions();
-    const tracks: string[] = ['ALL', 'KEYNOTE', 'SERVERLESS', 'GENAI & LLMS', 'SECURITY', 'DEVOPS', 'COMMUNITY'];
+    const sessions = SCHEDULE_DATA;
+    const { isEventDay, nowMinutes } = this.getCurrentIstSlotInfo();
+    const allExpanded = sessions.length > 0 && sessions.every(item => this.expandedIds.has(item.id));
 
     this.container.innerHTML = `
       <div class="schedule-section-wrapper">
         <div class="section-meta-header">
           <span class="section-tag mono">(03) Conference Timeline</span>
-          <h2 class="section-headline">08:00 AM to 05:30 PM. Every minute packed.</h2>
+          <h2 class="section-headline">08:00 AM to 05:00 PM. Learn Cloud, Build Together.</h2>
           <p class="section-sub">
-            The official master schedule for AWS Student Community Day 2026 at Seasons 24, Wagholi, Pune. Featuring opening keynotes, technical deep-dives, community panels, and builder recognition.
+            A full day dedicated to AWS cloud computing, AI, DevOps, security, and hands-on community learning at Seasons 24, Wagholi, Pune—built for curious developers and cloud builders.
           </p>
         </div>
 
@@ -230,49 +145,41 @@ export class ScheduleController {
         <div class="schedule-telemetry-strip mono">
           <span class="st-item"><strong class="st-lbl">DATE:</strong> 27 DEC 2026</span>
           <span class="st-sep">//</span>
-          <span class="st-item"><strong class="st-lbl">CONFERENCE HOURS:</strong> <span class="text-accent">08:00 AM – 05:30 PM IST</span></span>
+          <span class="st-item"><strong class="st-lbl">CONFERENCE HOURS:</strong> <span class="text-accent">08:00 AM – 05:00 PM IST</span></span>
           <span class="st-sep">//</span>
           <span class="st-item"><strong class="st-lbl">VENUE:</strong> SEASONS 24, WAGHOLI, PUNE</span>
           <span class="st-sep">//</span>
-          <span class="st-item"><strong class="st-lbl">STAGE:</strong> 1 UNIFIED MAIN STAGE</span>
+          <span class="st-item"><strong class="st-lbl">AGENDA:</strong> <span class="text-accent">RELEASING SOON</span></span>
         </div>
 
-        <!-- Filter Chips Bar -->
-        <div class="schedule-filter-bar mono" role="tablist" aria-label="Schedule Filter Chips">
-          <span class="filter-label">FILTER TRACK:</span>
-          ${tracks.map(t => {
-            const isActive = this.activeTrackFilter === t;
-            return `
-              <button 
-                class="schedule-filter-chip ${isActive ? 'is-active' : ''}" 
-                data-track="${t}"
-                role="tab"
-                aria-selected="${isActive}">
-                ${t === 'ALL' ? '[ALL SESSIONS]' : `[${t}]`}
-              </button>
-            `;
-          }).join('')}
+        <!-- Utility Actions Toolbar -->
+        <div class="schedule-toolbar-row mono">
+          <button type="button" class="schedule-action-btn" id="btn-toggle-expand-all">
+            ${allExpanded ? '[- COLLAPSE ALL]' : '[+ EXPAND ALL DETAILS]'}
+          </button>
         </div>
 
-        <!-- Flight-Board Compact Ledger Table (Minimal & Spacious) -->
+        <!-- Flight-Board Compact Ledger Table -->
         <div class="flightboard-container mono">
-          <!-- Flightboard Table Header (Desktop) -->
           <div class="flightboard-table-header">
             <div class="fb-col fb-col-time">TIMING (IST)</div>
-            <div class="fb-col fb-col-title">SESSION &amp; SPEAKER</div>
-            <div class="fb-col fb-col-track">TRACK</div>
+            <div class="fb-col fb-col-title">PROGRAMME FLOW</div>
+            <div class="fb-col fb-col-track">STATUS / TRACK</div>
             <div class="fb-col fb-col-action">DETAILS</div>
           </div>
 
-          <!-- Flightboard Rows -->
           <div class="flightboard-body">
             ${sessions.map((item) => {
               const isExpanded = this.expandedIds.has(item.id);
+              const startMins = this.parseTimeToMinutes(item.timeStart);
+              const endMins = this.parseTimeToMinutes(item.timeEnd);
+              const isLiveNow = isEventDay && startMins >= 0 && nowMinutes >= startMins && nowMinutes < endMins;
               return `
-                <article class="flightboard-row ${isExpanded ? 'is-expanded' : ''}" id="${item.id}" data-slot-id="${item.id}">
-                  <div class="fb-row-main" role="button" tabindex="0" aria-expanded="${isExpanded}" title="Click to view session details">
+                <article class="flightboard-row ${item.isPending ? 'is-pending-row' : ''} ${isExpanded ? 'is-expanded' : ''} ${isLiveNow ? 'is-live-now' : ''}" id="${item.id}" data-slot-id="${item.id}">
+                  <div class="fb-row-main" role="button" tabindex="0" aria-expanded="${isExpanded}" title="Click to view details">
                     <div class="fb-col-time">
                       <span class="fb-time-range mono">${item.timeStart} — ${item.timeEnd}</span>
+                      ${isLiveNow ? '<span class="badge-live-now mono">[● LIVE NOW]</span>' : ''}
                     </div>
 
                     <div class="fb-col-title">
@@ -285,7 +192,7 @@ export class ScheduleController {
                     </div>
 
                     <div class="fb-col-track">
-                      <span class="badge-track mono">[${item.track}]</span>
+                      <span class="badge-track ${item.isPending ? 'badge-track-pending' : ''} mono">[${item.track}]</span>
                     </div>
 
                     <div class="fb-col-action">
@@ -298,7 +205,7 @@ export class ScheduleController {
                     <p class="drawer-abstract">${item.abstract}</p>
                     ${item.highlights && item.highlights.length ? `
                       <div class="drawer-highlights">
-                        <span class="hl-tag">KEY TOPICS:</span>
+                        <span class="hl-tag">HIGHLIGHTS:</span>
                         ${item.highlights.map(h => `<span class="hl-item">* ${h}</span>`).join(' ')}
                       </div>
                     ` : ''}
@@ -315,20 +222,22 @@ export class ScheduleController {
   }
 
   private attachEvents() {
-    // Track filter chips
-    const filterBtns = this.container.querySelectorAll<HTMLButtonElement>('.schedule-filter-chip');
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const track = btn.getAttribute('data-track');
-        if (track) {
-          this.activeTrackFilter = track;
-          sound.playClick(650, 0.04);
-          this.render();
+    const expandAllBtn = this.container.querySelector<HTMLButtonElement>('#btn-toggle-expand-all');
+    if (expandAllBtn) {
+      expandAllBtn.addEventListener('click', () => {
+        const visible = SCHEDULE_DATA;
+        const allExpanded = visible.length > 0 && visible.every(item => this.expandedIds.has(item.id));
+        if (allExpanded) {
+          visible.forEach(item => this.expandedIds.delete(item.id));
+          sound.playClick(500, 0.03);
+        } else {
+          visible.forEach(item => this.expandedIds.add(item.id));
+          sound.playClick(760, 0.035);
         }
+        this.render();
       });
-    });
+    }
 
-    // Row click toggle for abstract drawer
     const rowMains = this.container.querySelectorAll<HTMLElement>('.fb-row-main');
     rowMains.forEach(rowMain => {
       const row = rowMain.closest('.flightboard-row');

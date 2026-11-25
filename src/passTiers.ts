@@ -8,8 +8,22 @@ export interface SinglePassDetails {
   date: string;
   hours: string;
   venue: string;
-  capacity: string;
+  access: string;
   konfhubUrl: string;
+}
+
+export interface PassTierCard {
+  id: string;
+  number: string;
+  name: string;
+  badge: string;
+  price: string;
+  priceSub: string;
+  tagline: string;
+  isOpen: boolean;
+  variant: 'featured' | 'standard' | 'pro';
+  checkoutUrl?: string;
+  highlightedPerk?: string;
   inclusions: string[];
 }
 
@@ -18,21 +32,70 @@ export const OFFICIAL_PASS: SinglePassDetails = {
   badge: 'OFFICIAL ADMISSION: IN-PERSON DELEGATE',
   edition: 'PUNE BUILDER SPECIAL // EDITION 2026',
   date: '27 DECEMBER 2026',
-  hours: '08:00 AM – 05:30 PM IST',
+  hours: '08:00 AM – 05:00 PM IST',
   venue: 'SEASONS 24, WAGHOLI, PUNE',
-  capacity: '300 STUDENT BUILDERS',
-  konfhubUrl: 'https://konfhub.com/aws-scd-pune-2026',
-  inclusions: [
-    'Admission to all Keynotes, Technical Sessions & Panel Discussions',
-    'Exclusive AWS Swag & Developer Builder Kit',
-    'Hot morning breakfast, delicious buffet lunch & evening high-tea at Seasons 24',
-    'Official Credly digital attendee badge & verified participation credential',
-    'High-impact networking with student builders & cloud professionals',
-    'Reserved priority seating rows for professionals & invited delegates',
-    'Direct 1-on-1 mentorship & interaction with AWS Community Leaders',
-    'Full access to sponsor exhibits & interactive tech demos'
-  ]
+  access: 'ALL STUDENT BUILDERS',
+  konfhubUrl: 'https://konfhub.com/aws-student-community-day-pune-2026'
 };
+
+export const PASS_TIERS_DATA: PassTierCard[] = [
+  {
+    id: 'tier-early-bird',
+    number: '01',
+    name: 'EARLY BIRD PASS',
+    badge: 'ACTIVE NOW // LIMITED SEATS',
+    price: '₹299',
+    priceSub: 'EXCLUSIVE INTRODUCTORY PRICE',
+    tagline: 'Be an early bird and secure your seat at AWS Student Community Day Pune 2026 at an introductory price.',
+    isOpen: true,
+    variant: 'featured',
+    checkoutUrl: 'https://konfhub.com/aws-student-community-day-pune-2026',
+    inclusions: [
+      'Full-day access to the conference',
+      'Breakfast and delicious lunch',
+      'Exclusive event swags and AWS goodies',
+      'Credly badge for participants',
+      'Networking with industry professionals, speakers & developers'
+    ]
+  },
+  {
+    id: 'tier-regular',
+    number: '02',
+    name: 'REGULAR PASS',
+    badge: 'PHASE 02 // UNLOCKS NEXT',
+    price: '₹ X99',
+    priceSub: 'RELEASING AFTER EARLY BIRD',
+    tagline: 'Standard all-access conference pass opening once the initial Early Bird allocation closes.',
+    isOpen: false,
+    variant: 'standard',
+    inclusions: [
+      'Full-day access to the conference',
+      'Breakfast and delicious lunch',
+      'Exclusive event swags and AWS goodies',
+      'Credly badge for participants',
+      'Networking with industry professionals, speakers & developers'
+    ]
+  },
+  {
+    id: 'tier-professional',
+    number: '03',
+    name: 'PROFESSIONAL PASS',
+    badge: 'PRIORITY TIER // UNLOCKS NEXT',
+    price: '₹ X99',
+    priceSub: 'WORKING ENGINEERS & LEADERS',
+    tagline: 'Tailored for software engineers, architects, and tech professionals joining Pune’s cloud builder community.',
+    isOpen: false,
+    variant: 'pro',
+    highlightedPerk: 'Reserved seating at Hall 1',
+    inclusions: [
+      'Full-day access to the conference',
+      'Breakfast and delicious lunch',
+      'Exclusive event swags and AWS goodies',
+      'Credly badge for participants',
+      'Networking with industry professionals, speakers & developers'
+    ]
+  }
+];
 
 export class PassTiersController {
   private container: HTMLElement;
@@ -83,8 +146,8 @@ export class PassTiersController {
                   <span class="ticket-subheading">All-Access In-Person Delegate Admission</span>
                 </div>
                 <div class="ticket-price-pill" id="ticket-price-pill">
-                  <span class="price-status">ALL-INCLUSIVE ADMISSION</span>
-                  <span class="price-platform">[POWERED BY KONFHUB]</span>
+                  <span class="price-status">EARLY BIRD ADMISSION</span>
+                  <span class="price-platform">[PHASE 01 NOW LIVE]</span>
                 </div>
               </div>
 
@@ -103,17 +166,9 @@ export class PassTiersController {
                   <strong class="param-val">${pass.venue}</strong>
                 </div>
                 <div class="param-cell">
-                  <span class="param-lbl">CAPACITY:</span>
-                  <strong class="param-val">${pass.capacity}</strong>
+                  <span class="param-lbl">ACCESS:</span>
+                  <strong class="param-val">${pass.access}</strong>
                 </div>
-              </div>
-
-              <!-- Inclusions Checklist -->
-              <div class="ticket-inclusions-block">
-                <span class="inclusions-label">ADMISSION PRIVILEGES & INCLUSIONS:</span>
-                <ul class="inclusions-grid">
-                  ${pass.inclusions.map(inc => `<li>[OK] ${inc}</li>`).join('')}
-                </ul>
               </div>
 
               <!-- Action CTAs -->
@@ -124,7 +179,7 @@ export class PassTiersController {
                   rel="noopener noreferrer" 
                   class="btn-brutalist btn-accent btn-ticket-konfhub"
                   id="btn-konfhub-direct-link">
-                  REGISTER PASS ON KONFHUB [EXTERNAL ->]
+                  REGISTER NOW ->
                 </a>
                 <a href="#pass-generator" class="btn-brutalist btn-secondary btn-ticket-badge">
                   CUSTOMIZE YOUR BADGE FIRST [v]
@@ -144,12 +199,27 @@ export class PassTiersController {
               <div class="perforation-dashed-line">
                 <div class="perforation-rip-fill" id="rip-fill"></div>
               </div>
+              <div class="perforation-scissor" id="perforation-scissor" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="58" height="58" aria-hidden="true" focusable="false">
+                  <g class="scissor-blade-a" id="scissor-blade-a">
+                    <circle cx="8.2" cy="5.2" r="2.7" fill="none" stroke="#FD0B03" stroke-width="1.65" />
+                    <path d="M8.6 7.5 L11.1 12.1 L12.4 22.0 L13.1 12.0 L9.9 7.2 Z" fill="#010101" stroke="#FFFFFF" stroke-width="0.3" stroke-linejoin="round" />
+                  </g>
+                  <g class="scissor-blade-b" id="scissor-blade-b">
+                    <circle cx="15.8" cy="5.2" r="2.7" fill="none" stroke="#FD0B03" stroke-width="1.65" />
+                    <path d="M15.4 7.5 L12.9 12.1 L11.6 22.0 L10.9 12.0 L14.1 7.2 Z" fill="#010101" stroke="#FFFFFF" stroke-width="0.3" stroke-linejoin="round" />
+                  </g>
+                  <circle class="scissor-pin" cx="12" cy="12" r="1.4" fill="#FD0B03" stroke="#FFFFFF" stroke-width="0.55" />
+                </svg>
+              </div>
               <div class="perforation-label mono">
                 <span class="label-txt">TEAR HERE</span>
                 <span class="label-drag-hint">[PULL v]</span>
               </div>
               <div class="tear-hint-pill mono" id="tear-hint-pill">
-                [CLICK OR DRAG TO TEAR]
+                <span class="tear-hint-dot" aria-hidden="true"></span>
+                <span class="hint-desktop">[DRAG DOWN TO CUT v]</span>
+                <span class="hint-mobile">[TAP OR SWIPE TO TEAR ->]</span>
               </div>
               <div class="punch-notch punch-bottom"></div>
             </div>
@@ -223,10 +293,66 @@ export class PassTiersController {
                   rel="noopener noreferrer" 
                   class="btn-brutalist btn-accent claimed-action-btn"
                   id="btn-reopen-konfhub">
-                  OPEN KONFHUB REGISTRATION [->]
+                  REGISTER NOW ->
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- 3 Pass Tiers Comparison Grid (Below the Tearable Ticket) -->
+        <div class="pass-tiers-section mono" id="pass-tiers-grid">
+          <div class="tiers-section-header">
+            <span class="tiers-tag">[PASS TIERS // PHASE 01 EARLY BIRD OPEN]</span>
+            <span class="tiers-note">WHERE BUILDERS MEET. IDEAS EVOLVE. FUTURES BEGIN.</span>
+          </div>
+
+          <div class="pass-tiers-grid">
+            ${PASS_TIERS_DATA.map(tier => `
+              <article class="pass-tier-card tier-${tier.variant} ${tier.isOpen ? 'is-live' : 'is-locked'}" id="${tier.id}">
+                <div class="tier-card-top">
+                  <span class="tier-num">[${tier.number}]</span>
+                  <span class="tier-status-badge ${tier.isOpen ? 'is-live' : ''}">${tier.badge}</span>
+                </div>
+
+                <h3 class="tier-title">${tier.name}</h3>
+
+                <div class="tier-price-block">
+                  <span class="tier-price">${tier.price}</span>
+                  <span class="tier-price-sub">${tier.priceSub}</span>
+                </div>
+
+                <p class="tier-tagline">${tier.tagline}</p>
+
+                <div class="tier-inclusions-wrapper">
+                  <span class="tier-inclusions-lbl">PRIVILEGES &amp; AMENITIES:</span>
+                  <ul class="tier-inclusions-list">
+                    ${tier.highlightedPerk ? `<li class="perk-exclusive">[+] <strong>${tier.highlightedPerk}</strong></li>` : ''}
+                    ${tier.inclusions.map(inc => `<li>[OK] ${inc}</li>`).join('')}
+                  </ul>
+                </div>
+
+                <div class="tier-card-cta">
+                  ${tier.isOpen && tier.checkoutUrl ? `
+                    <a
+                      href="${tier.checkoutUrl}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn-brutalist btn-accent w-full tier-register-btn">
+                      REGISTER NOW ->
+                    </a>
+                  ` : `
+                    <button
+                      type="button"
+                      class="btn-brutalist btn-secondary w-full tier-disabled-btn"
+                      disabled
+                      aria-disabled="true">
+                      OPENING SOON
+                    </button>
+                  `}
+                </div>
+              </article>
+            `).join('')}
           </div>
         </div>
       </div>
@@ -236,10 +362,9 @@ export class PassTiersController {
   }
 
   private attachEvents() {
-    // Direct link on main ticket body
-    const directKonfhubBtn = this.container.querySelector<HTMLAnchorElement>('#btn-konfhub-direct-link');
-    if (directKonfhubBtn) {
-      directKonfhubBtn.addEventListener('click', () => {
+    // Direct links on main ticket body & Early Bird tier card
+    this.container.querySelectorAll<HTMLAnchorElement>('#btn-konfhub-direct-link, .tier-register-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
         sound.playSuccess();
         confetti({
           particleCount: 70,
@@ -248,7 +373,7 @@ export class PassTiersController {
           colors: ['#FD0B03', '#010101', '#DCD4C2', '#5C413C']
         });
       });
-    }
+    });
 
     // Badge generator scroll anchor
     const badgeLink = this.container.querySelector<HTMLAnchorElement>('.btn-ticket-badge');
@@ -291,10 +416,54 @@ export class PassTiersController {
     const perf = this.container.querySelector<HTMLElement>('#ticket-perforation');
     const stub = this.container.querySelector<HTMLElement>('#ticket-stub-aside');
     const ripFill = this.container.querySelector<HTMLElement>('#rip-fill');
+    const scissor = this.container.querySelector<HTMLElement>('#perforation-scissor');
+    const bladeA = this.container.querySelector<SVGGElement>('#scissor-blade-a');
+    const bladeB = this.container.querySelector<SVGGElement>('#scissor-blade-b');
     const card = this.container.querySelector<HTMLElement>('#ticket-stub-card');
     const stubCta = this.container.querySelector<HTMLElement>('#btn-stub-konfhub-link');
 
     if (!perf || !stub || !card) return;
+
+    const resetScissorVisuals = (animateBack: boolean) => {
+      if (scissor) {
+        scissor.style.transition = animateBack
+          ? 'top 0.28s cubic-bezier(0.2, 0.9, 0.3, 1), left 0.28s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.2s ease'
+          : '';
+        scissor.style.top = '';
+        scissor.style.left = '';
+      }
+      if (bladeA) bladeA.style.transform = '';
+      if (bladeB) bladeB.style.transform = '';
+    };
+
+    const syncScissorToCutProgress = (progress: number, rect: DOMRect, isHorizontal: boolean) => {
+      if (!scissor) return;
+      const clamped = Math.min(1, Math.max(0, progress));
+      const scissorSize = scissor.offsetWidth || 64;
+      scissor.style.transition = 'none';
+
+      if (isHorizontal) {
+        const cutTipX = clamped * rect.width;
+        const maxLeft = Math.max(6, rect.width - scissorSize * 0.72);
+        const scissorX = Math.max(6, Math.min(maxLeft, cutTipX - scissorSize * 0.5));
+        scissor.style.left = `${scissorX.toFixed(1)}px`;
+        scissor.style.top = '50%';
+      } else {
+        const cutTipY = clamped * rect.height;
+        const maxTop = Math.max(6, rect.height - scissorSize * 0.72);
+        const scissorY = Math.max(6, Math.min(maxTop, cutTipY - scissorSize * 0.5));
+        scissor.style.top = `${scissorY.toFixed(1)}px`;
+        scissor.style.left = '50%';
+      }
+
+      // Snip blades strictly in response to distance cut by cursor
+      const snipsPerCut = 5;
+      const wave = 0.5 - 0.5 * Math.cos(clamped * Math.PI * 2 * snipsPerCut);
+      const angleA = -16 + wave * 18;
+      const angleB = 16 - wave * 18;
+      if (bladeA) bladeA.style.transform = `rotate(${angleA.toFixed(2)}deg)`;
+      if (bladeB) bladeB.style.transform = `rotate(${angleB.toFixed(2)}deg)`;
+    };
 
     // Hover audio tick
     perf.addEventListener('pointerenter', () => {
@@ -343,7 +512,7 @@ export class PassTiersController {
 
       try {
         perf.setPointerCapture(e.pointerId);
-      } catch {}
+      } catch { }
 
       card.classList.add('is-tearing');
       stub.style.transition = 'none';
@@ -361,7 +530,7 @@ export class PassTiersController {
       // Drag progress bounded [0, 1]
       this.currentProgress = Math.min(1, Math.max(0, dragDist / (totalLength * 0.7)));
 
-      // Update rip fill line
+      // Update rip fill line and move scissor strictly to the tip of the cut area
       if (ripFill) {
         if (isHorizontal) {
           ripFill.style.width = `${this.currentProgress * 100}%`;
@@ -371,6 +540,8 @@ export class PassTiersController {
           ripFill.style.width = '100%';
         }
       }
+
+      syncScissorToCutProgress(this.currentProgress, rect, isHorizontal);
 
       // Tilt and separate stub dynamically
       if (isHorizontal) {
@@ -396,7 +567,7 @@ export class PassTiersController {
         this.isDragging = false;
         try {
           perf.releasePointerCapture(e.pointerId);
-        } catch {}
+        } catch { }
         this.triggerTear();
       }
     });
@@ -406,7 +577,7 @@ export class PassTiersController {
       this.isDragging = false;
       try {
         perf.releasePointerCapture(e.pointerId);
-      } catch {}
+      } catch { }
 
       if (this.currentProgress >= 0.45) {
         this.triggerTear();
@@ -420,9 +591,11 @@ export class PassTiersController {
           ripFill.style.height = '0%';
           ripFill.style.width = '0%';
         }
+        resetScissorVisuals(true);
         setTimeout(() => {
           if (!this.isTorn) {
             stub.style.transition = '';
+            resetScissorVisuals(false);
           }
         }, 340);
       }
@@ -446,11 +619,12 @@ export class PassTiersController {
     const card = this.container.querySelector<HTMLElement>('#ticket-stub-card');
     const stub = this.container.querySelector<HTMLElement>('#ticket-stub-aside');
     const ripFill = this.container.querySelector<HTMLElement>('#rip-fill');
+    const scissor = this.container.querySelector<HTMLElement>('#perforation-scissor');
+    const bladeA = this.container.querySelector<SVGGElement>('#scissor-blade-a');
+    const bladeB = this.container.querySelector<SVGGElement>('#scissor-blade-b');
     const claimedReceipt = this.container.querySelector<HTMLElement>('#ticket-stub-claimed');
     const pricePill = this.container.querySelector<HTMLElement>('#ticket-price-pill');
     const stubStatus = this.container.querySelector<HTMLElement>('#stub-status-val');
-
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // Procedural paper tear audio + celebration chime
     sound.playPaperTear();
@@ -523,11 +697,6 @@ export class PassTiersController {
       }, 2800);
     };
 
-    if (prefersReducedMotion) {
-      onTornComplete();
-      return;
-    }
-
     // Detach stub with momentum animation
     setTimeout(onTornComplete, 180);
   }
@@ -539,6 +708,9 @@ export class PassTiersController {
     const card = this.container.querySelector<HTMLElement>('#ticket-stub-card');
     const stub = this.container.querySelector<HTMLElement>('#ticket-stub-aside');
     const ripFill = this.container.querySelector<HTMLElement>('#rip-fill');
+    const scissor = this.container.querySelector<HTMLElement>('#perforation-scissor');
+    const bladeA = this.container.querySelector<SVGGElement>('#scissor-blade-a');
+    const bladeB = this.container.querySelector<SVGGElement>('#scissor-blade-b');
     const claimedReceipt = this.container.querySelector<HTMLElement>('#ticket-stub-claimed');
     const pricePill = this.container.querySelector<HTMLElement>('#ticket-price-pill');
     const stubStatus = this.container.querySelector<HTMLElement>('#stub-status-val');
@@ -582,8 +754,8 @@ export class PassTiersController {
       }
       if (pricePill) {
         pricePill.innerHTML = `
-          <span class="price-status">ALL-INCLUSIVE ADMISSION</span>
-          <span class="price-platform">[POWERED BY KONFHUB]</span>
+          <span class="price-status">EARLY BIRD ADMISSION</span>
+          <span class="price-platform">[PHASE 01 NOW LIVE]</span>
         `;
       }
       if (card) {
@@ -597,6 +769,13 @@ export class PassTiersController {
       if (ripFill) {
         ripFill.style.transition = '';
       }
+      if (scissor) {
+        scissor.style.top = '';
+        scissor.style.left = '';
+        scissor.style.transition = '';
+      }
+      if (bladeA) bladeA.style.transform = '';
+      if (bladeB) bladeB.style.transform = '';
     }, 550);
   }
 }
