@@ -13,6 +13,8 @@ export class VenueController {
   private panStartY: number = 0;
   private startPanX: number = 0;
   private startPanY: number = 0;
+  private copyStatusTimeout: number | null = null;
+  private abortController: AbortController = new AbortController();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -423,50 +425,78 @@ export class VenueController {
     }
   }
 
-  private attachEvents() {
+  private showCopyStatus(text: string) {
     const copyStatus = this.container.querySelector<HTMLElement>('#copy-address-status');
+    if (!copyStatus) return;
+    if (this.copyStatusTimeout !== null) {
+      window.clearTimeout(this.copyStatusTimeout);
+      this.copyStatusTimeout = null;
+    }
+    copyStatus.style.display = 'block';
+    copyStatus.textContent = text;
+    this.copyStatusTimeout = window.setTimeout(() => {
+      copyStatus.style.display = 'none';
+      this.copyStatusTimeout = null;
+    }, 4000);
+  }
+
+  private copyToClipboard(text: string, successMessage: string) {
+    if (!navigator.clipboard?.writeText) {
+      this.showCopyStatus('[ERROR] Could not copy automatically');
+      return;
+    }
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        this.showCopyStatus(successMessage);
+      })
+      .catch(() => {
+        this.showCopyStatus('[ERROR] Could not copy automatically');
+      });
+  }
+
+  private attachEvents() {
+    this.abortController.abort();
+    this.abortController = new AbortController();
+    const { signal } = this.abortController;
 
     // Copy full address
     const copyBtn = this.container.querySelector<HTMLButtonElement>('#btn-copy-address');
     if (copyBtn) {
-      copyBtn.addEventListener('click', () => {
-        sound.playClick(800, 0.04);
-        const fullAddress = 'Seasons 24 Banquet & Conventions, Pune - Ahmednagar Highway, Wagholi, Pune, Maharashtra 412207, India';
-        navigator.clipboard.writeText(fullAddress).then(() => {
-          if (copyStatus) {
-            copyStatus.style.display = 'block';
-            copyStatus.textContent = '[COPIED] Full address copied to clipboard!';
-            setTimeout(() => {
-              copyStatus.style.display = 'none';
-            }, 4000);
-          }
-        });
-      });
+      copyBtn.addEventListener(
+        'click',
+        () => {
+          sound.playClick(800, 0.04);
+          const fullAddress = 'Seasons 24 Banquet & Conventions, Pune - Ahmednagar Highway, Wagholi, Pune, Maharashtra 412207, India';
+          this.copyToClipboard(fullAddress, '[COPIED] Full address copied to clipboard!');
+        },
+        { signal }
+      );
     }
 
     // Copy GPS coordinates
     const copyCoordsBtn = this.container.querySelector<HTMLButtonElement>('#btn-copy-coords');
     if (copyCoordsBtn) {
-      copyCoordsBtn.addEventListener('click', () => {
-        sound.playClick(850, 0.04);
-        navigator.clipboard.writeText('18.5793, 73.9818').then(() => {
-          if (copyStatus) {
-            copyStatus.style.display = 'block';
-            copyStatus.textContent = '[COPIED] GPS Coordinates (18.5793, 73.9818) copied to clipboard!';
-            setTimeout(() => {
-              copyStatus.style.display = 'none';
-            }, 4000);
-          }
-        });
-      });
+      copyCoordsBtn.addEventListener(
+        'click',
+        () => {
+          sound.playClick(850, 0.04);
+          this.copyToClipboard('18.5793, 73.9818', '[COPIED] GPS Coordinates (18.5793, 73.9818) copied to clipboard!');
+        },
+        { signal }
+      );
     }
 
     // External Maps Click sound
     const mapLinks = this.container.querySelectorAll<HTMLAnchorElement>('#btn-open-maps, #btn-live-directions');
     mapLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        sound.playClick(900, 0.04);
-      });
+      link.addEventListener(
+        'click',
+        () => {
+          sound.playClick(900, 0.04);
+        },
+        { signal }
+      );
     });
 
     // Tactical Zoom Controls
@@ -475,61 +505,81 @@ export class VenueController {
     const zoomResetBtn = this.container.querySelector<HTMLButtonElement>('#ctrl-zoom-reset');
 
     if (zoomInBtn) {
-      zoomInBtn.addEventListener('click', () => {
-        if (this.currentZoom < this.maxZoom) {
-          this.currentZoom = Math.min(this.maxZoom, Number((this.currentZoom + this.zoomStep).toFixed(2)));
-          sound.playClick(950, 0.02);
-          this.applyZoom();
-        }
-      });
+      zoomInBtn.addEventListener(
+        'click',
+        () => {
+          if (this.currentZoom < this.maxZoom) {
+            this.currentZoom = Math.min(this.maxZoom, Number((this.currentZoom + this.zoomStep).toFixed(2)));
+            sound.playClick(950, 0.02);
+            this.applyZoom();
+          }
+        },
+        { signal }
+      );
     }
 
     if (zoomOutBtn) {
-      zoomOutBtn.addEventListener('click', () => {
-        if (this.currentZoom > this.minZoom) {
-          this.currentZoom = Math.max(this.minZoom, Number((this.currentZoom - this.zoomStep).toFixed(2)));
-          sound.playClick(650, 0.02);
-          this.applyZoom();
-        }
-      });
+      zoomOutBtn.addEventListener(
+        'click',
+        () => {
+          if (this.currentZoom > this.minZoom) {
+            this.currentZoom = Math.max(this.minZoom, Number((this.currentZoom - this.zoomStep).toFixed(2)));
+            sound.playClick(650, 0.02);
+            this.applyZoom();
+          }
+        },
+        { signal }
+      );
     }
 
     if (zoomResetBtn) {
-      zoomResetBtn.addEventListener('click', () => {
-        this.currentZoom = 1.0;
-        this.panX = 0;
-        this.panY = 0;
-        sound.playClick(750, 0.02);
-        this.applyZoom();
-      });
+      zoomResetBtn.addEventListener(
+        'click',
+        () => {
+          this.currentZoom = 1.0;
+          this.panX = 0;
+          this.panY = 0;
+          sound.playClick(750, 0.02);
+          this.applyZoom();
+        },
+        { signal }
+      );
     }
 
     // Drag-to-pan when zoomed in
     const mapBox = this.container.querySelector<HTMLElement>('#tactical-map-box');
     const mapLayer = this.container.querySelector<SVGGElement>('#tactical-map-layer');
     if (mapBox && mapLayer) {
-      mapBox.addEventListener('pointerdown', (e: PointerEvent) => {
-        if (this.currentZoom <= this.minZoom + 0.05) return;
-        if ((e.target as HTMLElement).closest('.tactical-zoom-controls')) return;
-        this.isPanning = true;
-        this.panStartX = e.clientX;
-        this.panStartY = e.clientY;
-        this.startPanX = this.panX;
-        this.startPanY = this.panY;
-        mapBox.classList.add('is-panning');
-        mapLayer.classList.add('is-dragging');
-        try {
-          mapBox.setPointerCapture(e.pointerId);
-        } catch {}
-      });
+      mapBox.addEventListener(
+        'pointerdown',
+        (e: PointerEvent) => {
+          if (this.currentZoom <= this.minZoom + 0.05) return;
+          if ((e.target as HTMLElement).closest('.tactical-zoom-controls')) return;
+          this.isPanning = true;
+          this.panStartX = e.clientX;
+          this.panStartY = e.clientY;
+          this.startPanX = this.panX;
+          this.startPanY = this.panY;
+          mapBox.classList.add('is-panning');
+          mapLayer.classList.add('is-dragging');
+          try {
+            mapBox.setPointerCapture(e.pointerId);
+          } catch {}
+        },
+        { signal }
+      );
 
-      mapBox.addEventListener('pointermove', (e: PointerEvent) => {
-        if (!this.isPanning) return;
-        this.panX = this.startPanX + (e.clientX - this.panStartX);
-        this.panY = this.startPanY + (e.clientY - this.panStartY);
-        this.clampPan();
-        mapLayer.style.transform = `translate(${this.panX.toFixed(1)}px, ${this.panY.toFixed(1)}px) scale(${this.currentZoom})`;
-      });
+      mapBox.addEventListener(
+        'pointermove',
+        (e: PointerEvent) => {
+          if (!this.isPanning) return;
+          this.panX = this.startPanX + (e.clientX - this.panStartX);
+          this.panY = this.startPanY + (e.clientY - this.panStartY);
+          this.clampPan();
+          mapLayer.style.transform = `translate(${this.panX.toFixed(1)}px, ${this.panY.toFixed(1)}px) scale(${this.currentZoom})`;
+        },
+        { signal }
+      );
 
       const stopPan = (e: PointerEvent) => {
         if (!this.isPanning) return;
@@ -541,16 +591,29 @@ export class VenueController {
         } catch {}
       };
 
-      mapBox.addEventListener('pointerup', stopPan);
-      mapBox.addEventListener('pointercancel', stopPan);
+      mapBox.addEventListener('pointerup', stopPan, { signal });
+      mapBox.addEventListener('pointercancel', stopPan, { signal });
     }
 
     // Target reticle hover sound
     const targetCluster = this.container.querySelector('#venue-target-cluster');
     if (targetCluster) {
-      targetCluster.addEventListener('mouseenter', () => {
-        sound.playClick(1100, 0.015);
-      });
+      targetCluster.addEventListener(
+        'mouseenter',
+        () => {
+          sound.playClick(1100, 0.015);
+        },
+        { signal }
+      );
     }
+  }
+
+  public destroy() {
+    this.abortController.abort();
+    if (this.copyStatusTimeout !== null) {
+      window.clearTimeout(this.copyStatusTimeout);
+      this.copyStatusTimeout = null;
+    }
+    this.isPanning = false;
   }
 }

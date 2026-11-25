@@ -62,6 +62,7 @@ export class HeroVariableController {
   private gyroTiltX: number = 0; // -1 (tilted left) to +1 (tilted right)
   private gyroPitchY: number = 0; // front/back tilt
   private gyroActive: boolean = false;
+  private gyroPermissionRequested: boolean = false;
 
   private lastActiveCharIndex: number = -1;
   private isHeroVisible: boolean = true;
@@ -239,7 +240,9 @@ export class HeroVariableController {
         this.lastPointerMoveTime = performance.now();
         this.isPointerInside = true;
         updatePointerPosition(e.clientX, e.clientY, false);
-        this.requestGyroPermission();
+        if (e.pointerType === 'touch') {
+          this.requestGyroPermission();
+        }
         this.startPhysicsLoop();
       },
       { signal }
@@ -463,6 +466,8 @@ export class HeroVariableController {
   }
 
   private requestGyroPermission() {
+    if (this.gyroPermissionRequested) return;
+    this.gyroPermissionRequested = true;
     const devOrient = typeof DeviceOrientationEvent !== 'undefined'
       ? (DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> })
       : undefined;

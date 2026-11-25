@@ -87,17 +87,54 @@ export class EcosystemController {
   private container: HTMLElement;
   private openFaqIds: Set<string> = new Set();
   private activeCategory: string = 'ALL';
+  private abortController: AbortController = new AbortController();
 
   constructor(container: HTMLElement) {
     this.container = container;
     this.render();
   }
 
+  private getFilteredFaqs(): FAQEntry[] {
+    return this.activeCategory === 'ALL'
+      ? FAQ_LIST
+      : FAQ_LIST.filter(f => f.category === this.activeCategory);
+  }
+
+  private renderFaqItems(filteredFaq: FAQEntry[]): string {
+    return filteredFaq
+      .map(f => {
+        const isOpen = this.openFaqIds.has(f.id);
+        return `
+          <div class="faq-item ${isOpen ? 'is-open' : ''}" id="faq-item-${f.id}">
+            <button
+              type="button"
+              class="faq-question-btn"
+              data-id="${f.id}"
+              aria-expanded="${isOpen}"
+              aria-controls="faq-answer-${f.id}">
+              <div class="q-left">
+                <span class="q-prefix">[Q]</span>
+                <span class="q-cat">[${f.category}]</span>
+                <strong class="q-text">${f.question}</strong>
+              </div>
+              <span class="q-toggle-marker">${isOpen ? '[-]' : '[+]'}</span>
+            </button>
+
+            <div class="faq-answer-drawer" id="faq-answer-${f.id}" ${isOpen ? '' : 'hidden style="display: none;"'}>
+              <div class="a-left">
+                <span class="a-prefix text-accent">[A]</span>
+                <p class="a-text">${f.answer}</p>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
   private render() {
     const categories = ['ALL', 'REGISTRATION', 'LOGISTICS', 'TECHNICAL', 'GENERAL'];
-    const filteredFaq = this.activeCategory === 'ALL' 
-      ? FAQ_LIST 
-      : FAQ_LIST.filter(f => f.category === this.activeCategory);
+    const filteredFaq = this.getFilteredFaqs();
 
     this.container.innerHTML = `
       <div class="ecosystem-section-wrapper">
@@ -174,8 +211,10 @@ export class EcosystemController {
             <div class="faq-category-filters">
               ${categories.map(cat => `
                 <button 
+                  type="button"
                   class="btn-faq-cat ${this.activeCategory === cat ? 'is-active' : ''}" 
-                  data-cat="${cat}">
+                  data-cat="${cat}"
+                  aria-pressed="${this.activeCategory === cat}">
                   ${cat}
                 </button>
               `).join('')}
@@ -183,30 +222,7 @@ export class EcosystemController {
           </div>
 
           <div class="faq-accordion-container">
-            ${filteredFaq.map(f => {
-              const isOpen = this.openFaqIds.has(f.id);
-              return `
-                <div class="faq-item ${isOpen ? 'is-open' : ''}" id="faq-item-${f.id}">
-                  <button class="faq-question-btn" data-id="${f.id}">
-                    <div class="q-left">
-                      <span class="q-prefix">[Q]</span>
-                      <span class="q-cat">[${f.category}]</span>
-                      <strong class="q-text">${f.question}</strong>
-                    </div>
-                    <span class="q-toggle-marker">${isOpen ? '[-]' : '[+]'}</span>
-                  </button>
-
-                  ${isOpen ? `
-                    <div class="faq-answer-drawer">
-                      <div class="a-left">
-                        <span class="a-prefix text-accent">[A]</span>
-                        <p class="a-text">${f.answer}</p>
-                      </div>
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-            }).join('')}
+            ${this.renderFaqItems(filteredFaq)}
           </div>
 
           <div class="faq-terminal-footer">
@@ -219,35 +235,87 @@ export class EcosystemController {
     this.attachEvents();
   }
 
-  private attachEvents() {
-    // Category filters
+  private updateCategoryView() {
+    const filteredFaq = this.getFilteredFaqs();
+    const statusEl = this.container.querySelector<HTMLElement>('.terminal-status');
+    const accordionContainer = this.container.querySelector<HTMLElement>('.faq-accordion-container');
     const catBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-faq-cat');
+
     catBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const cat = btn.getAttribute('data-cat');
-        if (cat && cat !== this.activeCategory) {
-          this.activeCategory = cat;
-          sound.playClick(680, 0.03);
-          this.render();
-        }
-      });
+      const isCurrent = btn.getAttribute('data-cat') === this.activeCategory;
+      btn.classList.toggle('is-active', isCurrent);
+      btn.setAttribute('aria-pressed', String(isCurrent));
     });
 
-    // Accordion toggle
-    const questionBtns = this.container.querySelectorAll<HTMLButtonElement>('.faq-question-btn');
-    questionBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        if (!id) return;
-        if (this.openFaqIds.has(id)) {
-          this.openFaqIds.delete(id);
-          sound.playClick(550, 0.03);
-        } else {
-          this.openFaqIds.add(id);
-          sound.playClick(750, 0.03);
-        }
-        this.render();
-      });
+    if (statusEl) {
+      statusEl.textContent = `[${filteredFaq.length} ENTRIES LOGGED]`;
+    }
+
+    if (accordionContainer) {
+      accordionContainer.innerHTML = this.renderFaqItems(filteredFaq);
+    }
+  }
+
+  private attachEvents() {
+    this.abortController.abort();
+    this.abortController = new AbortController();
+    const { signal } = this.abortController;
+
+    // Category filters (updates only .faq-accordion-container & header indicators in-place)
+    const catBtns = this.container.querySelectorAll<HTMLButtonElement>('.btn-faq-cat');
+    catBtns.forEach(btn => {
+      btn.addEventListener(
+        'click',
+        () => {
+          const cat = btn.getAttribute('data-cat');
+          if (cat && cat !== this.activeCategory) {
+            this.activeCategory = cat;
+            sound.playClick(680, 0.03);
+            this.updateCategoryView();
+          }
+        },
+        { signal }
+      );
     });
+
+    // Delegated accordion toggle (updates DOM in-place without wiping Sponsors/DOM)
+    const accordionContainer = this.container.querySelector<HTMLElement>('.faq-accordion-container');
+    if (accordionContainer) {
+      accordionContainer.addEventListener(
+        'click',
+        (e: MouseEvent) => {
+          const btn = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>('.faq-question-btn');
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          if (!id) return;
+
+          const item = btn.closest<HTMLElement>('.faq-item');
+          const marker = btn.querySelector<HTMLElement>('.q-toggle-marker');
+          const drawer = item?.querySelector<HTMLElement>('.faq-answer-drawer');
+          const willOpen = !this.openFaqIds.has(id);
+
+          if (willOpen) {
+            this.openFaqIds.add(id);
+            sound.playClick(750, 0.03);
+          } else {
+            this.openFaqIds.delete(id);
+            sound.playClick(550, 0.03);
+          }
+
+          if (item) item.classList.toggle('is-open', willOpen);
+          if (marker) marker.textContent = willOpen ? '[-]' : '[+]';
+          btn.setAttribute('aria-expanded', String(willOpen));
+          if (drawer) {
+            drawer.hidden = !willOpen;
+            drawer.style.display = willOpen ? '' : 'none';
+          }
+        },
+        { signal }
+      );
+    }
+  }
+
+  public destroy() {
+    this.abortController.abort();
   }
 }

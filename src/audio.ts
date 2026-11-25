@@ -4,11 +4,7 @@ class SoundManager {
   private enabled: boolean = false;
 
   constructor() {
-    // Audio is muted by default to respect user preference until enabled
-    const saved = localStorage.getItem('ks_sound_enabled');
-    if (saved === 'true') {
-      this.enabled = true;
-    }
+    // Audio stays muted by default (in-memory only) until explicitly enabled by user interaction
   }
 
   private initContext() {
@@ -19,13 +15,16 @@ class SoundManager {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      try {
+        void this.ctx.resume().catch(() => {});
+      } catch {
+        // Ignore resume errors before user gesture
+      }
     }
   }
 
   public toggle(): boolean {
     this.enabled = !this.enabled;
-    localStorage.setItem('ks_sound_enabled', String(this.enabled));
     if (this.enabled) {
       this.initContext();
       this.playChirp(600, 0.05, 'triangle');

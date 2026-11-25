@@ -58,7 +58,7 @@ export const SCHEDULE_DATA: ScheduleItem[] = [
     track: 'RELEASING SOON',
     isPending: true,
     abstract: 'The detailed session-by-session lineup (speaker talks, technical deep-dives, community panel, tea breaks, and buffet lunch timings) will be published shortly and shared with all registered delegates.',
-    highlights: ['4+ Keynote & Technical Talks', 'Community Panel Discussion', 'Chai Breaks & Delicious Buffet Lunch', 'Final Timings Unlocking Soon']
+    highlights: ['7+ Keynote & Technical Talks', 'Community Panel Discussion', 'Chai Breaks & Delicious Buffet Lunch', 'Final Timings Unlocking Soon']
   },
   {
     id: 'slot-closing',
@@ -87,6 +87,7 @@ export const SCHEDULE_DATA: ScheduleItem[] = [
 export class ScheduleController {
   private container: HTMLElement;
   private expandedIds: Set<string> = new Set();
+  private abortController: AbortController = new AbortController();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -114,12 +115,13 @@ export class ScheduleController {
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
+        hourCycle: 'h23'
       }).formatToParts(now);
 
       const getPart = (type: string) => parts.find(p => p.type === type)?.value || '';
       const dateKey = `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
-      const nowMinutes = Number(getPart('hour')) * 60 + Number(getPart('minute'));
+      const hour = Number(getPart('hour')) % 24;
+      const nowMinutes = hour * 60 + Number(getPart('minute'));
       return { isEventDay: dateKey === '2026-12-27', nowMinutes };
     } catch {
       return { isEventDay: false, nowMinutes: -1 };
@@ -222,20 +224,28 @@ export class ScheduleController {
   }
 
   private attachEvents() {
+    this.abortController.abort();
+    this.abortController = new AbortController();
+    const { signal } = this.abortController;
+
     const expandAllBtn = this.container.querySelector<HTMLButtonElement>('#btn-toggle-expand-all');
     if (expandAllBtn) {
-      expandAllBtn.addEventListener('click', () => {
-        const visible = SCHEDULE_DATA;
-        const allExpanded = visible.length > 0 && visible.every(item => this.expandedIds.has(item.id));
-        if (allExpanded) {
-          visible.forEach(item => this.expandedIds.delete(item.id));
-          sound.playClick(500, 0.03);
-        } else {
-          visible.forEach(item => this.expandedIds.add(item.id));
-          sound.playClick(760, 0.035);
-        }
-        this.render();
-      });
+      expandAllBtn.addEventListener(
+        'click',
+        () => {
+          const visible = SCHEDULE_DATA;
+          const allExpanded = visible.length > 0 && visible.every(item => this.expandedIds.has(item.id));
+          if (allExpanded) {
+            visible.forEach(item => this.expandedIds.delete(item.id));
+            sound.playClick(500, 0.03);
+          } else {
+            visible.forEach(item => this.expandedIds.add(item.id));
+            sound.playClick(760, 0.035);
+          }
+          this.render();
+        },
+        { signal }
+      );
     }
 
     const rowMains = this.container.querySelectorAll<HTMLElement>('.fb-row-main');
@@ -266,15 +276,28 @@ export class ScheduleController {
           rowMain.setAttribute('aria-expanded', 'true');
           sound.playClick(750, 0.04);
         }
+
+        const allExpanded = SCHEDULE_DATA.length > 0 && SCHEDULE_DATA.every(item => this.expandedIds.has(item.id));
+        if (expandAllBtn) {
+          expandAllBtn.textContent = allExpanded ? '[- COLLAPSE ALL]' : '[+ EXPAND ALL DETAILS]';
+        }
       };
 
-      rowMain.addEventListener('click', toggleAction);
-      rowMain.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          toggleAction();
-        }
-      });
+      rowMain.addEventListener('click', toggleAction, { signal });
+      rowMain.addEventListener(
+        'keydown',
+        (e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleAction();
+          }
+        },
+        { signal }
+      );
     });
+  }
+
+  public destroy() {
+    this.abortController.abort();
   }
 }

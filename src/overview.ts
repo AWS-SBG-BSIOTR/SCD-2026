@@ -6,6 +6,12 @@ export interface MetricCard {
   desc: string;
 }
 
+export interface WhyAttendCard {
+  index: string;
+  title: string;
+  desc: string;
+}
+
 export const METRICS_DATA: MetricCard[] = [
   {
     value: '300+',
@@ -13,19 +19,47 @@ export const METRICS_DATA: MetricCard[] = [
     desc: 'STUDENT BUILDERS & DEVELOPERS'
   },
   {
-    value: '4+',
+    value: '7+',
     tag: '[SPEAKERS]',
     desc: 'KEYNOTES, TECH TALKS & PANEL'
-  },
-  {
-    value: '1',
-    tag: '[PERKS]',
-    desc: 'EXCLUSIVE AWS SWAG & BUILDER KIT'
   },
   {
     value: '8+',
     tag: '[DURATION]',
     desc: 'HOURS OF CONTINUOUS IMMERSION'
+  }
+];
+
+export const WHY_ATTEND_DATA: WhyAttendCard[] = [
+  {
+    index: '[01 // NETWORKING]',
+    title: 'Social Networking & Industry Connects',
+    desc: 'Connect directly with working AWS professionals, cloud architects, speakers, and fellow student developers across Pune.'
+  },
+  {
+    index: '[02 // CREDLY BADGE]',
+    title: 'Official Credly Badge',
+    desc: 'Earn a verifiable digital Credly badge recognizing your participation at AWS Student Community Day Pune 2026.'
+  },
+  {
+    index: '[03 // CERTIFICATION]',
+    title: 'Attending Certification',
+    desc: 'Receive an official digital Certificate of Participation to showcase on LinkedIn, resumes, and portfolios.'
+  },
+  {
+    index: '[04 // HOSPITALITY]',
+    title: 'Breakfast & Delicious Lunch',
+    desc: 'Complimentary morning breakfast, wholesome conference buffet lunch, and refreshing tea/coffee breaks included.'
+  },
+  {
+    index: '[05 // SWAG KIT]',
+    title: 'Exclusive AWS Swag Kits',
+    desc: 'Curated AWS Community Day goodies, stickers, and builder swag packs prepared for participating attendees.'
+  },
+  {
+    index: '[06 // WORKSHOPS]',
+    title: 'Hands-On Cloud Learning',
+    desc: 'Explore 1–2 practical workshops, live serverless & GenAI architecture demos, and real-world engineering talks.'
   }
 ];
 
@@ -43,7 +77,12 @@ export class OverviewController {
   }
 
   private startCountdown(): void {
-    const update = () => {
+    if (this.timerInterval !== null) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+
+    const update = (): number => {
       const now = Date.now();
       const diff = Math.max(0, this.targetDate - now);
 
@@ -61,14 +100,23 @@ export class OverviewController {
       if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
       if (minsEl) minsEl.textContent = String(minutes).padStart(2, '0');
       if (secsEl) secsEl.textContent = String(seconds).padStart(2, '0');
+
+      if (diff <= 0 && this.timerInterval !== null) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+
+      return diff;
     };
 
-    update();
-    this.timerInterval = window.setInterval(update, 1000);
+    const initialDiff = update();
+    if (initialDiff > 0) {
+      this.timerInterval = window.setInterval(update, 1000);
+    }
   }
 
   private bindEvents(): void {
-    const cards = this.container.querySelectorAll('.metric-card, .overview-countdown-terminal');
+    const cards = this.container.querySelectorAll('.metric-card, .overview-countdown-panel, .why-attend-card');
     cards.forEach(card => {
       card.addEventListener('mouseenter', () => {
         sound.playHover(460, 0.02);
@@ -82,9 +130,6 @@ export class OverviewController {
     ctaBtns.forEach(btn => {
       btn.addEventListener('mouseenter', () => {
         sound.playHover(520, 0.02);
-      });
-      btn.addEventListener('click', () => {
-        sound.playClick(750, 0.04);
       });
     });
   }
@@ -142,7 +187,7 @@ export class OverviewController {
           </div>
         </div>
 
-        <!-- 4 Impact Metrics Cards (High Contrast White Blocks) -->
+        <!-- 3 Impact Metrics Cards (High Contrast White Blocks) -->
         <div class="overview-metrics-grid mono" aria-label="Conference Impact Metrics">
           ${METRICS_DATA.map(m => `
             <div class="metric-card">
@@ -151,6 +196,27 @@ export class OverviewController {
               <div class="metric-desc">${m.desc}</div>
             </div>
           `).join('')}
+        </div>
+
+        <!-- Why Attend AWS SCD Block -->
+        <div class="why-attend-section" aria-label="Why Attend AWS Student Community Day Pune 2026">
+          <div class="why-attend-header">
+            <div class="why-attend-tag mono">[WHY ATTEND // BUILDER ADVANTAGES]</div>
+            <h3 class="why-attend-title">WHY ATTEND AWS SCD PUNE 2026?</h3>
+            <p class="why-attend-sub mono">
+              Six builder-first advantages waiting for every participant at Seasons 24, Wagholi on 27 December 2026.
+            </p>
+          </div>
+
+          <div class="why-attend-grid">
+            ${WHY_ATTEND_DATA.map(item => `
+              <article class="why-attend-card">
+                <span class="why-card-index mono">${item.index}</span>
+                <h4 class="why-card-title">${item.title}</h4>
+                <p class="why-card-desc">${item.desc}</p>
+              </article>
+            `).join('')}
+          </div>
         </div>
 
         <!-- Quick Section Actions -->

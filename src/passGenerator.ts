@@ -11,7 +11,6 @@ export interface PassConfig {
 }
 
 export class PassGeneratorController {
-  private static readonly STORAGE_KEY = 'scd26_badge_config';
   private container: HTMLElement;
   private stageObserver: IntersectionObserver | null = null;
   private isStageVisible: boolean = true;
@@ -19,7 +18,11 @@ export class PassGeneratorController {
   private orientationHandler: ((e: DeviceOrientationEvent) => void) | null = null;
   private windowMoveHandler: ((e: PointerEvent) => void) | null = null;
   private windowUpHandler: ((e: PointerEvent) => void) | null = null;
+  private pageshowHandler: ((e: PageTransitionEvent) => void) | null = null;
   private roleFlashTimeout: number | null = null;
+  private toastTimeout: number | null = null;
+  private photoUploadSeq: number = 0;
+  private activeObjectUrl: string | null = null;
   private inputPulseToggle: boolean = false;
   private triggerInputNudge: (() => void) | null = null;
   private triggerRoleNudge: (() => void) | null = null;
@@ -35,52 +38,18 @@ export class PassGeneratorController {
 
   constructor(container: HTMLElement) {
     this.container = container;
-    this.loadSavedConfig();
-    this.render();
-  }
-
-  private loadSavedConfig() {
     try {
-      const raw = localStorage.getItem(PassGeneratorController.STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Partial<PassConfig>;
-      if (typeof parsed.name === 'string') this.config.name = parsed.name;
-      if (typeof parsed.college === 'string') this.config.college = parsed.college;
-      if (typeof parsed.role === 'string' && ['STUDENT ATTENDEE', 'KEYNOTE SPEAKER', 'IT PROFESSIONAL'].includes(parsed.role)) {
-        this.config.role = parsed.role;
-      }
-      if (typeof parsed.passNumber === 'string' && parsed.passNumber.startsWith('SCD26-PUNE-')) {
-        this.config.passNumber = parsed.passNumber;
-      }
-      if (typeof parsed.photoDataUrl === 'string' && parsed.photoDataUrl.startsWith('data:image/')) {
-        this.config.photoDataUrl = parsed.photoDataUrl;
-      }
+      localStorage.removeItem('scd26_badge_config');
     } catch {
       // Ignore storage failures in restricted contexts
     }
+    this.render();
   }
 
-  private saveConfig() {
-    try {
-      localStorage.setItem(PassGeneratorController.STORAGE_KEY, JSON.stringify({
-        name: this.config.name,
-        college: this.config.college,
-        role: this.config.role,
-        passNumber: this.config.passNumber,
-        photoDataUrl: this.config.photoDataUrl
-      }));
-    } catch {
-      // If quota is tight with an embedded image, fall back to storing text fields
-      try {
-        localStorage.setItem(PassGeneratorController.STORAGE_KEY, JSON.stringify({
-          name: this.config.name,
-          college: this.config.college,
-          role: this.config.role,
-          passNumber: this.config.passNumber
-        }));
-      } catch {
-        // Ignore storage failures in restricted contexts
-      }
+  private revokeActiveObjectUrl() {
+    if (this.activeObjectUrl) {
+      URL.revokeObjectURL(this.activeObjectUrl);
+      this.activeObjectUrl = null;
     }
   }
 
@@ -112,7 +81,7 @@ export class PassGeneratorController {
               <span class="text-accent">[OFFICIAL BADGE]</span>
             </div>
 
-            <form id="pass-customizer-form" class="customizer-form">
+            <form id="pass-customizer-form" class="customizer-form" autocomplete="off">
               <div class="form-field">
                 <label for="inp-attendee-name">BUILDER FULL NAME:</label>
                 <input 
@@ -122,6 +91,7 @@ export class PassGeneratorController {
                   value="${this.escapeHtml(this.config.name)}" 
                   placeholder="AARAV SHARMA"
                   maxlength="28" 
+                  autocomplete="off"
                   required>
               </div>
 
@@ -134,6 +104,7 @@ export class PassGeneratorController {
                   value="${this.escapeHtml(this.config.college)}" 
                   placeholder="JSPM BSIOTR, WAGHOLI, PUNE"
                   maxlength="40" 
+                  autocomplete="off"
                   required>
               </div>
 
@@ -155,12 +126,7 @@ export class PassGeneratorController {
                   accept="image/*" />
                 <div class="photo-upload-row">
                   <div class="photo-upload-thumb" id="form-photo-thumb" aria-hidden="true">
-                    ${this.config.photoDataUrl
-                      ? `<img src="${this.escapeHtml(this.config.photoDataUrl)}" alt="Uploaded attendee preview" class="pass-photo-img" />`
-                      : `<svg viewBox="0 0 36 36" width="28" height="28" fill="none" aria-hidden="true">
-                           <circle cx="18" cy="13" r="6" stroke="#010101" stroke-width="2" />
-                           <path d="M7 31C7 24.9 11.9 21 18 21C24.1 21 29 24.9 29 31" stroke="#010101" stroke-width="2" stroke-linecap="square" />
-                         </svg>`}
+                    ${this.renderFormThumbMarkup()}
                   </div>
                   <div class="photo-upload-actions">
                     <div class="photo-upload-btns">
@@ -188,6 +154,9 @@ export class PassGeneratorController {
                 </button>
                 <button type="button" class="btn-brutalist btn-secondary w-full" id="btn-share-pass">
                   SHARE BADGE [->]
+                </button>
+                <button type="button" class="btn-brutalist btn-photo-clear w-full" id="btn-reset-badge">
+                  RESET BADGE [X]
                 </button>
               </div>
 
@@ -261,15 +230,22 @@ export class PassGeneratorController {
             </div>
 
             <!-- Pass Download Confirmation Toast -->
-            <div id="pass-claim-toast" class="pass-toast mono" style="display: none;">
-              [SUCCESS] PASS CONFIRMED: #${this.config.passNumber} HAS BEEN ISSUED TO ${this.config.name || 'DELEGATE'}. SEE YOU IN PUNE!
-            </div>
+            <div id="pass-claim-toast" class="pass-toast mono" style="display: none;" role="status" aria-live="polite"></div>
           </div>
         </div>
       </div>
     `;
 
     this.attachEvents();
+  }
+
+  private renderFormThumbMarkup(): string {
+    return this.config.photoDataUrl
+      ? `<img src="${this.escapeHtml(this.config.photoDataUrl)}" alt="Uploaded attendee preview" class="pass-photo-img" />`
+      : `<svg viewBox="0 0 36 36" width="28" height="28" fill="none" aria-hidden="true">
+           <circle cx="18" cy="13" r="6" stroke="#010101" stroke-width="2" />
+           <path d="M7 31C7 24.9 11.9 21 18 21C24.1 21 29 24.9 29 31" stroke="#010101" stroke-width="2" stroke-linecap="square" />
+         </svg>`;
   }
 
   private renderPhotoMarkup(): string {
@@ -293,7 +269,16 @@ export class PassGeneratorController {
 
   private async processUploadedPhoto(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
+      this.revokeActiveObjectUrl();
       const objectUrl = URL.createObjectURL(file);
+      this.activeObjectUrl = objectUrl;
+      const cleanupObjectUrl = () => {
+        URL.revokeObjectURL(objectUrl);
+        if (this.activeObjectUrl === objectUrl) {
+          this.activeObjectUrl = null;
+        }
+      };
+
       const img = new Image();
       img.onload = () => {
         try {
@@ -303,7 +288,7 @@ export class PassGeneratorController {
           canvas.height = targetSize;
           const ctx = canvas.getContext('2d');
           if (!ctx) {
-            URL.revokeObjectURL(objectUrl);
+            cleanupObjectUrl();
             reject(new Error('Canvas context unavailable'));
             return;
           }
@@ -318,15 +303,15 @@ export class PassGeneratorController {
           ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, targetSize, targetSize);
 
           const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-          URL.revokeObjectURL(objectUrl);
+          cleanupObjectUrl();
           resolve(dataUrl);
         } catch (err) {
-          URL.revokeObjectURL(objectUrl);
+          cleanupObjectUrl();
           reject(err);
         }
       };
       img.onerror = () => {
-        URL.revokeObjectURL(objectUrl);
+        cleanupObjectUrl();
         reject(new Error('Failed to load selected image'));
       };
       img.src = objectUrl;
@@ -338,7 +323,6 @@ export class PassGeneratorController {
     const collegeDisp = this.container.querySelector('#pass-college-display');
     const roleDisp = this.container.querySelector('#pass-role-display');
     const tierDisp = this.container.querySelector('#pass-tier-display');
-    const numDisp = this.container.querySelector('#pass-number-display');
     const photoFrame = this.container.querySelector('#pass-photo-frame');
     const formThumb = this.container.querySelector('#form-photo-thumb');
     const pickBtn = this.container.querySelector<HTMLButtonElement>('#btn-choose-photo');
@@ -349,15 +333,9 @@ export class PassGeneratorController {
     if (collegeDisp) collegeDisp.textContent = this.config.college || 'YOUR INSTITUTION / UNIVERSITY';
     if (roleDisp) roleDisp.textContent = this.config.role;
     if (tierDisp) tierDisp.textContent = this.config.role;
-    if (numDisp) numDisp.textContent = this.config.passNumber;
     if (photoFrame) photoFrame.innerHTML = this.renderPhotoMarkup();
     if (formThumb) {
-      formThumb.innerHTML = this.config.photoDataUrl
-        ? `<img src="${this.escapeHtml(this.config.photoDataUrl)}" alt="Uploaded attendee preview" class="pass-photo-img" />`
-        : `<svg viewBox="0 0 36 36" width="28" height="28" fill="none" aria-hidden="true">
-             <circle cx="18" cy="13" r="6" stroke="#010101" stroke-width="2" />
-             <path d="M7 31C7 24.9 11.9 21 18 21C24.1 21 29 24.9 29 31" stroke="#010101" stroke-width="2" stroke-linecap="square" />
-           </svg>`;
+      formThumb.innerHTML = this.renderFormThumbMarkup();
     }
     if (pickBtn) {
       pickBtn.textContent = this.config.photoDataUrl ? 'CHANGE PHOTO [->]' : 'UPLOAD PHOTO [+]';
@@ -372,13 +350,51 @@ export class PassGeneratorController {
     }
   }
 
+  public resetBadge() {
+    this.photoUploadSeq++;
+    this.revokeActiveObjectUrl();
+
+    this.config.name = '';
+    this.config.college = '';
+    this.config.role = 'STUDENT ATTENDEE';
+    this.config.photoDataUrl = '';
+
+    const nameInp = this.container.querySelector<HTMLInputElement>('#inp-attendee-name');
+    const collegeInp = this.container.querySelector<HTMLInputElement>('#inp-attendee-college');
+    const roleSel = this.container.querySelector<HTMLSelectElement>('#sel-attendee-role');
+    const photoInp = this.container.querySelector<HTMLInputElement>('#inp-attendee-photo');
+    const toast = this.container.querySelector<HTMLElement>('#pass-claim-toast');
+
+    if (nameInp) nameInp.value = '';
+    if (collegeInp) collegeInp.value = '';
+    if (roleSel) roleSel.value = 'STUDENT ATTENDEE';
+    if (photoInp) photoInp.value = '';
+
+    if (this.toastTimeout !== null) {
+      window.clearTimeout(this.toastTimeout);
+      this.toastTimeout = null;
+    }
+    if (toast) {
+      toast.style.display = 'none';
+      toast.textContent = '';
+    }
+
+    this.updatePassDisplay();
+  }
+
   private attachEvents() {
+    const form = this.container.querySelector<HTMLFormElement>('#pass-customizer-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+      });
+    }
+
     // Name input
     const nameInp = this.container.querySelector<HTMLInputElement>('#inp-attendee-name');
     if (nameInp) {
       nameInp.addEventListener('input', () => {
         this.config.name = nameInp.value.toUpperCase();
-        this.saveConfig();
         sound.playTypewriter(Math.random() * 200 + 400);
         this.updatePassDisplay();
         this.triggerInputNudge?.();
@@ -390,7 +406,6 @@ export class PassGeneratorController {
     if (collegeInp) {
       collegeInp.addEventListener('input', () => {
         this.config.college = collegeInp.value.toUpperCase();
-        this.saveConfig();
         sound.playTypewriter(Math.random() * 200 + 400);
         this.updatePassDisplay();
         this.triggerInputNudge?.();
@@ -402,7 +417,6 @@ export class PassGeneratorController {
     if (roleSel) {
       roleSel.addEventListener('change', () => {
         this.config.role = roleSel.value;
-        this.saveConfig();
         sound.playClick(650, 0.03);
         this.updatePassDisplay();
         this.triggerRoleNudge?.();
@@ -426,12 +440,15 @@ export class PassGeneratorController {
       photoInp.addEventListener('change', () => {
         const file = photoInp.files?.[0];
         if (!file) return;
+        const seq = ++this.photoUploadSeq;
         if (!file.type.startsWith('image/')) {
+          this.revokeActiveObjectUrl();
           if (statusLbl) statusLbl.textContent = 'PLEASE SELECT A VALID IMAGE FILE (PNG/JPG/WEBP)';
           photoInp.value = '';
           return;
         }
         if (file.size > 12 * 1024 * 1024) {
+          this.revokeActiveObjectUrl();
           if (statusLbl) statusLbl.textContent = 'IMAGE TOO LARGE (MAX 12 MB)';
           photoInp.value = '';
           return;
@@ -439,14 +456,15 @@ export class PassGeneratorController {
         if (statusLbl) statusLbl.textContent = 'PROCESSING PHOTO...';
         void this.processUploadedPhoto(file)
           .then((dataUrl) => {
+            if (seq !== this.photoUploadSeq) return;
             this.config.photoDataUrl = dataUrl;
-            this.saveConfig();
             sound.playSuccess();
             this.updatePassDisplay();
             this.triggerRoleNudge?.();
             photoInp.value = '';
           })
           .catch(() => {
+            if (seq !== this.photoUploadSeq) return;
             if (statusLbl) statusLbl.textContent = 'COULD NOT READ IMAGE · TRY ANOTHER JPG OR PNG';
             photoInp.value = '';
           });
@@ -455,11 +473,22 @@ export class PassGeneratorController {
 
     if (clearPhotoBtn) {
       clearPhotoBtn.addEventListener('click', () => {
+        this.photoUploadSeq++;
+        this.revokeActiveObjectUrl();
         this.config.photoDataUrl = '';
         if (photoInp) photoInp.value = '';
-        this.saveConfig();
         sound.playClick(520, 0.03);
         this.updatePassDisplay();
+        this.triggerInputNudge?.();
+      });
+    }
+
+    // Reset entire badge back to clean defaults
+    const resetBadgeBtn = this.container.querySelector<HTMLButtonElement>('#btn-reset-badge');
+    if (resetBadgeBtn) {
+      resetBadgeBtn.addEventListener('click', () => {
+        sound.playClick(520, 0.03);
+        this.resetBadge();
         this.triggerInputNudge?.();
       });
     }
@@ -480,10 +509,49 @@ export class PassGeneratorController {
       });
     }
 
+    if (this.pageshowHandler) {
+      window.removeEventListener('pageshow', this.pageshowHandler);
+    }
+    this.pageshowHandler = (e: PageTransitionEvent) => {
+      if (e.persisted) {
+        this.resetBadge();
+      }
+    };
+    window.addEventListener('pageshow', this.pageshowHandler);
+
     this.initBadgePhysics();
   }
 
+  private teardownPhysicsListeners() {
+    if (this.orientationHandler) {
+      window.removeEventListener('deviceorientation', this.orientationHandler);
+      this.orientationHandler = null;
+    }
+    if (this.windowMoveHandler) {
+      window.removeEventListener('pointermove', this.windowMoveHandler);
+      this.windowMoveHandler = null;
+    }
+    if (this.windowUpHandler) {
+      window.removeEventListener('pointerup', this.windowUpHandler);
+      window.removeEventListener('pointercancel', this.windowUpHandler);
+      this.windowUpHandler = null;
+    }
+    if (this.roleFlashTimeout !== null) {
+      window.clearTimeout(this.roleFlashTimeout);
+      this.roleFlashTimeout = null;
+    }
+    if (this.stageObserver) {
+      this.stageObserver.disconnect();
+      this.stageObserver = null;
+    }
+    if (this.physicsRafId !== null) {
+      cancelAnimationFrame(this.physicsRafId);
+      this.physicsRafId = null;
+    }
+  }
+
   private initBadgePhysics() {
+    this.teardownPhysicsListeners();
     const card = this.container.querySelector<HTMLElement>('#physical-pass-card');
     const stage = this.container.querySelector<HTMLElement>('.pass-preview-stage');
     const clip = this.container.querySelector<HTMLElement>('.lanyard-clip');
@@ -937,10 +1005,15 @@ export class PassGeneratorController {
   private showToast(message: string) {
     const toast = this.container.querySelector<HTMLElement>('#pass-claim-toast');
     if (!toast) return;
+    if (this.toastTimeout !== null) {
+      window.clearTimeout(this.toastTimeout);
+      this.toastTimeout = null;
+    }
     toast.textContent = message;
     toast.style.display = 'block';
-    window.setTimeout(() => {
+    this.toastTimeout = window.setTimeout(() => {
       toast.style.display = 'none';
+      this.toastTimeout = null;
     }, 4500);
   }
 
@@ -1152,30 +1225,16 @@ export class PassGeneratorController {
   }
 
   public destroy() {
-    if (this.orientationHandler) {
-      window.removeEventListener('deviceorientation', this.orientationHandler);
-      this.orientationHandler = null;
+    this.photoUploadSeq++;
+    this.revokeActiveObjectUrl();
+    if (this.pageshowHandler) {
+      window.removeEventListener('pageshow', this.pageshowHandler);
+      this.pageshowHandler = null;
     }
-    if (this.windowMoveHandler) {
-      window.removeEventListener('pointermove', this.windowMoveHandler);
-      this.windowMoveHandler = null;
+    if (this.toastTimeout !== null) {
+      window.clearTimeout(this.toastTimeout);
+      this.toastTimeout = null;
     }
-    if (this.windowUpHandler) {
-      window.removeEventListener('pointerup', this.windowUpHandler);
-      window.removeEventListener('pointercancel', this.windowUpHandler);
-      this.windowUpHandler = null;
-    }
-    if (this.roleFlashTimeout !== null) {
-      window.clearTimeout(this.roleFlashTimeout);
-      this.roleFlashTimeout = null;
-    }
-    if (this.stageObserver) {
-      this.stageObserver.disconnect();
-      this.stageObserver = null;
-    }
-    if (this.physicsRafId !== null) {
-      cancelAnimationFrame(this.physicsRafId);
-      this.physicsRafId = null;
-    }
+    this.teardownPhysicsListeners();
   }
 }

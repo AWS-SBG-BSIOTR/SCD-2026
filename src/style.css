@@ -47,7 +47,7 @@ html {
   color: var(--color-black);
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -59,7 +59,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   position: relative;
 }
 
@@ -312,18 +312,15 @@ footer {
 
 .brand-mark {
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: clamp(1.1rem, 1.5vw, 1.38rem);
   font-weight: 900;
   letter-spacing: -0.04em;
-  font-variation-settings: 'wght' 900, 'wdth' 115;
+  font-variation-settings: 'wght' 900, 'wdth' 110;
+  white-space: nowrap;
 }
 
-.brand-collab-tag {
-  font-size: 0.82rem;
-  font-weight: 700;
+.brand-year {
   color: var(--color-vermilion);
-  margin-left: 6px;
-  letter-spacing: 0.05em;
 }
 
 .brand-badge {
@@ -857,23 +854,14 @@ footer {
   position: relative;
   display: flex;
   align-items: center;
+  touch-action: pan-y;
 }
 
 .ticker-track {
   display: flex;
+  width: max-content;
   white-space: nowrap;
-  animation: marquee 24s linear infinite;
   will-change: transform;
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0%);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
 }
 
 .ticker-text {
@@ -932,13 +920,11 @@ footer {
 }
 
 .section-sub {
-  font-size: clamp(1rem, 1.3vw, 1.25rem);
   font-family: var(--font-mono);
   font-size: 0.95rem;
   letter-spacing: -0.02em;
   color: var(--color-brown);
   max-width: 680px;
-  line-height: 1.4;
   line-height: 1.5;
 }
 
@@ -1239,10 +1225,10 @@ footer {
   margin-top: -20px;
 }
 
-/* --- 4-Block Impact Metrics Grid --- */
+/* --- 3-Block Impact Metrics Grid --- */
 .overview-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -1286,6 +1272,100 @@ footer {
   color: #222222;
 }
 
+/* --- Why Attend AWS SCD 2026 Section --- */
+.why-attend-section {
+  margin-top: 36px;
+  padding-top: 32px;
+  border-top: 2px dashed rgba(1, 1, 1, 0.25);
+}
+
+.why-attend-header {
+  margin-bottom: 24px;
+}
+
+.why-attend-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-vermilion);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.why-attend-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 3.6vw, 2.85rem);
+  font-weight: 900;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  font-variation-settings: 'wght' 850, 'wdth' 105;
+  color: var(--color-black);
+  margin-bottom: 10px;
+}
+
+.why-attend-sub {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: -0.02em;
+  color: var(--color-brown);
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+.why-attend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.why-attend-card {
+  background: #FFFFFF;
+  border: 2px solid var(--color-black);
+  box-shadow: 4px 4px 0 var(--color-black);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.why-attend-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-black);
+}
+
+.why-card-index {
+  display: inline-block;
+  font-family: var(--font-mono);
+  background-color: var(--color-vermilion);
+  color: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+  border: 1px solid var(--color-black);
+}
+
+.why-card-title {
+  font-family: var(--font-display);
+  font-size: 1.18rem;
+  font-weight: 850;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-black);
+}
+
+.why-card-desc {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: var(--color-brown);
+}
+
 /* --- Quick Actions Row --- */
 .overview-actions-row {
   display: flex;
@@ -1296,8 +1376,18 @@ footer {
 
 /* --- Responsive Breakpoints for Overview Section --- */
 @media (max-width: 1024px) {
+  .why-attend-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
   .overview-metrics-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .overview-metrics-grid .metric-card:last-child {
+    grid-column: 1 / -1;
   }
 }
 
@@ -1332,6 +1422,24 @@ footer {
   }
 
   .overview-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .overview-metrics-grid .metric-card:last-child {
+    grid-column: auto;
+  }
+
+  .why-attend-section {
+    margin-top: 28px;
+    padding-top: 24px;
+  }
+
+  .why-attend-header {
+    margin-bottom: 18px;
+  }
+
+  .why-attend-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
@@ -2356,14 +2464,16 @@ footer {
   pointer-events: none;
   z-index: 3;
   opacity: 0;
-  background: linear-gradient(118deg,
-      rgba(255, 255, 255, 0) 20%,
-      rgba(1, 1, 1, 0.045) 33%,
-      rgba(220, 212, 194, 0.48) 44%,
-      rgba(255, 255, 255, 0.82) 50%,
-      rgba(253, 11, 3, 0.075) 55%,
-      rgba(220, 212, 194, 0.32) 63%,
-      rgba(255, 255, 255, 0) 76%);
+  background: linear-gradient(
+    118deg,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(1, 1, 1, 0.045) 33%,
+    rgba(220, 212, 194, 0.48) 44%,
+    rgba(255, 255, 255, 0.82) 50%,
+    rgba(253, 11, 3, 0.075) 55%,
+    rgba(220, 212, 194, 0.32) 63%,
+    rgba(255, 255, 255, 0) 76%
+  );
   transform: translate3d(0%, 0%, 0);
   will-change: transform, opacity;
 }
@@ -2378,7 +2488,6 @@ footer {
     color: #FFFFFF;
     transform: scale(1.06);
   }
-
   100% {
     background-color: var(--color-black);
     color: var(--color-cream);
@@ -4479,7 +4588,6 @@ footer {
   height: 52px;
   image-rendering: pixelated;
   flex-shrink: 0;
-  filter: drop-shadow(0 0 12px rgba(253, 11, 3, 0.35));
 }
 
 .footer-jspm-logo {
@@ -5550,9 +5658,7 @@ footer {
 }
 
 @keyframes tearPillBob {
-
-  0%,
-  100% {
+  0%, 100% {
     transform: translateX(-50%) translateY(0);
   }
 
@@ -5562,9 +5668,7 @@ footer {
 }
 
 @keyframes tearDotPulse {
-
-  0%,
-  100% {
+  0%, 100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -6599,7 +6703,6 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .radar-reticle-ring,
   .map-hud-bar .hud-blip-dot {
     animation: none !important;
@@ -6837,12 +6940,7 @@ footer {
   }
 
   .brand-mark {
-    font-size: 1.15rem;
-    white-space: nowrap;
-  }
-
-  .brand-collab-tag {
-    font-size: 0.72rem;
+    font-size: clamp(0.95rem, 4.1vw, 1.15rem);
     white-space: nowrap;
   }
 
@@ -6952,15 +7050,14 @@ footer {
     margin-bottom: 14px;
   }
 
-  .scd-hero-subline {
-    font-size: 0.82rem;
-    line-height: 1.5;
-    margin-bottom: 20px;
-  }
-
+  .scd-hero-subline,
   .section-sub {
     font-size: 0.82rem;
     line-height: 1.5;
+  }
+
+  .scd-hero-subline {
+    margin-bottom: 20px;
   }
 
   .hero-ctas {
@@ -7021,27 +7118,68 @@ footer {
   }
 
   .overview-metrics-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px;
+    grid-template-columns: 1fr !important;
+    gap: 10px;
     margin-bottom: 16px;
   }
 
+  .overview-metrics-grid .metric-card:last-child {
+    grid-column: auto;
+  }
+
   .metric-card {
-    padding: 14px 12px;
+    padding: 16px 14px;
   }
 
   .metric-value {
-    font-size: clamp(24px, 6.5vw, 32px);
+    font-size: clamp(26px, 7vw, 36px);
   }
 
   .metric-tag {
-    font-size: 0.62rem;
-    margin: 4px 0;
+    font-size: 0.68rem;
+    margin: 6px 0 4px;
   }
 
   .metric-desc {
-    font-size: 0.68rem;
-    line-height: 1.35;
+    font-size: 0.74rem;
+    line-height: 1.4;
+  }
+
+  .why-attend-section {
+    margin-top: 24px;
+    padding-top: 22px;
+  }
+
+  .why-attend-title {
+    font-size: clamp(1.4rem, 6.2vw, 1.85rem);
+  }
+
+  .why-attend-sub {
+    font-size: 0.78rem;
+  }
+
+  .why-attend-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+  }
+
+  .why-attend-card {
+    padding: 16px 14px;
+    gap: 8px;
+    box-shadow: 3px 3px 0 var(--color-black);
+  }
+
+  .why-card-index {
+    font-size: 0.64rem;
+  }
+
+  .why-card-title {
+    font-size: 1.05rem;
+  }
+
+  .why-card-desc {
+    font-size: 0.74rem;
+    line-height: 1.45;
   }
 
   .overview-actions-row {

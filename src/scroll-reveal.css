@@ -1,0 +1,127 @@
+/* ==========================================================================
+   AWS STUDENT COMMUNITY DAY 2026 (PUNE) — OPTION 1: ARCHITECTURAL SNAP
+   Crisp Brutalist Scroll Reveals & Vermilion Scroll Progress Hairline
+   ========================================================================== */
+
+/* Top Vermilion Scroll-Progress Hairline (fixed just under .site-header) */
+#scroll-progress-bar {
+  position: fixed;
+  top: var(--header-height, 64px);
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-vermilion, #FD0B03);
+  transform-origin: left center;
+  transform: scaleX(0);
+  pointer-events: none;
+  z-index: 101;
+  will-change: transform;
+}
+
+@media (max-width: 600px) {
+  #scroll-progress-bar {
+    top: 56px;
+  }
+}
+
+/* ==========================================================================
+   BASE REVEAL STATES (No reduced-motion override for Windows compatibility)
+   ========================================================================== */
+body .sr-init:not(.is-sr-visible) {
+  opacity: 0;
+  transform: translate3d(var(--sr-x, 0px), var(--sr-y, 44px), 0) scale(var(--sr-scale, 0.97));
+}
+
+body .sr-init:not(.sr-settled) {
+  transition-property: opacity, transform;
+  transition-duration: var(--sr-opacity-duration, 460ms), var(--sr-transform-duration, 620ms);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--sr-delay, 0ms), var(--sr-delay, 0ms);
+}
+
+body .sr-init.is-sr-visible:not(.sr-settled) {
+  opacity: 1;
+  transform: none;
+}
+
+.sr-will-change {
+  will-change: opacity, transform;
+}
+
+/* ==========================================================================
+   CHOREOGRAPHY VARIANTS — DESKTOP
+   ========================================================================== */
+
+/* Section Headers: tag (0ms) -> headline (90ms) -> subline (180ms) */
+.sr-header-item {
+  --sr-x: 0px;
+  --sr-y: 34px;
+  --sr-scale: 1;
+  --sr-opacity-duration: 420ms;
+  --sr-transform-duration: 560ms;
+}
+
+.section-meta-header .section-tag.sr-init:not(.sr-settled),
+.section-meta-header .overview-header-tagline.sr-init:not(.sr-settled) {
+  --sr-delay: 0ms;
+}
+
+.section-meta-header .section-headline.sr-init:not(.sr-settled) {
+  --sr-delay: 90ms;
+}
+
+.section-meta-header .section-sub.sr-init:not(.sr-settled) {
+  --sr-delay: 180ms;
+}
+
+/* Cards, Banners, Schedule Rows, FAQ Items, Footer Columns */
+.sr-card-item {
+  --sr-x: 0px;
+  --sr-y: 44px;
+  --sr-scale: 0.97;
+  --sr-opacity-duration: 460ms;
+  --sr-transform-duration: 620ms;
+}
+
+/* Two-Column Directional Panels (Pass Generator & Venue) */
+.sr-panel-left {
+  --sr-x: -36px;
+  --sr-y: 0px;
+  --sr-scale: 0.985;
+  --sr-opacity-duration: 480ms;
+  --sr-transform-duration: 640ms;
+}
+
+.sr-panel-right {
+  --sr-x: 36px;
+  --sr-y: 0px;
+  --sr-scale: 0.985;
+  --sr-delay: 90ms;
+  --sr-opacity-duration: 480ms;
+  --sr-transform-duration: 640ms;
+}
+
+/* ==========================================================================
+   RESPONSIVE COLLAPSE & MOTION SAFETY
+   ========================================================================== */
+
+/* Collapse horizontal two-column travel into vertical settle on <= 900px */
+@media (max-width: 900px) {
+  .sr-panel-left,
+  .sr-panel-right {
+    --sr-x: 0px;
+    --sr-y: 26px;
+    --sr-delay: 0ms;
+  }
+}
+
+/* Tighten vertical travel on mobile <= 640px */
+@media (max-width: 640px) {
+  .sr-header-item {
+    --sr-y: 22px;
+  }
+
+  .sr-card-item {
+    --sr-y: 26px;
+  }
+}
